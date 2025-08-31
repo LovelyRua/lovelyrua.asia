@@ -13,7 +13,7 @@ name = "Email"
 url = "mailto:lovelyrua@lovelyrua.asia"
 
 [social.params]
-icon = "emial"
+icon = "mail"
 
 [[social]]
 identifier = "bilibili"
@@ -22,3 +22,11 @@ url = "https://space.bilibili.com/419743801"
 
 [social.params]
 icon = "brand-bilibili"
+
+[[social]]
+identifier = "telegram"
+name = "Telegram"
+url = "https://t.me/LovelyRua"
+
+[social.params]
+icon = "brand-telegram"
