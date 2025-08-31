@@ -8,17 +8,17 @@
 #newtab = true
 
 [[social]]
-identifier = "github"
-name = "GitHub"
-url = "https://github.com/CaiJimmy/hugo-theme-stack"
+identifier = "email"
+name = "Email"
+url = "mailto:lovelyrua@lovelyrua.asia"
 
 [social.params]
-icon = "brand-github"
+icon = "emial"
 
 [[social]]
-identifier = "twitter"
-name = "Twitter"
-url = "https://twitter.com"
+identifier = "bilibili"
+name = "Bilibili"
+url = "https://space.bilibili.com/419743801"
 
 [social.params]
-icon = "brand-twitter"
+icon = "brand-bilibili"
