@@ -30,3 +30,11 @@ url = "https://t.me/LovelyRua"
 
 [social.params]
 icon = "brand-telegram"
+
+[[social]]
+identifier = "discord"
+name = "Discord"
+url = "https://discord.gg/ZK5x72Rfzq"
+
+[social.params]
+icon = "brand-discord"
