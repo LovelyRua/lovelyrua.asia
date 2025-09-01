@@ -1,6 +1,5 @@
 ---
-title: 链接
-slug: links
+title: Links
 links:
   - title: 放课后茶会
     description: K-ON 主题的音乐/技术资源综合论坛
@@ -13,7 +12,7 @@ links:
     image: https://www.lijianping.vip/wp-content/uploads/2025/08/%E4%B8%8B%E8%BD%BD.jpg
 
   - title: 休闲云盘
-    description: 套了 CF 所以裸连速度可能有点慢
+    description: 服务器暂时不在大陆，速度可能有点慢
     website: https://pan.lovelyrua.asia/
     image: https://youke1.picui.cn/s1/2025/09/01/68b57d7c0abac.png
 
