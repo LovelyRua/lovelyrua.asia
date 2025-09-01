@@ -1,10 +1,27 @@
 ---
-title: Links
+title: 链接
+slug: links
 links:
-  - title: GitHub
-    description: GitHub is the world's largest software development platform.
-    website: https://github.com
-    image: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
+  - title: 放课后茶会
+    description: K-ON 主题的音乐/技术资源综合论坛
+    website: https://forums.lovelyrua.asia
+    image: https://forums.lovelyrua.asia/assets/favicon-zdfmsncc.png
+
+  - title: 咸鱼之家
+    description: 一个 Minecraft 公益服务器
+    website: https://www.lijianping.vip
+    image: https://www.lijianping.vip/wp-content/uploads/2025/08/%E4%B8%8B%E8%BD%BD.jpg
+
+  - title: 
+    description: 休闲云盘
+    website: https://pan.lovelyrua.asia/
+    image: https://youke1.picui.cn/s1/2025/09/01/68b56d5043457.png
+
+  - title: 
+    description: LovelyRua 的文件服务器
+    website: https://hfs.lovelyrua.asia:81/
+    image: https://youke1.picui.cn/s1/2025/09/01/68b56dd62f399.png
+
 menu:
     main: 
         weight: 4
@@ -13,21 +30,3 @@ menu:
 
 comments: false
 ---
-
-To use this feature, add `links` section to frontmatter.
-
-This page's frontmatter:
-
-```yaml
-links:
-  - title: GitHub
-    description: GitHub is the world's largest software development platform.
-    website: https://github.com
-    image: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
-  - title: TypeScript
-    description: TypeScript is a typed superset of JavaScript that compiles to plain JavaScript.
-    website: https://www.typescriptlang.org
-    image: ts-logo-128.jpg
-```
-
-`image` field accepts both local and external images.
