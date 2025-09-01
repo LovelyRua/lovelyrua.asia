@@ -1,8 +1,8 @@
 ---
 title: 保姆级指南 Hexo + GitHub Pages 搭建静态博客
 description: 保姆级指南 Hexo + GitHub Pages 搭建静态博客
-date: 2025-04-09 22:22:22+0000
-image: cover.jpg
+date: 2025-04-09 22:22:22+0800
+# image: cover.jpg
 categories:
     - IT-Techs
 tags:

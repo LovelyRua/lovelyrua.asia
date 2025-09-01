@@ -1,8 +1,8 @@
 ---
 title: 计网指北：使用 Nginx L4 反向代理 Minecraft 加速玩家访问
 description: Nginx 反代 MC 服务器
-date: 2025-09-01 20:48:16+0000
-image: cover.jpg
+date: 2025-09-01 20:48:16+0800
+# image: cover.jpg
 categories:
     - IT-Techs
 tags:

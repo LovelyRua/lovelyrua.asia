@@ -1,8 +1,8 @@
 ---
 title: Git 小篆之 存查备 - Control Changes Better
 description: Git 日常操作实用指南：告别手忙脚乱，掌控你的代码版本
-date: 2025-05-06 09:32:23+0000
-image: cover.jpg
+date: 2025-05-06 09:32:23+0800
+# image: cover.jpg
 categories:
     - IT-Techs
 tags:
