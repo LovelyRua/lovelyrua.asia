@@ -181,10 +181,10 @@ stream {
 }
 ```
 
-##### 最简实现
+### 最简实现
 
 如果你甚至懒得装 Nginx 还可以用如下方法
-###### Linux: iptables
+#### Linux: iptables
 
 - **这是什么**：Linux 内核自带的防火墙和网络地址转换 (NAT) 工具。
 - **如何实现**：通过设置 PREROUTING 和 POSTROUTING 链的 NAT 规则，可以实现端口转发，达到反向代理的效果。
@@ -200,9 +200,9 @@ stream {
 
     # 3. 设置 SNAT/MASQUERADE 规则 (将来自后端 MC 服务器的返回流量，源地址伪装成本机)
     $ sudo iptables -t nat -A POSTROUTING -p tcp -d 1.1.1.1 --dport 25565 -j MASQUERADE
-    ```
+```
 
-###### Windows: netsh
+#### Windows: netsh
 
 - **这是什么：Windows 系统内置的端口代理/转发命令行工具。
 - **如何实现：在 Windows 服务器上，一行命令即可设置。
@@ -214,7 +214,7 @@ stream {
 netsh interface portproxy add v4tov4 listenport=25565 listenaddress=0.0.0.0 connectport=25565 connectaddress=1.1.1.1
 ```
 
-##### 加速 Hypixel
+### 加速 Hypixel
 
 是的，你还可以用一条**直连线路更优的专线**来反向代理 **Hypixel 等服务器**， 规避普通家庭宽带国际出口的拥堵，实现类似游戏加速器的效果。
 
