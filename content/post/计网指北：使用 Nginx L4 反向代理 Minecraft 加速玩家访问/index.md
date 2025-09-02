@@ -35,7 +35,7 @@ tags:
 - (可选) **基础的 Linux 命令行操作能力**: 我们将通过 SSH 连接到服务器进行配置。
 
 
-### 安装 Nginx
+## 安装 Nginx
 
 本步骤旨在确保你的服务器上安装了支持 TCP 代理的 Nginx。
 
@@ -57,7 +57,7 @@ $ nginx -v
 
 **！** Nginx 的 TCP/UDP 代理功能依赖于 **--with-stream** 模块。幸运的是，几乎所有主流 Linux 发行版官方仓库中的 Nginx 包都**默认编译**了这个模块。如果你的 Nginx 版本非常古老或来源特殊，你可能需要手动编译。可以通过 nginx -V (大写V) 命令查看编译参数，确认是否包含 ngx_stream_module。
 
-### Nginx 核心配置
+## Nginx 核心配置
 
 与我们熟知的用于网站的 http 块不同，代理OSI模型四层的 TCP/UDP 流量（比如 Minecraft 的游戏数据）需要使用 stream 块。
 
@@ -90,7 +90,7 @@ $ sudo mkdir /etc/nginx/streams-available
 $ sudo mkdir /etc/nginx/streams-enabled
 ```
 
-### 为你的 Minecraft 服务器创建反向代理配置
+## 为你的 Minecraft 服务器创建反向代理配置
 
 现在，我们将为你的 MC 服务器创建一个专属的配置文件。
 
