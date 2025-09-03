@@ -109,12 +109,14 @@ serverURL = "https://waline-backend-self.vercel.app"
 lang = ""
 visitor = ""
 avatar = ""
-emoji = ["https://cdn.jsdelivr.net/gh/walinejs/emojis/weibo"]
+emoji = ["https://myth.cx/walinejs/emojis/tieba"]
+reaction = true
 requiredMeta = ["nick", "email", "url"]
 placeholder = ""
 
 [comments.waline.locale]
 admin = "Admin"
+placeholder = ""
 
 [comments.twikoo]
 envId = ""
