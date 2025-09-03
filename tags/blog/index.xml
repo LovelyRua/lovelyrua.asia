@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Blog on LovelyRua's Blog</title><link>https://www.lovelyrua.asia/tags/blog/</link><description>Recent content in Blog on LovelyRua's Blog</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Wed, 09 Apr 2025 22:22:22 +0800</lastBuildDate><atom:link href="https://www.lovelyrua.asia/tags/blog/index.xml" rel="self" type="application/rss+xml"/><item><title>保姆级指南 Hexo + GitHub Pages 搭建静态博客</title><link>https://www.lovelyrua.asia/p/%E4%BF%9D%E5%A7%86%E7%BA%A7%E6%8C%87%E5%8D%97-hexo--github-pages-%E6%90%AD%E5%BB%BA%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2/</link><pubDate>Wed, 09 Apr 2025 22:22:22 +0800</pubDate><guid>https://www.lovelyrua.asia/p/%E4%BF%9D%E5%A7%86%E7%BA%A7%E6%8C%87%E5%8D%97-hexo--github-pages-%E6%90%AD%E5%BB%BA%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2/</guid><description>&lt;blockquote&gt;
+&lt;p&gt;》》 将心比心，换位思考；务实求索，无限进步 《《&lt;/p&gt;&lt;/blockquote&gt;
+&lt;h3 id="前言"&gt;&lt;code&gt;##&lt;/code&gt;前言&lt;code&gt;##&lt;/code&gt;
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;本文将基于实操使用 Hexo 静态博客框架, 并借助 GitHub Pages 和 Cloudflare CDN 服务, 搭建一个无需租用服务器, 无需支付任何费用即可访问的高性能个人博客站点. 本文旨在帮助读者了解以下内容:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://baike.baidu.com/item/%E9%9D%99%E6%80%81%E7%BD%91%E7%AB%99/2776875" target="_blank" rel="noopener"
+&gt;静态网站&lt;/a&gt;的基本原理&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://pages.github.com/" target="_blank" rel="noopener"
+&gt;GitHub Pages&lt;/a&gt; 的使用&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://zh.wikipedia.org/zh-cn/%E5%85%A7%E5%AE%B9%E5%82%B3%E9%81%9E%E7%B6%B2%E8%B7%AF" target="_blank" rel="noopener"
+&gt;CDN&lt;/a&gt; 加速的优势&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://zh.wikipedia.org/wiki/Node.js" target="_blank" rel="noopener"
+&gt;Node.js&lt;/a&gt; 基础操作&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id="_0-准备工作"&gt;✨&amp;gt;_0 准备工作
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;在开始之前, 请确保您的计算机已安装以下环境：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Node.js 环境&lt;/strong&gt; (&lt;a class="link" href="https://nodejs.org/" target="_blank" rel="noopener"
+&gt;官方下载地址&lt;/a&gt;) : Hexo 基于 Node.js 运行, 您需要安装 Node.js.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Git&lt;/strong&gt; (&lt;a class="link" href="https://git-scm.com/downloads" target="_blank" rel="noopener"
+&gt;官方下载地址&lt;/a&gt;) : 用于将博客部署到 GitHub.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;GitHub 账号&lt;/strong&gt; (&lt;a class="link" href="https://github.com/join" target="_blank" rel="noopener"
+&gt;注册地址&lt;/a&gt;) : 用于存储博客部署后的静态文件.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;可选 :&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;自己的 &lt;strong&gt;域名&lt;/strong&gt; 和 &lt;strong&gt;Cloudflare 账号&lt;/strong&gt;, 用于后续配置 Cloudflare CDN 及个性化域名.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id="创建-github-pages-仓库"&gt;创建 Github Pages 仓库
+&lt;/h4&gt;&lt;p&gt;登录你的 Github 账号并访问:
+&lt;a class="link" href="https://github.com/new" target="_blank" rel="noopener"
+&gt;https://github.com/new&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;在 &lt;strong&gt;Repository name&lt;/strong&gt; 一框填入: &lt;strong&gt;{你的用户名}.github.io&lt;/strong&gt; . 如 &lt;strong&gt;&lt;code&gt;lovelyrua.github.io&lt;/code&gt;&lt;/strong&gt;
+点击 右下角绿色按钮 &lt;strong&gt;&lt;code&gt;Create Repository&lt;/code&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;接下来便可跟随本文步骤指引搭建你的博客&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="安装-hexo"&gt;安装 Hexo
+&lt;/h2&gt;&lt;blockquote&gt;
+&lt;p&gt;本步骤参考 (&lt;a class="link" href="https://hexo.io/zh-cn/docs/setup" target="_blank" rel="noopener"
+&gt;Hexo官方文档 - 建站&lt;/a&gt;)&lt;/p&gt;&lt;/blockquote&gt;
+&lt;p&gt;选择一个合适目录储存项目, 这里创建一个 &lt;code&gt;hexo-blog&lt;/code&gt; 文件夹为例:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;span class="lnt"&gt;13
+&lt;/span&gt;&lt;span class="lnt"&gt;14
+&lt;/span&gt;&lt;span class="lnt"&gt;15
+&lt;/span&gt;&lt;span class="lnt"&gt;16
+&lt;/span&gt;&lt;span class="lnt"&gt;17
+&lt;/span&gt;&lt;span class="lnt"&gt;18
+&lt;/span&gt;&lt;span class="lnt"&gt;19
+&lt;/span&gt;&lt;span class="lnt"&gt;20
+&lt;/span&gt;&lt;span class="lnt"&gt;21
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# 创建并进入项目目录; `&amp;amp;&amp;amp;` 表示前一个命令成功执行后执行后一个命令&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; $ mkdir hexo-blog &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="nb"&gt;cd&lt;/span&gt; hexo-blog
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# 在当前目录下使用 nodejs 提供的包管理工具 `npm` 来安装 hexo 命令行工具 (hexo-cli).&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# 如果想要在任何目录下都能直接使用 `hexo` 命令, 可以使用 `npm install hexo-cli -g` 进行全局安装 ➊&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; $ npm install hexo-cli
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# 初始化 hexo 项目 &amp;#39;blog&amp;#39;, hexo 会在当前目录下创建文件夹并从 github 拉取模板.&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# `npx` 是 npm 自带的包执行工具, 它会查找本地 &amp;#39;node_modules/.bin&amp;#39; 中的命令&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# 如果上一步骤进行了全局安装, 这里就可以直接执行 `hexo init blog`&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; $ npx hexo init blog &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="nb"&gt;cd&lt;/span&gt; blog
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# 安装项目依赖. 此命令会根据目录下的 &amp;#39;package.json&amp;#39; 文件中 &amp;#34;dependencies&amp;#34; 字块安装所需依赖&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; $ npm install
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# 启动 hexo 测试服务端&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; $ npx hexo server
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# `server` 也可直接缩写成 `s`&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# 以上操作若过程无误 控制台会输出:&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# `INFO Hexo is running at http://localhost:4000/ .`&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;此时在浏览器访问 http://localhost:4000/ 即可看到 hexo 的初始主题页面.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;strong&gt;如果启动或后续步骤出现类似&lt;/strong&gt; &lt;code&gt;Error: Cannot find module 'xxx'&lt;/code&gt; 的报错, 说明依赖安装不完整
+用 &lt;code&gt;npm install {报错提示缺少的依赖}&lt;/code&gt; 命令&lt;strong&gt;补充安装依赖即可&lt;/strong&gt;;
+若还是无法解决 可以尝试删除 node_modules 文件夹和 package-lock.json 文件后重新运行 &lt;code&gt;npm install&lt;/code&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;➊ 全局安装:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;! 当使用 &lt;code&gt;-g&lt;/code&gt; 参数全局安装一个包时, npm 会将可执行文件链接到系统的 PATH 环境变量所包含的目录中 (如 Node.js 安装目录), 这样系统就能在任何位置识别 hexo 命令.
+! 如果全局安装后命令仍不可用, 可能需要重启终端或检查系统 PATH 环境变量配置.&lt;/p&gt;&lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;h2 id="创建第一篇文章"&gt;创建第一篇文章
+&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;作为一个静态博客框架, Hexo 不像 WordPress, QQ空间 或 新浪微博 那样提供在线编辑器让你随时随地编辑发布
+它的工作流程更接近于开发者编写代码: &lt;code&gt;在本地创建文件&lt;/code&gt; - &lt;code&gt;编辑内容&lt;/code&gt; - &lt;code&gt;然后通过命令生成最终的网页文件并部署&lt;/code&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;本步骤参考 (&lt;a class="link" href="https://hexo.io/zh-cn/docs/writing" target="_blank" rel="noopener"
+&gt;Hexo官方文档 - 写作&lt;/a&gt;)&lt;/p&gt;&lt;/blockquote&gt;
+&lt;h4 id="使用命令创建新文章"&gt;使用命令创建新文章:
+&lt;/h4&gt;&lt;p&gt;确保终端位于 Hexo 项目的根目录 (即 &lt;code&gt;blog&lt;/code&gt; 文件夹内). 然后执行以下命令:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; $ npx hexo new post &lt;span class="s2"&gt;&amp;#34;我的第一篇文章&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# `new` 是创建命令, &amp;#39;post&amp;#39; 是文章的布局 (layout), &amp;#34;我的第一篇文章&amp;#34; 是文章标题&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# 如果标题包含空格, 最好用引号括起来&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# 控制台会输出类似信息:&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# INFO Created: ~/your/path/to/hexo-blog/blog/source/_posts/我的第一篇文章.md&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;blockquote&gt;
+&lt;p&gt;! 这个命令会在 source/_posts/ 目录下创建一个名为 &amp;ldquo;我的第一篇文章.md&amp;rdquo; 的 Markdown 文件.
+! &lt;code&gt;post&lt;/code&gt; 是 Hexo 默认的文章布局, 你也可以创建其他布局 (如 &lt;code&gt;draft&lt;/code&gt; 草稿, &lt;code&gt;page&lt;/code&gt; 独立页面等).&lt;/p&gt;&lt;/blockquote&gt;
+&lt;h4 id="编辑文章内容"&gt;编辑文章内容:
+&lt;/h4&gt;&lt;p&gt;使用你喜欢的文本编辑器 (如 &lt;code&gt;VS Code&lt;/code&gt;, &lt;code&gt;Sublime Text&lt;/code&gt;, &lt;code&gt;Obsidian&lt;/code&gt; 等) 打开刚刚创建的 .md 文件
+你会看到文件顶部有一段由 &lt;code&gt;---&lt;/code&gt; 包裹的内容, 这叫做 &lt;em&gt;Front-matter&lt;/em&gt;, 用于定义这篇文章的元数据:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;span class="lnt"&gt;13
+&lt;/span&gt;&lt;span class="lnt"&gt;14
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-md" data-lang="md"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;---
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;layout: post # 文章布局, 自动根据命令生成
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;title: 我的第一篇文章 # 文章标题, 自动根据命令生成
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;date: 2025-04-09 20:15:00 # 文章创建时间, 自动生成
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;tags: [hello, markdown] # 文章标签, 可以自行添加
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;---
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="gh"&gt;# 这里是正文的开始
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="gh"&gt;&lt;/span&gt;欢迎来到我的新博客!
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;这是我的第一篇文章，使用 &lt;span class="gs"&gt;**Markdown**&lt;/span&gt; 语法编写。
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;*&lt;/span&gt; 列表项1
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;*&lt;/span&gt; 列表项2
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;你可以在 &amp;mdash; 下方开始使用 &lt;a class="link" href="https://zh.wikipedia.org/wiki/Markdown" target="_blank" rel="noopener"
+&gt;Markdown&lt;/a&gt; 语法编写你的文章正文
+可以修改 title, 添加 tags (多个标签用逗号分隔或使用 YAML 列表格式). date 通常保持自动生成的时间即可.&lt;/p&gt;
+&lt;h4 id="本地预览"&gt;本地预览:
+&lt;/h4&gt;&lt;p&gt;编辑并保存好文章后回到终端 如果之前的 hexo server 还在运行, 可以先按 Ctrl+C 停止. 然后重新启动服务器进行预览：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;span class="lnt"&gt;8
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 清理之前构建的文件 (可选, 但修改配置或主题后需要执行)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;npx hexo clean
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 生成静态文件 (可选, server 命令通常会自动处理)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;npx hexo generate
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 启动本地服务器&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;npx hexo server
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;刷新浏览器中的 http://localhost:4000/, 你应该能在首页看到你新创建的文章 &amp;ldquo;我的第一篇文章&amp;rdquo; 的摘要或标题, 点击即可进入阅读.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;strong&gt;本节涉及的命令及其缩写:&lt;/strong&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;! npm i == npm install
+! hexo n == hexo new
+! hexo g == hexo generate
+! hexo s == hexo server
+! hexo d == hexo deploy
+! hexo clean (无缩写)&lt;/p&gt;&lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;h2 id="将-hexo-部署到-github"&gt;将 Hexo 部署到 GitHub
+&lt;/h2&gt;&lt;p&gt;现在你已经在本地创建并预览了你的第一篇文章. 下一步就是将博客发布到互联网上, 让其他人也能访问.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;静态博客的优势在于, 生成的网站文件无需复杂的服务器端处理;
+只要将这些文件托管在任何可公开访问的 Web 服务器上, 站点就能运行.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;GitHub Pages 提供了一个免费的静态网站托管服务, 非常适合部署 Hexo 生成的静态博客.
+Hexo 提供了一键部署功能, 可以方便地将生成的静态文件推送到指定的 Git 仓库.
+在此将演示 Hexo 提供的一键部署功能&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;本步骤参考 (&lt;a class="link" href="https://hexo.io/docs/one-command-deployment" target="_blank" rel="noopener"
+&gt;Hexo官方文档 - 一键部署&lt;/a&gt;)&lt;/p&gt;&lt;/blockquote&gt;
+&lt;h4 id="安装-git-部署插件"&gt;安装 Git 部署插件:
+&lt;/h4&gt;&lt;p&gt;要使用一键部署, 首先需要根据自己要部署到的平台安装对应的 deployer 插件
+安装针对 GitHub (或其他 Git 仓库) 的部署插件 &lt;code&gt;hexo-deployer-git&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; $ npm install hexo-deployer-git
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h4 id="配置-_configyml"&gt;配置 _config.yml:
+&lt;/h4&gt;&lt;p&gt;在部署前需要编辑 Hexo 项目的设置
+在 &lt;code&gt;_config.yml&lt;/code&gt;内填入必要的信息:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;span class="lnt"&gt;8
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-mysql" data-lang="mysql"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 找到文件末尾的 `deploy` 配置项
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;deploy&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;type&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;git&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;repo&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;https&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;//&lt;/span&gt;&lt;span class="n"&gt;github&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;com&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="err"&gt;用户名&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="err"&gt;用户名&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;github&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;io&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;git&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# 修改仓库地址
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# ！！极其重要：替换成你自己的仓库地址！！
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# 例如: https://github.com/LovelyRua/lovelyrua.github.io.git
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;branch&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;main&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# GitHub Pages 仓库默认分支名
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# message: &amp;#34;Site updated: {{ now(&amp;#39;YYYY-MM-DD HH:mm:ss&amp;#39;) }}&amp;#34; # 可选, 自定义 commit 信息
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;blockquote&gt;
+&lt;p&gt;! type: 一键部署方式的类型, 这里必须是 git
+!
+! repo: 务必替换成你自己的 GitHub Pages 仓库地址. 这个仓库通常命名为 &lt;code&gt;{你的GitHub用户名}.github.io&lt;/code&gt;. 可以使用 HTTPS 或 SSH 格式的地址.
+!
+! branch: 指定要将静态文件推送到哪个分支. 对于 &lt;code&gt;用户名.github.io&lt;/code&gt; 这种仓库, 通常是 &lt;code&gt;main&lt;/code&gt; 或 &lt;code&gt;master&lt;/code&gt; 分支作为 GitHub Pages 的源. 具体依赖于你的仓库设置.&lt;/p&gt;&lt;/blockquote&gt;
+&lt;p&gt;保存文件后 执行部署命令&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; $ npx hexo deploy
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; # 这个命令会先执行 `hexo generate` (生成静态文件到 public 目录)
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; # 然后将 public 目录的内容推送到你配置的 repo 和 branch。
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;strong&gt;首次部署可能遇到的情况:&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Git 身份未配置&lt;/strong&gt;: 如果你之前没有在本机配置过 Git 的用户名和邮箱, 可能会看到类似以下的提示:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;span class="lnt"&gt;13
+&lt;/span&gt;&lt;span class="lnt"&gt;14
+&lt;/span&gt;&lt;span class="lnt"&gt;15
+&lt;/span&gt;&lt;span class="lnt"&gt;16
+&lt;/span&gt;&lt;span class="lnt"&gt;17
+&lt;/span&gt;&lt;span class="lnt"&gt;18
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-ps" data-lang="ps"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nf"&gt;PS&lt;/span&gt; &lt;span class="nf"&gt;X:\your\path\hexo-blog\blog&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt; &lt;span class="nf"&gt;npx&lt;/span&gt; &lt;span class="nf"&gt;hexo&lt;/span&gt; &lt;span class="nf"&gt;deploy&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nf"&gt;INFO&lt;/span&gt; &lt;span class="nf"&gt;Validating&lt;/span&gt; &lt;span class="nf"&gt;config&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nf"&gt;INFO&lt;/span&gt; &lt;span class="nf"&gt;Deploying:&lt;/span&gt; &lt;span class="nf"&gt;git&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nf"&gt;INFO&lt;/span&gt; &lt;span class="nf"&gt;Setting&lt;/span&gt; &lt;span class="nf"&gt;up&lt;/span&gt; &lt;span class="nf"&gt;Git&lt;/span&gt; &lt;span class="nf"&gt;deployment...&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nf"&gt;Initialized&lt;/span&gt; &lt;span class="nf"&gt;empty&lt;/span&gt; &lt;span class="nf"&gt;Git&lt;/span&gt; &lt;span class="nf"&gt;repository&lt;/span&gt; &lt;span class="nf"&gt;in&lt;/span&gt; &lt;span class="nf"&gt;X:&lt;/span&gt;&lt;span class="nv"&gt;/your/path/hexo-blog/blog/.deploy_git/.git&lt;/span&gt;&lt;span class="err"&gt;/&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nf"&gt;Author&lt;/span&gt; &lt;span class="nf"&gt;identity&lt;/span&gt; &lt;span class="nf"&gt;unknown&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nf"&gt;***&lt;/span&gt; &lt;span class="nf"&gt;Please&lt;/span&gt; &lt;span class="nf"&gt;tell&lt;/span&gt; &lt;span class="nf"&gt;me&lt;/span&gt; &lt;span class="nf"&gt;who&lt;/span&gt; &lt;span class="nf"&gt;you&lt;/span&gt; &lt;span class="nf"&gt;are.&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nf"&gt;Run&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nf"&gt;git&lt;/span&gt; &lt;span class="nf"&gt;config&lt;/span&gt; &lt;span class="nf"&gt;--global&lt;/span&gt; &lt;span class="nf"&gt;user.email&lt;/span&gt; &lt;span class="nf"&gt;&amp;#34;you@example.com&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nf"&gt;git&lt;/span&gt; &lt;span class="nf"&gt;config&lt;/span&gt; &lt;span class="nf"&gt;--global&lt;/span&gt; &lt;span class="nf"&gt;user.name&lt;/span&gt; &lt;span class="nf"&gt;&amp;#34;Your&lt;/span&gt; &lt;span class="nf"&gt;Name&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nf"&gt;to&lt;/span&gt; &lt;span class="nf"&gt;set&lt;/span&gt; &lt;span class="nf"&gt;your&lt;/span&gt; &lt;span class="nf"&gt;account&amp;#39;s&lt;/span&gt; &lt;span class="nf"&gt;default&lt;/span&gt; &lt;span class="nf"&gt;identity.&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nf"&gt;Omit&lt;/span&gt; &lt;span class="nf"&gt;--global&lt;/span&gt; &lt;span class="nf"&gt;to&lt;/span&gt; &lt;span class="nf"&gt;set&lt;/span&gt; &lt;span class="nf"&gt;the&lt;/span&gt; &lt;span class="nf"&gt;identity&lt;/span&gt; &lt;span class="nf"&gt;only&lt;/span&gt; &lt;span class="nf"&gt;in&lt;/span&gt; &lt;span class="nf"&gt;this&lt;/span&gt; &lt;span class="nf"&gt;repository.&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nf"&gt;...&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;这是因为 Git 必须提供提交时必要的身份信息
+&lt;strong&gt;如上情况只需按照提示 通过这两条命令设置 Git 的默认身份信息:&lt;/strong&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; $ git config --global user.email &amp;#34;{你的邮箱}&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; $ git config --global user.name &amp;#34;{你的名字}&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;设置完成后再重新执行 &lt;code&gt;npx hexo deploy&lt;/code&gt;
+验证部署结果:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; INFO Deploy done: git
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;strong&gt;当终端输出如上日志即说明部署成功了&lt;/strong&gt;
+访问你的 Github Pages 仓库, 即可看到编译出的网页静态文件.
+&lt;em&gt;&lt;strong&gt;稍等片刻 GitHub Pages 需要一点时间来更新&lt;/strong&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;h3 id="-恭喜你"&gt;🎉 恭喜你!
+&lt;/h3&gt;&lt;p&gt;至此步骤在浏览器打开 &lt;code&gt;https://你的用户名.github.io/&lt;/code&gt;
+就可以访问你刚刚部署到 Github Pages 的博客了&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;strong&gt;如需编写新文章 只需重复从 &lt;strong&gt;步骤1.2&lt;/strong&gt; 开始的操作&lt;/strong&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="通过-cloudflare-cdn-加速国内访问"&gt;通过 Cloudflare CDN 加速国内访问
+&lt;/h2&gt;&lt;p&gt;&lt;em&gt;TODO&amp;hellip;&lt;/em&gt;&lt;/p&gt;</description></item></channel></rss>

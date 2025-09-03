@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Minecraft on LovelyRua's Blog</title><link>https://www.lovelyrua.asia/tags/minecraft/</link><description>Recent content in Minecraft on LovelyRua's Blog</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Mon, 01 Sep 2025 20:48:16 +0800</lastBuildDate><atom:link href="https://www.lovelyrua.asia/tags/minecraft/index.xml" rel="self" type="application/rss+xml"/><item><title>计网指北：使用 Nginx L4 反向代理 Minecraft 加速玩家访问</title><link>https://www.lovelyrua.asia/p/%E8%AE%A1%E7%BD%91%E6%8C%87%E5%8C%97%E4%BD%BF%E7%94%A8-nginx-l4-%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86-minecraft-%E5%8A%A0%E9%80%9F%E7%8E%A9%E5%AE%B6%E8%AE%BF%E9%97%AE/</link><pubDate>Mon, 01 Sep 2025 20:48:16 +0800</pubDate><guid>https://www.lovelyrua.asia/p/%E8%AE%A1%E7%BD%91%E6%8C%87%E5%8C%97%E4%BD%BF%E7%94%A8-nginx-l4-%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86-minecraft-%E5%8A%A0%E9%80%9F%E7%8E%A9%E5%AE%B6%E8%AE%BF%E9%97%AE/</guid><description>&lt;h3 id="前言"&gt;前言
+&lt;/h3&gt;&lt;p&gt;本文主要受众为使用家庭宽带/机房托管等单线路网络的服主&lt;/p&gt;
+&lt;p&gt;在为全国各省市使用不同运营商的玩家提供服务时&lt;/p&gt;
+&lt;p&gt;遇到某些地区玩家反馈网络连接高延迟/丢包等问题的&lt;/p&gt;
+&lt;p&gt;本文的内容简要：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Nginx Stream 模块反向代理的核心配置方法&lt;/li&gt;
+&lt;li&gt;一些补充玩法&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;✨&amp;gt;_0 准备工作&lt;/p&gt;
+&lt;p&gt;在开始之前，请确保你已具备以下条件：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;一台正在运行的 Minecraft 服务器&lt;/strong&gt;: 并且你知道它的 &lt;strong&gt;IP 地址&lt;/strong&gt; 和 &lt;strong&gt;游戏端口&lt;/strong&gt;（默认为 25565）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;一台拥有公网 IP 且线路优良的服务器 (VPS/ECS)&lt;/strong&gt;: 这台服务器将用来安装和运行 Nginx。&lt;/li&gt;
+&lt;li&gt;(可选) &lt;strong&gt;一个你自己的域名&lt;/strong&gt;: 并已将其 DNS 解析管理权交由 Cloudflare 或其他 DNS 服务商。&lt;/li&gt;
+&lt;li&gt;(可选) &lt;strong&gt;基础的 Linux 命令行操作能力&lt;/strong&gt;: 我们将通过 SSH 连接到服务器进行配置。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="安装-nginx"&gt;安装 Nginx
+&lt;/h2&gt;&lt;p&gt;本步骤旨在确保你的服务器上安装了支持 TCP 代理的 Nginx。&lt;/p&gt;
+&lt;p&gt;首先，通过 SSH 登录到你的 Nginx 服务器。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 更新你的包管理器缓存&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;$ sudo apt update &lt;span class="c1"&gt;# 适用于 Debian/Ubuntu&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;$ sudo yum update &lt;span class="c1"&gt;# 适用于 CentOS/RHEL&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 安装 Nginx。大多数现代发行版的官方源都包含了 stream 模块。&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;$ sudo apt install nginx -y
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;$ sudo yum install nginx -y
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 验证 Nginx 是否安装成功并查看版本信息&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;$ nginx -v
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 你应该会看到类似 `nginx version: nginx/1.18.0` 的输出&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;strong&gt;！&lt;/strong&gt; Nginx 的 TCP/UDP 代理功能依赖于 &lt;strong&gt;&amp;ndash;with-stream&lt;/strong&gt; 模块。幸运的是，几乎所有主流 Linux 发行版官方仓库中的 Nginx 包都&lt;strong&gt;默认编译&lt;/strong&gt;了这个模块。如果你的 Nginx 版本非常古老或来源特殊，你可能需要手动编译。可以通过 nginx -V (大写V) 命令查看编译参数，确认是否包含 ngx_stream_module。&lt;/p&gt;
+&lt;h2 id="nginx-核心配置"&gt;Nginx 核心配置
+&lt;/h2&gt;&lt;p&gt;与我们熟知的用于网站的 http 块不同，代理OSI模型四层的 TCP/UDP 流量（比如 Minecraft 的游戏数据）需要使用 stream 块。&lt;/p&gt;
+&lt;p&gt;编辑 Nginx 的主配置文件 nginx.conf：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 使用你喜欢的文本编辑器打开主配置文件&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;$ sudo nano /etc/nginx/nginx.conf
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;在文件的&lt;strong&gt;最外层&lt;/strong&gt;（与 http 块平级，&lt;strong&gt;不要&lt;/strong&gt;放在 http 块内部！）添加以下内容：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-nginx" data-lang="nginx"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# ================= Stream (TCP/UDP Proxy) Settings =================
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;stream&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# 引用一个外部的配置文件目录，让配置更整洁
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;&lt;/span&gt; &lt;span class="c1"&gt;# 这样我们就可以在 /etc/nginx/streams-available/ 目录中为每个服务创建独立的配置文件
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;&lt;/span&gt; &lt;span class="kn"&gt;include&lt;/span&gt; &lt;span class="s"&gt;/etc/nginx/streams-enabled/*&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;strong&gt;！&lt;/strong&gt; 将 stream 配置独立出来是一种非常好的工程实践。这让你的主配置文件 nginx.conf 保持干净，并且便于管理多个不同的 TCP/UDP 代理服务。&lt;/p&gt;
+&lt;p&gt;创建用于存放 stream 配置的目录：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 创建可用配置目录和启用配置目录&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;$ sudo mkdir /etc/nginx/streams-available
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;$ sudo mkdir /etc/nginx/streams-enabled
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h2 id="为你的-minecraft-服务器创建反向代理配置"&gt;为你的 Minecraft 服务器创建反向代理配置
+&lt;/h2&gt;&lt;p&gt;现在，我们将为你的 MC 服务器创建一个专属的配置文件。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 在 &amp;#39;streams-available&amp;#39; 目录下创建一个新的配置文件&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;$ sudo nano /etc/nginx/streams-available/minecraft.conf
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;在打开的空文件中，粘贴以下内容，并&lt;strong&gt;根据注释修改为你自己的信息&lt;/strong&gt;：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;span class="lnt"&gt;13
+&lt;/span&gt;&lt;span class="lnt"&gt;14
+&lt;/span&gt;&lt;span class="lnt"&gt;15
+&lt;/span&gt;&lt;span class="lnt"&gt;16
+&lt;/span&gt;&lt;span class="lnt"&gt;17
+&lt;/span&gt;&lt;span class="lnt"&gt;18
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-nginx" data-lang="nginx"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 定义一个上游服务器组，名字叫 &amp;#39;mc_backend&amp;#39;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;&lt;/span&gt;&lt;span class="k"&gt;upstream&lt;/span&gt; &lt;span class="s"&gt;mc_backend&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# 你的 Minecraft 服务器的真实内网地址和端口
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;&lt;/span&gt; &lt;span class="c1"&gt;# 如果 Nginx 和 MC 服务器在同一台机器上，就用 127.0.0.1
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;&lt;/span&gt; &lt;span class="kn"&gt;server&lt;/span&gt; &lt;span class="n"&gt;127.0.0.1&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;25565&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 定义一个服务器监听块
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;&lt;/span&gt;&lt;span class="k"&gt;server&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# 让 Nginx 监听公网的 25565 端口，准备接收玩家的连接
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;&lt;/span&gt; &lt;span class="kn"&gt;listen&lt;/span&gt; &lt;span class="mi"&gt;25565&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# 将所有接收到的流量，原封不动地转发给我们刚刚定义的 &amp;#39;mc_backend&amp;#39; 上游服务器组
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;&lt;/span&gt; &lt;span class="kn"&gt;proxy_pass&lt;/span&gt; &lt;span class="s"&gt;mc_backend&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# (可选) 开启 proxy_protocol，用于向后端传递玩家的真实 IP 地址 ➊
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;&lt;/span&gt; &lt;span class="c1"&gt;# proxy_protocol on;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;保存并退出文件 (Ctrl+X, Y, Enter)。&lt;/p&gt;
+&lt;p&gt;现在，我们需要&lt;strong&gt;启用&lt;/strong&gt;这个配置：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 创建一个从 &amp;#39;available&amp;#39; 到 &amp;#39;enabled&amp;#39; 的软链接&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 这就像在 Windows 桌面上创建一个快捷方式&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;$ sudo ln -s /etc/nginx/streams-available/minecraft.conf /etc/nginx/streams-enabled/
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;➊ proxy_protocol 是什么？&lt;br&gt;
+&lt;strong&gt;！&lt;/strong&gt; 当你使用反向代理时，你的 Minecraft 服务器看到的&lt;strong&gt;所有玩家的 IP 地址&lt;/strong&gt;都会变成 Nginx 服务器的地址（例如 127.0.0.1）。这会导致封禁 (ban) 和白名单 (whitelist) 功能失效。&lt;br&gt;
+&lt;strong&gt;！&lt;/strong&gt; 开启 proxy_protocol 后，Nginx 会在转发数据时额外附加一个头部信息，包含了玩家的&lt;strong&gt;真实 IP&lt;/strong&gt;。你需要在你的 MC 服务器端（例如 Spigot/Paper 的配置文件 spigot.yml 中设置 bungeecord: true）也开启对这个协议的支持，才能正确获取玩家 IP。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;重载 Nginx 并测试&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;- 回到你的 Nginx 服务器终端。
+- 首先，测试配置文件语法是否有误：
+```bash
+$ sudo nginx -t
+# 如果一切正常，你会看到：
+# nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+# nginx: configuration file /etc/nginx/nginx.conf test is successful
+```
+- 如果语法正确，平滑地重载 Nginx 使配置生效：
+```bash
+$ sudo systemctl reload nginx
+```
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;如果连接失败，请优先检查&lt;strong&gt;服务器的防火墙（安全组）&lt;strong&gt;是否已经&lt;/strong&gt;放行了 TCP 25565 端口&lt;/strong&gt;的入站流量。这是最常见的错误原因。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="额外使用例"&gt;额外使用例
+&lt;/h2&gt;&lt;h4 id="懒人方案"&gt;懒人方案
+&lt;/h4&gt;&lt;p&gt;正文演示的方法是非常标准的 Nginx 配置最佳实践&lt;/p&gt;
+&lt;p&gt;但如果你只需要反代一两个服务器 从效率的角度大可不必使用层级目录配置&lt;/p&gt;
+&lt;p&gt;直接在主配置文件 &lt;code&gt;nginx.conf&lt;/code&gt; 里加入以下内容就可以了&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;span class="lnt"&gt;8
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-nginx" data-lang="nginx"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;stream&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kn"&gt;server&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kn"&gt;listen&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="kn"&gt;Port}&lt;/span&gt; &lt;span class="s"&gt;[udp]&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kn"&gt;proxy_pass&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="kn"&gt;IP:Port}&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="最简实现"&gt;最简实现
+&lt;/h3&gt;&lt;p&gt;如果你甚至懒得装 Nginx 还可以用如下方法&lt;/p&gt;
+&lt;h4 id="linux-iptables"&gt;Linux: iptables
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;这是什么&lt;/strong&gt;：Linux 内核自带的防火墙和网络地址转换 (NAT) 工具。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;如何实现&lt;/strong&gt;：通过设置 PREROUTING 和 POSTROUTING 链的 NAT 规则，可以实现端口转发，达到反向代理的效果。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# 假设后端 MC 服务器的 IP 是 1.1.1.1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# 1. 开启内核 IP 转发&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; $ sudo sysctl -w net.ipv4.ip_forward&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# 2. 设置 DNAT 规则 (将所有访问本机 25565 端口的流量，目标地址改为 MC 服务器)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; $ sudo iptables -t nat -A PREROUTING -p tcp --dport &lt;span class="m"&gt;25565&lt;/span&gt; -j DNAT --to-destination 1.1.1.1:25565
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# 3. 设置 SNAT/MASQUERADE 规则 (将来自后端 MC 服务器的返回流量，源地址伪装成本机)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; $ sudo iptables -t nat -A POSTROUTING -p tcp -d 1.1.1.1 --dport &lt;span class="m"&gt;25565&lt;/span&gt; -j MASQUERADE
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h4 id="windows-netsh"&gt;Windows: netsh
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;**这是什么：Windows 系统内置的端口代理/转发命令行工具。&lt;/li&gt;
+&lt;li&gt;**如何实现：在 Windows 服务器上，一行命令即可设置。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c"&gt;# 以管理员身份运行 PowerShell 或 CMD&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c"&gt;# 将所有访问本机 IPv4 25565 端口的 TCP 流量，转发到目标服务器&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;netsh&lt;/span&gt; &lt;span class="n"&gt;interface&lt;/span&gt; &lt;span class="n"&gt;portproxy&lt;/span&gt; &lt;span class="n"&gt;add&lt;/span&gt; &lt;span class="n"&gt;v4tov4&lt;/span&gt; &lt;span class="n"&gt;listenport&lt;/span&gt;&lt;span class="p"&gt;=&lt;/span&gt;&lt;span class="mf"&gt;25565&lt;/span&gt; &lt;span class="n"&gt;listenaddress&lt;/span&gt;&lt;span class="p"&gt;=&lt;/span&gt;&lt;span class="mf"&gt;0.0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;0&lt;/span&gt; &lt;span class="n"&gt;connectport&lt;/span&gt;&lt;span class="p"&gt;=&lt;/span&gt;&lt;span class="mf"&gt;25565&lt;/span&gt; &lt;span class="n"&gt;connectaddress&lt;/span&gt;&lt;span class="p"&gt;=&lt;/span&gt;&lt;span class="mf"&gt;1.1&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;1&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="加速-hypixel"&gt;加速 Hypixel
+&lt;/h3&gt;&lt;p&gt;是的，你还可以用一条&lt;strong&gt;直连线路更优的专线&lt;/strong&gt;来反向代理 &lt;strong&gt;Hypixel 等服务器&lt;/strong&gt;， 规避普通家庭宽带国际出口的拥堵，实现类似游戏加速器的效果。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;span class="lnt"&gt;13
+&lt;/span&gt;&lt;span class="lnt"&gt;14
+&lt;/span&gt;&lt;span class="lnt"&gt;15
+&lt;/span&gt;&lt;span class="lnt"&gt;16
+&lt;/span&gt;&lt;span class="lnt"&gt;17
+&lt;/span&gt;&lt;span class="lnt"&gt;18
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;# 定义 Hypixel 的上游
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;upstream hypixel_backend {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; # 直接使用域名，Nginx 会自动解析
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; # resolver 指令是必要的，用于解析动态域名
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; resolver 8.8.8.8;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; server mc.hypixel.net:25565;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;server {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; # 监听你的 VPS 的 25565 端口
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; listen 25565;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; proxy_pass hypixel_backend;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;strong&gt;！&lt;/strong&gt; &lt;strong&gt;注意&lt;/strong&gt;：这种方法&lt;strong&gt;仅供个人或小范围朋友使用&lt;/strong&gt;。公开提供此类服务可能违反 Hypixel 的用户协议，这只是一个利用技术提升个人游戏体验的有趣实践。&lt;/p&gt;</description></item></channel></rss>
