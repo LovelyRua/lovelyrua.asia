@@ -6,7 +6,7 @@ links:
     website: https://forums.lovelyrua.asia
     image: https://forums.lovelyrua.asia/assets/favicon-zdfmsncc.png
 
-  - title: 咸鱼之家
+  - title: 闲鱼之家
     description: 一个 Minecraft 公益服务器
     website: https://www.lijianping.vip
     image: https://www.lijianping.vip/wp-content/uploads/2025/08/%E4%B8%8B%E8%BD%BD.jpg
