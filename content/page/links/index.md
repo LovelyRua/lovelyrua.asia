@@ -17,7 +17,7 @@ links:
     image: https://youke1.picui.cn/s1/2025/09/01/68b57d7c0abac.png
 
   - title: LovelyRua 的文件服务器
-    description: 我的文件站
+    description: 藏宝库
     website: https://hfs.lovelyrua.asia:81/
     image: https://youke1.picui.cn/s1/2025/09/01/68b56dd62f399.png
 
