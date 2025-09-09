@@ -173,11 +173,11 @@ $ sudo ln -s /etc/nginx/streams-available/minecraft.conf /etc/nginx/streams-enab
 ```nginx
 stream {
 
-	server {
-		listen {Port} [udp];
-	    proxy_pass {IP:Port};
+    server {
+        listen {Port} [udp];
+        proxy_pass {IP:Port};
 	}
-	
+
 }
 ```
 
