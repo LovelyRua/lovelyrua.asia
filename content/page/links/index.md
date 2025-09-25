@@ -24,7 +24,7 @@ links:
   - title: 音乐解锁
     description: 解锁各平台的加密格式音乐文件
     website: https://unlock.lovelyrua.asia/
-    image: https://github.com/ipid/unlock-music/blob/57f59543db33fa35efd368e2f86ca33c87b40203/public/img/icons/android-chrome-512x512.png
+    image: https://github.com/ipid/unlock-music/blob/57f59543db33fa35efd368e2f86ca33c87b40203/public/img/icons/android-chrome-512x512.png?raw=true
 
 menu:
     main: 
