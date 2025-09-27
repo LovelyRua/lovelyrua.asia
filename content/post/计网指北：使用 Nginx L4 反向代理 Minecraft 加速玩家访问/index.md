@@ -258,16 +258,16 @@ server {
 
 雨云提供的社区应用商店功能还很大程度上简化了传统安装部署的人力和时间消费
 
-![[Pasted image 20250926143228.png]](https://pic.lovelyrua.asia:81/api/assets/5335f4ce-f8f5-4e25-a4cb-6f654999e91d/original)
+![[Pasted image 20250926143228.png]](https://pic.lovelyrua.asia:81/api/assets/5335f4ce-f8f5-4e25-a4cb-6f654999e91d/original?key=IYz7LMuntz9bMrdmgVMKTyHJMWIK4DUzkkOSjAErkiA3UL_hxjcg2zhSCabSWWEuF1Y)
 
 接下来我会逐步演示如何通过雨云云应用部署 L4 反向代理服务
 
-![[Pasted image 20250926143439.png]](https://pic.lovelyrua.asia:81/api/assets/a15d515d-bee3-4658-9b4e-62159d9fda35/original)
+![[Pasted image 20250926143439.png]](https://pic.lovelyrua.asia:81/api/assets/a15d515d-bee3-4658-9b4e-62159d9fda35/original?key=IYz7LMuntz9bMrdmgVMKTyHJMWIK4DUzkkOSjAErkiA3UL_hxjcg2zhSCabSWWEuF1Y)
 
 首先在应用商店界面找到需要安装的应用 这里可以使用 Nginx Proxy Manager
 
-![[Pasted image 20250926143559.png]](https://pic.lovelyrua.asia:81/api/assets/04868b2c-052c-4abe-9398-7b5d93adfdce/original)
-![[Pasted image 20250926143614.png]](https://pic.lovelyrua.asia:81/api/assets/03a4eb2f-5983-4ef7-aa0e-35df67d6b770/original)
+![[Pasted image 20250926143559.png]](https://pic.lovelyrua.asia:81/api/assets/04868b2c-052c-4abe-9398-7b5d93adfdce/original?key=IYz7LMuntz9bMrdmgVMKTyHJMWIK4DUzkkOSjAErkiA3UL_hxjcg2zhSCabSWWEuF1Y)
+![[Pasted image 20250926143614.png]](https://pic.lovelyrua.asia:81/api/assets/03a4eb2f-5983-4ef7-aa0e-35df67d6b770/original?key=IYz7LMuntz9bMrdmgVMKTyHJMWIK4DUzkkOSjAErkiA3UL_hxjcg2zhSCabSWWEuF1Y)
 
 这里的端口填写不用担心 稍后都可以进行修改
 
@@ -275,13 +275,13 @@ server {
 
 几秒内应用就会自动完成部署并启动
 
-![[Pasted image 20250926143643.png]](https://pic.lovelyrua.asia:81/api/assets/b2bdbc52-002c-4662-930a-bb64898247ed/original)
+![[Pasted image 20250926143643.png]](https://pic.lovelyrua.asia:81/api/assets/b2bdbc52-002c-4662-930a-bb64898247ed/original?key=IYz7LMuntz9bMrdmgVMKTyHJMWIK4DUzkkOSjAErkiA3UL_hxjcg2zhSCabSWWEuF1Y)
 
 安装完成后 我们需要调整容器应用对外暴露的端口
 
 在 `我的项目 - 应用管理 - 应用 - 服务` 页面可以对应用进行端口的配置
 
-![[Pasted image 20250926143807.png]](https://pic.lovelyrua.asia:81/api/assets/bf6d5996-c707-4f50-a65a-35f68b2385db/original)
+![[Pasted image 20250926143807.png]](https://pic.lovelyrua.asia:81/api/assets/bf6d5996-c707-4f50-a65a-35f68b2385db/original?key=IYz7LMuntz9bMrdmgVMKTyHJMWIK4DUzkkOSjAErkiA3UL_hxjcg2zhSCabSWWEuF1Y)
 
 Nginx Proxy Manager 默认会暴露 WebUI 控制台的端口和 HTTP & HTTPS 的端口
 
@@ -291,7 +291,7 @@ Nginx Proxy Manager 默认会暴露 WebUI 控制台的端口和 HTTP & HTTPS 的
 
 如这里设置 25565:8500 就意味着稍后我们需要将反向代理监听在 :25565 并使用端口8500 访问雨云提供的 IP 就可以连接到我们的服务器
 
-![[Pasted image 20250926143933.png]](https://pic.lovelyrua.asia:81/api/assets/d340be74-0862-49fb-acd5-d8b94500ba17/original)
+![[Pasted image 20250926143933.png]](https://pic.lovelyrua.asia:81/api/assets/d340be74-0862-49fb-acd5-d8b94500ba17/original?key=IYz7LMuntz9bMrdmgVMKTyHJMWIK4DUzkkOSjAErkiA3UL_hxjcg2zhSCabSWWEuF1Y)
 
 (容器内部我们让 Nginx 监听 25565 端口，然后雨云平台将这个内部端口映射到公网 IP 的 8500 端口上)
 
@@ -301,13 +301,13 @@ Nginx Proxy Manager 默认会暴露 WebUI 控制台的端口和 HTTP & HTTPS 的
 
 如有独立公网 IP 的需求 可以在`我的项目 - 设置 - IP 地址管理`添加独立 IP 地址(会产生相应费用)
 
-![[Pasted image 20250926150719.png]](https://pic.lovelyrua.asia:81/api/assets/49d4b406-dc22-4b43-afaf-0c4d107bd059/original)
+![[Pasted image 20250926150719.png]](https://pic.lovelyrua.asia:81/api/assets/49d4b406-dc22-4b43-afaf-0c4d107bd059/original?key=IYz7LMuntz9bMrdmgVMKTyHJMWIK4DUzkkOSjAErkiA3UL_hxjcg2zhSCabSWWEuF1Y)
 
 后台的地址是在服务界面看到的公网 IP 地址加控制台服务的外部端口
 
 比如在这里就是 `http://110.42.111.57:41998`
 
-![[Pasted image 20250926151255.png]](https://pic.lovelyrua.asia:81/api/assets/343aee91-ea9d-472b-ba47-012c4e518b77/original)
+![[Pasted image 20250926151255.png]](https://pic.lovelyrua.asia:81/api/assets/343aee91-ea9d-472b-ba47-012c4e518b77/original?key=IYz7LMuntz9bMrdmgVMKTyHJMWIK4DUzkkOSjAErkiA3UL_hxjcg2zhSCabSWWEuF1Y)
 
 默认账户密码是
 
@@ -319,9 +319,9 @@ changeme
 
 要创建四层代理 我们需要到 Streams 配置页面 点击右上角的 Add Stream
 
-![[Pasted image 20250926151740.png]](https://pic.lovelyrua.asia:81/api/assets/eb01e70a-c339-4c76-ac6b-319212920bba/original)
-![[Pasted image 20250926151810.png]](https://pic.lovelyrua.asia:81/api/assets/89105190-758c-4c65-9e41-c386fdf77fb3/original)
-![[Pasted image 20250926151846.png]](https://pic.lovelyrua.asia:81/api/assets/4e617f1b-199f-4207-926c-f37184f2a467/original)
+![[Pasted image 20250926151740.png]](https://pic.lovelyrua.asia:81/api/assets/eb01e70a-c339-4c76-ac6b-319212920bba/original?key=IYz7LMuntz9bMrdmgVMKTyHJMWIK4DUzkkOSjAErkiA3UL_hxjcg2zhSCabSWWEuF1Y)
+![[Pasted image 20250926151810.png]](https://pic.lovelyrua.asia:81/api/assets/89105190-758c-4c65-9e41-c386fdf77fb3/original?key=IYz7LMuntz9bMrdmgVMKTyHJMWIK4DUzkkOSjAErkiA3UL_hxjcg2zhSCabSWWEuF1Y)
+![[Pasted image 20250926151846.png]](https://pic.lovelyrua.asia:81/api/assets/4e617f1b-199f-4207-926c-f37184f2a467/original?key=IYz7LMuntz9bMrdmgVMKTyHJMWIK4DUzkkOSjAErkiA3UL_hxjcg2zhSCabSWWEuF1Y)
 
 这里的 Incoming Port 需要填写对应我们刚刚在雨云防火墙设置的 **内部端口**
 
@@ -343,12 +343,12 @@ Forward Host&Port 填写的是被代理的服务的主机名或 IP 地址
 
 按量计费的流量每百GB也只要5元左右
 
-![[Pasted image 20250926155848.png]](https://pic.lovelyrua.asia:81/api/assets/4d51d745-86b8-4c35-9861-167cfffaddd8/original)
-![[Pasted image 20250926160825.png]](https://pic.lovelyrua.asia:81/api/assets/0aa28780-1c57-4ba3-ae65-737e0904cc85/original)
+![[Pasted image 20250926155848.png]](https://pic.lovelyrua.asia:81/api/assets/4d51d745-86b8-4c35-9861-167cfffaddd8/original?key=IYz7LMuntz9bMrdmgVMKTyHJMWIK4DUzkkOSjAErkiA3UL_hxjcg2zhSCabSWWEuF1Y)
+![[Pasted image 20250926160825.png]](https://pic.lovelyrua.asia:81/api/assets/0aa28780-1c57-4ba3-ae65-737e0904cc85/original?key=IYz7LMuntz9bMrdmgVMKTyHJMWIK4DUzkkOSjAErkiA3UL_hxjcg2zhSCabSWWEuF1Y)
 
 ##### 补充：雨云机房反代前后延迟
 
-![[a1d52736-c142-40bd-8053-5176d526dce3.png]](https://pic.lovelyrua.asia:81/api/assets/7d78ac9c-556f-48f6-982b-44e0822239d4/original)
-![[2aeca52f-24ae-4283-9d56-5dc2818a3d89.png]](https://pic.lovelyrua.asia:81/api/assets/418f26e7-fb4d-4519-b0d0-a6e1b5dde3fc/original)
+![[a1d52736-c142-40bd-8053-5176d526dce3.png]](https://pic.lovelyrua.asia:81/api/assets/7d78ac9c-556f-48f6-982b-44e0822239d4/original?key=IYz7LMuntz9bMrdmgVMKTyHJMWIK4DUzkkOSjAErkiA3UL_hxjcg2zhSCabSWWEuF1Y)
+![[2aeca52f-24ae-4283-9d56-5dc2818a3d89.png]](https://pic.lovelyrua.asia:81/api/assets/418f26e7-fb4d-4519-b0d0-a6e1b5dde3fc/original?key=IYz7LMuntz9bMrdmgVMKTyHJMWIK4DUzkkOSjAErkiA3UL_hxjcg2zhSCabSWWEuF1Y)
 
 虽然直观数据差别不大 但是对于本身网络环境不佳的用户来说三线优化线路会带来质的飞跃
