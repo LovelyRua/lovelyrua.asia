@@ -249,9 +249,13 @@ server {
 ### 推荐：雨云云应用
 
 对于这种需求 使用一台完整的VPS/ECS主机实际产生了不小的资源及成本浪费
+
 在此强烈推荐使用的方案：雨云云应用
+
 这是一种以单个容器为最小单位的弹性极高的云服务
+
 使用云应用 我们可以节省相比ECS十倍甚至九倍的成本
+
 雨云提供的社区应用商店功能还很大程度上简化了传统安装部署的人力和时间消费
 
 ![[Pasted image 20250926143228.png]](https://pic.lovelyrua.asia:81/api/assets/5335f4ce-f8f5-4e25-a4cb-6f654999e91d/original)
@@ -266,20 +270,25 @@ server {
 ![[Pasted image 20250926143614.png]](https://pic.lovelyrua.asia:81/api/assets/03a4eb2f-5983-4ef7-aa0e-35df67d6b770/original)
 
 这里的端口填写不用担心 稍后都可以进行修改
+
 点击安装应用之后就可以看到 Nginx Proxy Manager 已经出现在应用管理界面里
+
 几秒内应用就会自动完成部署并启动
 
 ![[Pasted image 20250926143643.png]](https://pic.lovelyrua.asia:81/api/assets/b2bdbc52-002c-4662-930a-bb64898247ed/original)
 
 安装完成后 我们需要调整容器应用对外暴露的端口
+
 在 `我的项目 - 应用管理 - 应用 - 服务` 页面可以对应用进行端口的配置
 
 ![[Pasted image 20250926143807.png]](https://pic.lovelyrua.asia:81/api/assets/bf6d5996-c707-4f50-a65a-35f68b2385db/original)
 
 Nginx Proxy Manager 默认会暴露 WebUI 控制台的端口和 HTTP & HTTPS 的端口
+
 由于这里我们是进行 MC 服务器的反代 可以直接将用不到的 80 和 443 端口 修改成自己需要的端口（这一步骤可按照个人喜好自行配置）
 
 端口映射输入框中前一个框代表容器本身监听的内部端口 后一个框表示实际暴露到外部访问 IP 的端口
+
 如这里设置 25565:8500 就意味着稍后我们需要将反向代理监听在 :25565 并使用端口8500 访问雨云提供的 IP 就可以连接到我们的服务器
 
 ![[Pasted image 20250926143933.png]](https://pic.lovelyrua.asia:81/api/assets/d340be74-0862-49fb-acd5-d8b94500ba17/original)
@@ -288,17 +297,21 @@ Nginx Proxy Manager 默认会暴露 WebUI 控制台的端口和 HTTP & HTTPS 的
 接下来访问 Nginx Proxy Manager 的 WebUI 控制台来进行反向代理的实际配置
 
 默认的公网地址是从集群共享 IP 中随机分配的
+
 如有独立公网 IP 的需求 可以在`我的项目 - 设置 - IP 地址管理`添加独立 IP 地址(会产生相应费用)
 
 ![[Pasted image 20250926150719.png]](https://pic.lovelyrua.asia:81/api/assets/49d4b406-dc22-4b43-afaf-0c4d107bd059/original)
 
 后台的地址是在服务界面看到的公网 IP 地址加控制台服务的外部端口
+
 比如在这里就是 `http://110.42.111.57:41998`
 
 ![[Pasted image 20250926151255.png]](https://pic.lovelyrua.asia:81/api/assets/343aee91-ea9d-472b-ba47-012c4e518b77/original)
 
 默认账户密码是
+
 admin@example.com
+
 changeme
 
 第一次登录之后先跟随指引修改管理员账户密码
@@ -310,9 +323,11 @@ changeme
 ![[Pasted image 20250926151846.png]](https://pic.lovelyrua.asia:81/api/assets/4e617f1b-199f-4207-926c-f37184f2a467/original)
 
 这里的 Incoming Port 需要填写对应我们刚刚在雨云防火墙设置的 **内部端口**
+
 刚才的演示中我们填写了 25565 故此处需要填 25565
 
 Forward Host&Port 填写的是被代理的服务的主机名或 IP 地址
+
 比如被代理的是 mc.lovelyrua.asia:25566 这里就填写 mc.lovelyrua.asia 和 25566
 
 如果如上步骤无误 保存之后访问`110.42.111.57:8500`就可以访问到经过代理后的服务了
@@ -320,8 +335,11 @@ Forward Host&Port 填写的是被代理的服务的主机名或 IP 地址
 如果要代理多个服务器 通过一样的步骤开放端口并添加代理配置即可
 
 看完本文内容应该也已经对雨云云应用的使用有了一定了解
+
 最后分享一下自己使用一段时间的费用
+
 我个人轻度使用下来 每星期成本仅五元 且共享网络的弹性带宽空间上限也更大
+
 按量计费的流量每百GB也只要5元左右
 
 ![[Pasted image 20250926155848.png]](https://pic.lovelyrua.asia:81/api/assets/4d51d745-86b8-4c35-9861-167cfffaddd8/original)
