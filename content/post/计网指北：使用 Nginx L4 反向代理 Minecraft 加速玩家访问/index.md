@@ -329,7 +329,7 @@ changeme
 
 Forward Host&Port 填写的是被代理的服务的主机名或 IP 地址
 
-比如被代理的是 mc.lovelyrua.asia:25566 这里就填写 mc.lovelyrua.asia 和 25566
+比如被代理的是 `mc.lovelyrua.asia:25566` 这里就填写 `mc.lovelyrua.asia` 和 `25566`
 
 如果如上步骤无误 保存之后访问`110.42.111.57:8500`就可以访问到经过代理后的服务了
 
