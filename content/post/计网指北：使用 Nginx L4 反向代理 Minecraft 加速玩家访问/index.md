@@ -292,6 +292,7 @@ Nginx Proxy Manager 默认会暴露 WebUI 控制台的端口和 HTTP & HTTPS 的
 如这里设置 25565:8500 就意味着稍后我们需要将反向代理监听在 :25565 并使用端口8500 访问雨云提供的 IP 就可以连接到我们的服务器
 
 ![[Pasted image 20250926143933.png]](https://pic.lovelyrua.asia:81/api/assets/d340be74-0862-49fb-acd5-d8b94500ba17/original)
+
 (容器内部我们让 Nginx 监听 25565 端口，然后雨云平台将这个内部端口映射到公网 IP 的 8500 端口上)
 
 接下来访问 Nginx Proxy Manager 的 WebUI 控制台来进行反向代理的实际配置
@@ -349,4 +350,5 @@ Forward Host&Port 填写的是被代理的服务的主机名或 IP 地址
 
 ![[a1d52736-c142-40bd-8053-5176d526dce3.png]](https://pic.lovelyrua.asia:81/api/assets/7d78ac9c-556f-48f6-982b-44e0822239d4/original)
 ![[2aeca52f-24ae-4283-9d56-5dc2818a3d89.png]](https://pic.lovelyrua.asia:81/api/assets/418f26e7-fb4d-4519-b0d0-a6e1b5dde3fc/original)
+
 虽然直观数据差别不大 但是对于本身网络环境不佳的用户来说三线优化线路会带来质的飞跃
