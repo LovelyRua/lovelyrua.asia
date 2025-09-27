@@ -1,0 +1,213 @@
+<!doctype html><html lang=en-us dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content="保姆级指南 Hexo + GitHub Pages 搭建静态博客"><title>保姆级指南 Hexo + GitHub Pages 搭建静态博客</title><link rel=canonical href=https://www.lovelyrua.asia/p/%E4%BF%9D%E5%A7%86%E7%BA%A7%E6%8C%87%E5%8D%97-hexo--github-pages-%E6%90%AD%E5%BB%BA%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2/><link rel=stylesheet href=/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css><meta property='og:title' content="保姆级指南 Hexo + GitHub Pages 搭建静态博客"><meta property='og:description' content="保姆级指南 Hexo + GitHub Pages 搭建静态博客"><meta property='og:url' content='https://www.lovelyrua.asia/p/%E4%BF%9D%E5%A7%86%E7%BA%A7%E6%8C%87%E5%8D%97-hexo--github-pages-%E6%90%AD%E5%BB%BA%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2/'><meta property='og:site_name' content="LovelyRua's Blog"><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:tag' content='Blog'><meta property='article:tag' content='Pages'><meta property='article:tag' content='Hexo'><meta property='article:published_time' content='2025-04-09T22:22:22+08:00'><meta property='article:modified_time' content='2025-04-09T22:22:22+08:00'><meta name=twitter:title content="保姆级指南 Hexo + GitHub Pages 搭建静态博客"><meta name=twitter:description content="保姆级指南 Hexo + GitHub Pages 搭建静态博客"><link rel="shortcut icon" href=/favicon.png></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar_hu_36986de6203a4a6f.png width=300 height=300 class=site-logo loading=lazy alt=Avatar>
+</a><span class=emoji>🗿</span></figure><div class=site-meta><h1 class=site-name><a href=/>LovelyRua's Blog</a></h1><h2 class=site-description>不可解な私たちはきっと同じ、もう何も怖くはないさ。</h2></div></header><ol class=menu-social><li><a href=https://space.bilibili.com/419743801 target=_blank title=Bilibili rel=me><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-bilibili"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 10a4 4 0 014-4h10a4 4 0 014 4v6a4 4 0 01-4 4H7a4 4 0 01-4-4v-6z"/><path d="M8 3l2 3"/><path d="M16 3l-2 3"/><path d="M9 13v-2"/><path d="M15 11v2"/></svg></a></li><li><a href=https://discord.gg/ZK5x72Rfzq target=_blank title=Discord rel=me><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-discord"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 12a1 1 0 102 0 1 1 0 00-2 0"/><path d="M14 12a1 1 0 102 0 1 1 0 00-2 0"/><path d="M15.5 17c0 1 1.5 3 2 3 1.5.0 2.833-1.667 3.5-3 .667-1.667.5-5.833-1.5-11.5-1.457-1.015-3-1.34-4.5-1.5l-.972 1.923a11.913 11.913.0 00-4.053.0L9 4c-1.5.16-3.043.485-4.5 1.5-2 5.667-2.167 9.833-1.5 11.5.667 1.333 2 3 3.5 3 .5.0 2-2 2-3"/><path d="M7 16.5c3.5 1 6.5 1 10 0"/></svg></a></li><li><a href=mailto:lovelyrua@lovelyrua.asia target=_blank title=Email rel=me><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-mail"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 7a2 2 0 012-2h14a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/><path d="M3 7l9 6 9-6"/></svg></a></li><li><a href=https://t.me/LovelyRua target=_blank title=Telegram rel=me><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-telegram"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M15 10l-4 4 6 6 4-16-18 7 4 2 2 6 3-4"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>Home</span></a></li><li><a href=/archives/><svg class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+<span>Archives</span></a></li><li><a href=/search/><svg class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg>
+<span>Search</span></a></li><li><a href=/links/><svg class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M10 14a3.5 3.5.0 005 0l4-4a3.5 3.5.0 00-5-5l-.5.5"/><path d="M14 10a3.5 3.5.0 00-5 0l-4 4a3.5 3.5.0 005 5l.5-.5"/></svg>
+<span>Links</span></a></li><li class=menu-bottom-section><ol class=menu><li id=dark-mode-toggle><svg class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<svg class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<span>暗色模式</span></li></ol></li></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">目录</h2><div class=widget--toc><nav id=TableOfContents><ol><li><ol><li><a href=#前言><code>##</code>前言<code>##</code></a></li><li><a href=#_0-准备工作>✨>_0 准备工作</a><ol><li><a href=#创建-github-pages-仓库>创建 Github Pages 仓库</a></li></ol></li></ol></li><li><a href=#安装-hexo>安装 Hexo</a></li><li><a href=#创建第一篇文章>创建第一篇文章</a><ol><li><ol><li><a href=#使用命令创建新文章>使用命令创建新文章:</a></li><li><a href=#编辑文章内容>编辑文章内容:</a></li><li><a href=#本地预览>本地预览:</a></li></ol></li></ol></li><li><a href=#将-hexo-部署到-github>将 Hexo 部署到 GitHub</a><ol><li><ol><li><a href=#安装-git-部署插件>安装 Git 部署插件:</a></li><li><a href=#配置-_configyml>配置 _config.yml:</a></li></ol></li><li><a href=#-恭喜你>🎉 恭喜你!</a></li></ol></li><li><a href=#通过-cloudflare-cdn-加速国内访问>通过 Cloudflare CDN 加速国内访问</a></li></ol></nav></div></section></aside><main class="main full-width"><article class=main-article><header class=article-header><div class=article-details><header class=article-category><a href=/categories/it-techs/>IT-Techs</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/p/%E4%BF%9D%E5%A7%86%E7%BA%A7%E6%8C%87%E5%8D%97-hexo--github-pages-%E6%90%AD%E5%BB%BA%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2/>保姆级指南 Hexo + GitHub Pages 搭建静态博客</a></h2><h3 class=article-subtitle>保姆级指南 Hexo + GitHub Pages 搭建静态博客</h3></div><footer class=article-time><div><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<time class=article-time--published>Apr 09, 2025</time></div><div><svg class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>阅读时长: 6 分钟</time></div></footer></div></header><section class=article-content><blockquote><p>》》 将心比心，换位思考；务实求索，无限进步 《《</p></blockquote><h3 id=前言><code>##</code>前言<code>##</code></h3><p><strong>本文将基于实操使用 Hexo 静态博客框架, 并借助 GitHub Pages 和 Cloudflare CDN 服务, 搭建一个无需租用服务器, 无需支付任何费用即可访问的高性能个人博客站点. 本文旨在帮助读者了解以下内容:</strong></p><ul><li><a class=link href=https://baike.baidu.com/item/%E9%9D%99%E6%80%81%E7%BD%91%E7%AB%99/2776875 target=_blank rel=noopener>静态网站</a>的基本原理</li><li><a class=link href=https://pages.github.com/ target=_blank rel=noopener>GitHub Pages</a> 的使用</li><li><a class=link href=https://zh.wikipedia.org/zh-cn/%E5%85%A7%E5%AE%B9%E5%82%B3%E9%81%9E%E7%B6%B2%E8%B7%AF target=_blank rel=noopener>CDN</a> 加速的优势</li><li><a class=link href=https://zh.wikipedia.org/wiki/Node.js target=_blank rel=noopener>Node.js</a> 基础操作</li></ul><hr><h3 id=_0-准备工作>✨>_0 准备工作</h3><p><strong>在开始之前, 请确保您的计算机已安装以下环境：</strong></p><ul><li><strong>Node.js 环境</strong> (<a class=link href=https://nodejs.org/ target=_blank rel=noopener>官方下载地址</a>) : Hexo 基于 Node.js 运行, 您需要安装 Node.js.</li><li><strong>Git</strong> (<a class=link href=https://git-scm.com/downloads target=_blank rel=noopener>官方下载地址</a>) : 用于将博客部署到 GitHub.</li><li><strong>GitHub 账号</strong> (<a class=link href=https://github.com/join target=_blank rel=noopener>注册地址</a>) : 用于存储博客部署后的静态文件.</li></ul><p>可选 :</p><ul><li>自己的 <strong>域名</strong> 和 <strong>Cloudflare 账号</strong>, 用于后续配置 Cloudflare CDN 及个性化域名.</li></ul><h4 id=创建-github-pages-仓库>创建 Github Pages 仓库</h4><p>登录你的 Github 账号并访问:
+<a class=link href=https://github.com/new target=_blank rel=noopener>https://github.com/new</a></p><p>在 <strong>Repository name</strong> 一框填入: <strong>{你的用户名}.github.io</strong> . 如 <strong><code>lovelyrua.github.io</code></strong>
+点击 右下角绿色按钮 <strong><code>Create Repository</code></strong></p><p>接下来便可跟随本文步骤指引搭建你的博客</p><hr><h2 id=安装-hexo>安装 Hexo</h2><blockquote><p>本步骤参考 (<a class=link href=https://hexo.io/zh-cn/docs/setup target=_blank rel=noopener>Hexo官方文档 - 建站</a>)</p></blockquote><p>选择一个合适目录储存项目, 这里创建一个 <code>hexo-blog</code> 文件夹为例:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>  <span class=c1># 创建并进入项目目录; `&amp;&amp;` 表示前一个命令成功执行后执行后一个命令</span>
+</span></span><span class=line><span class=cl>  $ mkdir hexo-blog <span class=o>&amp;&amp;</span> <span class=nb>cd</span> hexo-blog
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=c1># 在当前目录下使用 nodejs 提供的包管理工具 `npm` 来安装 hexo 命令行工具 (hexo-cli).</span>
+</span></span><span class=line><span class=cl>  <span class=c1># 如果想要在任何目录下都能直接使用 `hexo` 命令, 可以使用 `npm install hexo-cli -g` 进行全局安装 ➊</span>
+</span></span><span class=line><span class=cl>  $ npm install hexo-cli
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=c1># 初始化 hexo 项目 &#39;blog&#39;, hexo 会在当前目录下创建文件夹并从 github 拉取模板.</span>
+</span></span><span class=line><span class=cl>  <span class=c1># `npx` 是 npm 自带的包执行工具, 它会查找本地 &#39;node_modules/.bin&#39; 中的命令</span>
+</span></span><span class=line><span class=cl>  <span class=c1># 如果上一步骤进行了全局安装, 这里就可以直接执行 `hexo init blog`</span>
+</span></span><span class=line><span class=cl>  $ npx hexo init blog <span class=o>&amp;&amp;</span> <span class=nb>cd</span> blog
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=c1># 安装项目依赖. 此命令会根据目录下的 &#39;package.json&#39; 文件中 &#34;dependencies&#34; 字块安装所需依赖</span>
+</span></span><span class=line><span class=cl>  $ npm install
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=c1># 启动 hexo 测试服务端</span>
+</span></span><span class=line><span class=cl>  $ npx hexo server
+</span></span><span class=line><span class=cl>  <span class=c1># `server` 也可直接缩写成 `s`</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=c1># 以上操作若过程无误 控制台会输出:</span>
+</span></span><span class=line><span class=cl>  <span class=c1># `INFO  Hexo is running at http://localhost:4000/ .`</span>
+</span></span></code></pre></td></tr></table></div></div><p>此时在浏览器访问 http://localhost:4000/ 即可看到 hexo 的初始主题页面.</p><p><em><strong>如果启动或后续步骤出现类似</strong> <code>Error: Cannot find module 'xxx'</code> 的报错, 说明依赖安装不完整
+用 <code>npm install {报错提示缺少的依赖}</code> 命令<strong>补充安装依赖即可</strong>;
+若还是无法解决 可以尝试删除 node_modules 文件夹和 package-lock.json 文件后重新运行 <code>npm install</code></em></p><p>➊ 全局安装:</p><blockquote><p>! 当使用 <code>-g</code> 参数全局安装一个包时, npm 会将可执行文件链接到系统的 PATH 环境变量所包含的目录中 (如 Node.js 安装目录), 这样系统就能在任何位置识别 hexo 命令.
+! 如果全局安装后命令仍不可用, 可能需要重启终端或检查系统 PATH 环境变量配置.</p></blockquote><hr><h2 id=创建第一篇文章>创建第一篇文章</h2><p><strong>作为一个静态博客框架, Hexo 不像 WordPress, QQ空间 或 新浪微博 那样提供在线编辑器让你随时随地编辑发布
+它的工作流程更接近于开发者编写代码: <code>在本地创建文件</code> - <code>编辑内容</code> - <code>然后通过命令生成最终的网页文件并部署</code></strong></p><blockquote><p>本步骤参考 (<a class=link href=https://hexo.io/zh-cn/docs/writing target=_blank rel=noopener>Hexo官方文档 - 写作</a>)</p></blockquote><h4 id=使用命令创建新文章>使用命令创建新文章:</h4><p>确保终端位于 Hexo 项目的根目录 (即 <code>blog</code> 文件夹内). 然后执行以下命令:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>  $ npx hexo new post <span class=s2>&#34;我的第一篇文章&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=c1># `new` 是创建命令, &#39;post&#39; 是文章的布局 (layout), &#34;我的第一篇文章&#34; 是文章标题</span>
+</span></span><span class=line><span class=cl>  <span class=c1># 如果标题包含空格, 最好用引号括起来</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=c1># 控制台会输出类似信息:</span>
+</span></span><span class=line><span class=cl>  <span class=c1># INFO  Created: ~/your/path/to/hexo-blog/blog/source/_posts/我的第一篇文章.md</span>
+</span></span></code></pre></td></tr></table></div></div><blockquote><p>! 这个命令会在 source/_posts/ 目录下创建一个名为 &ldquo;我的第一篇文章.md&rdquo; 的 Markdown 文件.
+! <code>post</code> 是 Hexo 默认的文章布局, 你也可以创建其他布局 (如 <code>draft</code> 草稿, <code>page</code> 独立页面等).</p></blockquote><h4 id=编辑文章内容>编辑文章内容:</h4><p>使用你喜欢的文本编辑器 (如 <code>VS Code</code>, <code>Sublime Text</code>, <code>Obsidian</code> 等) 打开刚刚创建的 .md 文件
+你会看到文件顶部有一段由 <code>---</code> 包裹的内容, 这叫做 <em>Front-matter</em>, 用于定义这篇文章的元数据:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-md data-lang=md><span class=line><span class=cl>---
+</span></span><span class=line><span class=cl>layout: post  # 文章布局, 自动根据命令生成
+</span></span><span class=line><span class=cl>title: 我的第一篇文章  # 文章标题, 自动根据命令生成
+</span></span><span class=line><span class=cl>date: 2025-04-09 20:15:00  # 文章创建时间, 自动生成
+</span></span><span class=line><span class=cl>tags: [hello, markdown]  # 文章标签, 可以自行添加
+</span></span><span class=line><span class=cl>---
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=gh># 这里是正文的开始
+</span></span></span><span class=line><span class=cl><span class=gh></span>欢迎来到我的新博客!
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>这是我的第一篇文章，使用 <span class=gs>**Markdown**</span> 语法编写。
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>*</span>   列表项1
+</span></span><span class=line><span class=cl><span class=k>*</span>   列表项2
+</span></span></code></pre></td></tr></table></div></div><p>你可以在 &mdash; 下方开始使用 <a class=link href=https://zh.wikipedia.org/wiki/Markdown target=_blank rel=noopener>Markdown</a> 语法编写你的文章正文
+可以修改 title, 添加 tags (多个标签用逗号分隔或使用 YAML 列表格式). date 通常保持自动生成的时间即可.</p><h4 id=本地预览>本地预览:</h4><p>编辑并保存好文章后回到终端 如果之前的 hexo server 还在运行, 可以先按 Ctrl+C 停止. 然后重新启动服务器进行预览：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 清理之前构建的文件 (可选, 但修改配置或主题后需要执行)</span>
+</span></span><span class=line><span class=cl>npx hexo clean
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 生成静态文件 (可选, server 命令通常会自动处理)</span>
+</span></span><span class=line><span class=cl>npx hexo generate
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 启动本地服务器</span>
+</span></span><span class=line><span class=cl>npx hexo server
+</span></span></code></pre></td></tr></table></div></div><p>刷新浏览器中的 http://localhost:4000/, 你应该能在首页看到你新创建的文章 &ldquo;我的第一篇文章&rdquo; 的摘要或标题, 点击即可进入阅读.</p><p><em><strong>本节涉及的命令及其缩写:</strong></em></p><blockquote><p>! npm i == npm install
+! hexo n == hexo new
+! hexo g == hexo generate
+! hexo s == hexo server
+! hexo d == hexo deploy
+! hexo clean (无缩写)</p></blockquote><hr><h2 id=将-hexo-部署到-github>将 Hexo 部署到 GitHub</h2><p>现在你已经在本地创建并预览了你的第一篇文章. 下一步就是将博客发布到互联网上, 让其他人也能访问.</p><p><strong>静态博客的优势在于, 生成的网站文件无需复杂的服务器端处理;
+只要将这些文件托管在任何可公开访问的 Web 服务器上, 站点就能运行.</strong></p><p>GitHub Pages 提供了一个免费的静态网站托管服务, 非常适合部署 Hexo 生成的静态博客.
+Hexo 提供了一键部署功能, 可以方便地将生成的静态文件推送到指定的 Git 仓库.
+在此将演示 Hexo 提供的一键部署功能</p><blockquote><p>本步骤参考 (<a class=link href=https://hexo.io/docs/one-command-deployment target=_blank rel=noopener>Hexo官方文档 - 一键部署</a>)</p></blockquote><h4 id=安装-git-部署插件>安装 Git 部署插件:</h4><p>要使用一键部署, 首先需要根据自己要部署到的平台安装对应的 deployer 插件
+安装针对 GitHub (或其他 Git 仓库) 的部署插件 <code>hexo-deployer-git</code>:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>  $ npm install hexo-deployer-git
+</span></span></code></pre></td></tr></table></div></div><h4 id=配置-_configyml>配置 _config.yml:</h4><p>在部署前需要编辑 Hexo 项目的设置
+在 <code>_config.yml</code>内填入必要的信息:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-mysql data-lang=mysql><span class=line><span class=cl><span class=c1># 找到文件末尾的 `deploy` 配置项 
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=w>  </span><span class=n>deploy</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>     </span><span class=n>type</span><span class=p>:</span><span class=w> </span><span class=n>git</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>     </span><span class=n>repo</span><span class=p>:</span><span class=w> </span><span class=n>https</span><span class=p>:</span><span class=o>//</span><span class=n>github</span><span class=p>.</span><span class=n>com</span><span class=o>/</span><span class=err>用户名</span><span class=o>/</span><span class=err>用户名</span><span class=p>.</span><span class=n>github</span><span class=p>.</span><span class=n>io</span><span class=p>.</span><span class=n>git</span><span class=w>  </span><span class=c1># 修改仓库地址
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=w>     </span><span class=c1># ！！极其重要：替换成你自己的仓库地址！！
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=w>     </span><span class=c1># 例如: https://github.com/LovelyRua/lovelyrua.github.io.git
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=w>     </span><span class=n>branch</span><span class=p>:</span><span class=w> </span><span class=n>main</span><span class=w>  </span><span class=c1># GitHub Pages 仓库默认分支名
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=w>     </span><span class=c1># message: &#34;Site updated: {{ now(&#39;YYYY-MM-DD HH:mm:ss&#39;) }}&#34;  # 可选, 自定义 commit 信息
+</span></span></span></code></pre></td></tr></table></div></div><blockquote><p>! type: 一键部署方式的类型, 这里必须是 git
+!
+! repo: 务必替换成你自己的 GitHub Pages 仓库地址. 这个仓库通常命名为 <code>{你的GitHub用户名}.github.io</code>. 可以使用 HTTPS 或 SSH 格式的地址.
+!
+! branch: 指定要将静态文件推送到哪个分支. 对于 <code>用户名.github.io</code> 这种仓库, 通常是 <code>main</code> 或 <code>master</code> 分支作为 GitHub Pages 的源. 具体依赖于你的仓库设置.</p></blockquote><p>保存文件后 执行部署命令</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>  $ npx hexo deploy
+</span></span><span class=line><span class=cl>  # 这个命令会先执行 `hexo generate` (生成静态文件到 public 目录)
+</span></span><span class=line><span class=cl>  # 然后将 public 目录的内容推送到你配置的 repo 和 branch。
+</span></span></code></pre></td></tr></table></div></div><p><strong>首次部署可能遇到的情况:</strong></p><p><strong>Git 身份未配置</strong>: 如果你之前没有在本机配置过 Git 的用户名和邮箱, 可能会看到类似以下的提示:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-ps data-lang=ps><span class=line><span class=cl>  <span class=nf>PS</span> <span class=nf>X:\your\path\hexo-blog\blog</span><span class=p>&gt;</span> <span class=nf>npx</span> <span class=nf>hexo</span> <span class=nf>deploy</span>
+</span></span><span class=line><span class=cl>	<span class=nf>INFO</span>  <span class=nf>Validating</span> <span class=nf>config</span>
+</span></span><span class=line><span class=cl>	<span class=nf>INFO</span>  <span class=nf>Deploying:</span> <span class=nf>git</span>
+</span></span><span class=line><span class=cl>	<span class=nf>INFO</span>  <span class=nf>Setting</span> <span class=nf>up</span> <span class=nf>Git</span> <span class=nf>deployment...</span>
+</span></span><span class=line><span class=cl>	<span class=nf>Initialized</span> <span class=nf>empty</span> <span class=nf>Git</span> <span class=nf>repository</span> <span class=nf>in</span> <span class=nf>X:</span><span class=nv>/your/path/hexo-blog/blog/.deploy_git/.git</span><span class=err>/</span>
+</span></span><span class=line><span class=cl>	<span class=nf>Author</span> <span class=nf>identity</span> <span class=nf>unknown</span>
+</span></span><span class=line><span class=cl>	
+</span></span><span class=line><span class=cl>	<span class=nf>***</span> <span class=nf>Please</span> <span class=nf>tell</span> <span class=nf>me</span> <span class=nf>who</span> <span class=nf>you</span> <span class=nf>are.</span>
+</span></span><span class=line><span class=cl>	
+</span></span><span class=line><span class=cl>	<span class=nf>Run</span>
+</span></span><span class=line><span class=cl>	
+</span></span><span class=line><span class=cl>	<span class=nf>git</span> <span class=nf>config</span> <span class=nf>--global</span> <span class=nf>user.email</span> <span class=nf>&#34;you@example.com&#34;</span>
+</span></span><span class=line><span class=cl>	<span class=nf>git</span> <span class=nf>config</span> <span class=nf>--global</span> <span class=nf>user.name</span> <span class=nf>&#34;Your</span> <span class=nf>Name&#34;</span>
+</span></span><span class=line><span class=cl>	
+</span></span><span class=line><span class=cl>	<span class=nf>to</span> <span class=nf>set</span> <span class=nf>your</span> <span class=nf>account&#39;s</span> <span class=nf>default</span> <span class=nf>identity.</span>
+</span></span><span class=line><span class=cl>	<span class=nf>Omit</span> <span class=nf>--global</span> <span class=nf>to</span> <span class=nf>set</span> <span class=nf>the</span> <span class=nf>identity</span> <span class=nf>only</span> <span class=nf>in</span> <span class=nf>this</span> <span class=nf>repository.</span>
+</span></span><span class=line><span class=cl>	
+</span></span><span class=line><span class=cl>	<span class=nf>...</span>
+</span></span></code></pre></td></tr></table></div></div><p>这是因为 Git 必须提供提交时必要的身份信息
+<strong>如上情况只需按照提示 通过这两条命令设置 Git 的默认身份信息:</strong></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>  $ git config --global user.email &#34;{你的邮箱}&#34;
+</span></span><span class=line><span class=cl>  $ git config --global user.name &#34;{你的名字}&#34;
+</span></span></code></pre></td></tr></table></div></div><p>设置完成后再重新执行 <code>npx hexo deploy</code>
+验证部署结果:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>  INFO  Deploy done: git
+</span></span></code></pre></td></tr></table></div></div><p><strong>当终端输出如上日志即说明部署成功了</strong>
+访问你的 Github Pages 仓库, 即可看到编译出的网页静态文件.
+<em><strong>稍等片刻 GitHub Pages 需要一点时间来更新</strong></em></p><h3 id=-恭喜你>🎉 恭喜你!</h3><p>至此步骤在浏览器打开 <code>https://你的用户名.github.io/</code>
+就可以访问你刚刚部署到 Github Pages 的博客了</p><p><em><strong>如需编写新文章 只需重复从 <strong>步骤1.2</strong> 开始的操作</strong></em></p><hr><h2 id=通过-cloudflare-cdn-加速国内访问>通过 Cloudflare CDN 加速国内访问</h2><p><em>TODO&mldr;</em></p></section><footer class=article-footer><section class=article-tags><a href=/tags/blog/>Blog</a>
+<a href=/tags/pages/>Pages</a>
+<a href=/tags/hexo/>Hexo</a></section><section class=article-copyright><svg class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg>
+<span>Licensed under CC BY-NC-SA 4.0</span></section></footer></article><aside class=related-content--wrapper><h2 class=section-title>相关文章</h2><div class=related-content><div class="flex article-list--tile"><article><a href=/p/%E8%AE%A1%E7%BD%91%E6%8C%87%E5%8C%97%E4%BD%BF%E7%94%A8-nginx-l4-%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86-minecraft-%E5%8A%A0%E9%80%9F%E7%8E%A9%E5%AE%B6%E8%AE%BF%E9%97%AE/><div class=article-details><h2 class=article-title>计网指北：使用 Nginx L4 反向代理 Minecraft 加速玩家访问</h2></div></a></article><article><a href=/p/git-%E5%B0%8F%E7%AF%86%E4%B9%8B-%E5%AD%98%E6%9F%A5%E5%A4%87-control-changes-better/><div class=article-details><h2 class=article-title>Git 小篆之 存查备 - Control Changes Better</h2></div></a></article></div></div></aside><script src=//unpkg.com/@waline/client@v2/dist/waline.js></script><link href=//unpkg.com/@waline/client@v2/dist/waline.css rel=stylesheet><div id=waline class=waline-container></div><style>.waline-container{background-color:var(--card-background);border-radius:var(--card-border-radius);box-shadow:var(--shadow-l1);padding:var(--card-padding);--waline-font-size:var(--article-font-size)}.waline-container .wl-count{color:var(--card-text-color-main)}</style><script>Waline.init({avatar:"",dark:'html[data-scheme="dark"]',el:"#waline",emoji:["https://myth.cx/walinejs/emojis/tieba"],lang:"",locale:{admin:"Admin",placeholder:""},placeholder:"",reaction:!0,requiredMeta:["nick","email","url"],serverURL:"https://waline-backend-self.vercel.app",visitor:""})</script><footer class=site-footer><section class=copyright>&copy;
+2019 -
+2025 LovelyRua's Blog</section><section class=powerby>使用 <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> 构建<br>主题 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.31.0>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 设计</section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z+KMkF24hUW8WePSA9HM=" crossorigin=anonymous></script><script type=text/javascript src=/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js defer></script><script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>

@@ -1,0 +1,219 @@
+<!doctype html><html lang=en-us dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content="Nginx 反代 MC 服务器"><title>计网指北：使用 Nginx L4 反向代理 Minecraft 加速玩家访问</title><link rel=canonical href=https://www.lovelyrua.asia/p/%E8%AE%A1%E7%BD%91%E6%8C%87%E5%8C%97%E4%BD%BF%E7%94%A8-nginx-l4-%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86-minecraft-%E5%8A%A0%E9%80%9F%E7%8E%A9%E5%AE%B6%E8%AE%BF%E9%97%AE/><link rel=stylesheet href=/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css><meta property='og:title' content="计网指北：使用 Nginx L4 反向代理 Minecraft 加速玩家访问"><meta property='og:description' content="Nginx 反代 MC 服务器"><meta property='og:url' content='https://www.lovelyrua.asia/p/%E8%AE%A1%E7%BD%91%E6%8C%87%E5%8C%97%E4%BD%BF%E7%94%A8-nginx-l4-%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86-minecraft-%E5%8A%A0%E9%80%9F%E7%8E%A9%E5%AE%B6%E8%AE%BF%E9%97%AE/'><meta property='og:site_name' content="LovelyRua's Blog"><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:tag' content='Nginx'><meta property='article:tag' content='Proxy'><meta property='article:tag' content='Minecraft'><meta property='article:published_time' content='2025-09-01T20:48:16+08:00'><meta property='article:modified_time' content='2025-09-01T20:48:16+08:00'><meta name=twitter:title content="计网指北：使用 Nginx L4 反向代理 Minecraft 加速玩家访问"><meta name=twitter:description content="Nginx 反代 MC 服务器"><link rel="shortcut icon" href=/favicon.png></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar_hu_36986de6203a4a6f.png width=300 height=300 class=site-logo loading=lazy alt=Avatar>
+</a><span class=emoji>🗿</span></figure><div class=site-meta><h1 class=site-name><a href=/>LovelyRua's Blog</a></h1><h2 class=site-description>不可解な私たちはきっと同じ、もう何も怖くはないさ。</h2></div></header><ol class=menu-social><li><a href=https://space.bilibili.com/419743801 target=_blank title=Bilibili rel=me><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-bilibili"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 10a4 4 0 014-4h10a4 4 0 014 4v6a4 4 0 01-4 4H7a4 4 0 01-4-4v-6z"/><path d="M8 3l2 3"/><path d="M16 3l-2 3"/><path d="M9 13v-2"/><path d="M15 11v2"/></svg></a></li><li><a href=https://discord.gg/ZK5x72Rfzq target=_blank title=Discord rel=me><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-discord"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 12a1 1 0 102 0 1 1 0 00-2 0"/><path d="M14 12a1 1 0 102 0 1 1 0 00-2 0"/><path d="M15.5 17c0 1 1.5 3 2 3 1.5.0 2.833-1.667 3.5-3 .667-1.667.5-5.833-1.5-11.5-1.457-1.015-3-1.34-4.5-1.5l-.972 1.923a11.913 11.913.0 00-4.053.0L9 4c-1.5.16-3.043.485-4.5 1.5-2 5.667-2.167 9.833-1.5 11.5.667 1.333 2 3 3.5 3 .5.0 2-2 2-3"/><path d="M7 16.5c3.5 1 6.5 1 10 0"/></svg></a></li><li><a href=mailto:lovelyrua@lovelyrua.asia target=_blank title=Email rel=me><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-mail"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 7a2 2 0 012-2h14a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/><path d="M3 7l9 6 9-6"/></svg></a></li><li><a href=https://t.me/LovelyRua target=_blank title=Telegram rel=me><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-telegram"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M15 10l-4 4 6 6 4-16-18 7 4 2 2 6 3-4"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>Home</span></a></li><li><a href=/archives/><svg class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+<span>Archives</span></a></li><li><a href=/search/><svg class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg>
+<span>Search</span></a></li><li><a href=/links/><svg class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M10 14a3.5 3.5.0 005 0l4-4a3.5 3.5.0 00-5-5l-.5.5"/><path d="M14 10a3.5 3.5.0 00-5 0l-4 4a3.5 3.5.0 005 5l.5-.5"/></svg>
+<span>Links</span></a></li><li class=menu-bottom-section><ol class=menu><li id=dark-mode-toggle><svg class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<svg class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<span>暗色模式</span></li></ol></li></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">目录</h2><div class=widget--toc><nav id=TableOfContents><ol><li><ol><li><a href=#前言>前言</a></li></ol></li><li><a href=#安装-nginx>安装 Nginx</a></li><li><a href=#nginx-核心配置>Nginx 核心配置</a></li><li><a href=#为你的-minecraft-服务器创建反向代理配置>为你的 Minecraft 服务器创建反向代理配置</a></li><li><a href=#额外使用例>额外使用例</a><ol><li><ol><li><a href=#懒人方案>懒人方案</a></li></ol></li><li><a href=#最简实现>最简实现</a><ol><li><a href=#linux-iptables>Linux: iptables</a></li><li><a href=#windows-netsh>Windows: netsh</a></li></ol></li><li><a href=#加速-hypixel-动态域名解析示例>加速 Hypixel (动态域名解析示例)</a></li><li><a href=#推荐雨云云应用>推荐：雨云云应用</a><ol><li></li></ol></li></ol></li></ol></nav></div></section></aside><main class="main full-width"><article class=main-article><header class=article-header><div class=article-details><header class=article-category><a href=/categories/it-techs/>IT-Techs</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/p/%E8%AE%A1%E7%BD%91%E6%8C%87%E5%8C%97%E4%BD%BF%E7%94%A8-nginx-l4-%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86-minecraft-%E5%8A%A0%E9%80%9F%E7%8E%A9%E5%AE%B6%E8%AE%BF%E9%97%AE/>计网指北：使用 Nginx L4 反向代理 Minecraft 加速玩家访问</a></h2><h3 class=article-subtitle>Nginx 反代 MC 服务器</h3></div><footer class=article-time><div><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<time class=article-time--published>Sep 01, 2025</time></div><div><svg class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>阅读时长: 7 分钟</time></div></footer></div></header><section class=article-content><h3 id=前言>前言</h3><p>本文主要受众为使用家庭宽带/机房托管等单线路网络的服主</p><p>在为全国各省市使用不同运营商的玩家提供服务时</p><p>遇到某些地区玩家反馈网络连接高延迟/丢包等问题的</p><p>本文的内容简要：</p><ul><li>Nginx Stream 模块反向代理的核心配置方法</li><li>一些补充玩法</li></ul><p>文末我会推荐一种 相比传统 VPS/ECS 弹性极高 极大程度节约轻业务成本的解决方案</p><p>✨>_0 准备工作</p><p>在开始之前，请确保你已具备以下条件：</p><ul><li><strong>一台正在运行的 Minecraft 服务器</strong>: 并且你知道它的 <strong>IP 地址</strong> 和 <strong>游戏端口</strong>（默认为 25565）。</li><li><strong>一台拥有公网 IP 且线路优良的服务器 (VPS/ECS)</strong>: 这台服务器将用来安装和运行 Nginx。</li><li>(可选) <strong>一个你自己的域名</strong>: 并已将其 DNS 解析管理权交由 Cloudflare 或其他 DNS 服务商。</li><li>(可选) <strong>基础的 Linux 命令行操作能力</strong>: 我们将通过 SSH 连接到服务器进行配置。</li></ul><h2 id=安装-nginx>安装 Nginx</h2><p>本步骤旨在确保你的服务器上安装了支持 TCP 代理的 Nginx。</p><p>首先，通过 SSH 登录到你的 Nginx 服务器。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 更新你的包管理器缓存</span>
+</span></span><span class=line><span class=cl>$ sudo apt update  <span class=c1># 适用于 Debian/Ubuntu</span>
+</span></span><span class=line><span class=cl>$ sudo yum update  <span class=c1># 适用于 CentOS/RHEL</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 安装 Nginx。大多数现代发行版的官方源都包含了 stream 模块。</span>
+</span></span><span class=line><span class=cl>$ sudo apt install nginx -y
+</span></span><span class=line><span class=cl>$ sudo yum install nginx -y
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 验证 Nginx 是否安装成功并查看版本信息</span>
+</span></span><span class=line><span class=cl>$ nginx -v
+</span></span><span class=line><span class=cl><span class=c1># 你应该会看到类似 `nginx version: nginx/1.18.0` 的输出</span>
+</span></span></code></pre></td></tr></table></div></div><p><strong>！</strong> Nginx 的 TCP/UDP 代理功能依赖于 <strong><code>ngx_stream_module</code></strong> 模块。幸运的是，几乎所有主流 Linux 发行版官方仓库中的 Nginx 包都<strong>默认编译</strong>了这个模块。如果你的 Nginx 版本非常古老或来源特殊，你可能需要手动编译。可以通过 nginx -V (大写V) 命令查看编译参数，确认是否包含 <code>--with-stream</code>。</p><h2 id=nginx-核心配置>Nginx 核心配置</h2><p>与我们熟知的用于网站的 <code>http</code> 块不同，代理OSI模型四层的 TCP/UDP 流量（比如 Minecraft 的游戏数据）需要使用 <code>stream</code> 块。</p><p>编辑 Nginx 的主配置文件 nginx.conf：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 使用你喜欢的文本编辑器打开主配置文件</span>
+</span></span><span class=line><span class=cl>$ sudo nano /etc/nginx/nginx.conf
+</span></span></code></pre></td></tr></table></div></div><p>在文件的<strong>最外层</strong>（与 <code>http</code> 块平级，<strong>不要</strong>放在 <code>http</code> 块内部！）添加以下内容：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-nginx data-lang=nginx><span class=line><span class=cl><span class=c1># ================= Stream (TCP/UDP Proxy) Settings =================
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl><span class=k>stream</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=c1># 引用一个外部的配置文件目录，让配置更整洁
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1># 这样我们就可以在 /etc/nginx/streams-available/ 目录中为每个服务创建独立的配置文件
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=kn>include</span> <span class=s>/etc/nginx/streams-enabled/*</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p><strong>！</strong> 将 <code>stream</code> 配置独立出来是一种非常好的工程实践。这让你的主配置文件 <code>nginx.conf</code> 保持干净，并且便于管理多个不同的 TCP/UDP 代理服务。</p><p>创建用于存放 stream 配置的目录：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 创建可用配置目录和启用配置目录</span>
+</span></span><span class=line><span class=cl>$ sudo mkdir -p /etc/nginx/streams-available
+</span></span><span class=line><span class=cl>$ sudo mkdir -p /etc/nginx/streams-enabled
+</span></span></code></pre></td></tr></table></div></div><h2 id=为你的-minecraft-服务器创建反向代理配置>为你的 Minecraft 服务器创建反向代理配置</h2><p>现在，我们将为你的 MC 服务器创建一个专属的配置文件。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 在 &#39;streams-available&#39; 目录下创建一个新的配置文件</span>
+</span></span><span class=line><span class=cl>$ sudo nano /etc/nginx/streams-available/minecraft.conf
+</span></span></code></pre></td></tr></table></div></div><p>在打开的空文件中，粘贴以下内容，并<strong>根据注释修改为你自己的信息</strong>：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-nginx data-lang=nginx><span class=line><span class=cl><span class=c1># 定义一个上游服务器组，名字叫 &#39;mc_backend&#39;
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=k>upstream</span> <span class=s>mc_backend</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=c1># 你的 Minecraft 服务器的真实内网地址和端口
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1># 如果是IP地址，可以直接填写。如果是域名，强烈建议参考下文“加速Hypixel”中的 resolver 配置
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=kn>server</span> <span class=s>your_minecraft_server_ip:25565</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 定义一个服务器监听块
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=k>server</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=c1># 让 Nginx 监听公网的 25565 端口，准备接收玩家的连接
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=kn>listen</span> <span class=mi>25565</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1># 将所有接收到的流量，原封不动地转发给我们刚刚定义的 &#39;mc_backend&#39; 上游服务器组
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=kn>proxy_pass</span> <span class=s>mc_backend</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1># (可选) 开启 proxy_protocol，用于向后端传递玩家的真实 IP 地址 ➊
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1># proxy_protocol on;
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>保存并退出文件 (Ctrl+X, Y, Enter)。</p><p>现在，我们需要<strong>启用</strong>这个配置：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 创建一个从 &#39;available&#39; 到 &#39;enabled&#39; 的软链接</span>
+</span></span><span class=line><span class=cl><span class=c1># 这就像在 Windows 桌面上创建一个快捷方式</span>
+</span></span><span class=line><span class=cl>$ sudo ln -s /etc/nginx/streams-available/minecraft.conf /etc/nginx/streams-enabled/
+</span></span></code></pre></td></tr></table></div></div><p>➊ proxy_protocol 是什么？<br><strong>！</strong> 当你使用反向代理时，你的 Minecraft 服务器看到的<strong>所有玩家的 IP 地址</strong>都会变成 Nginx 服务器的地址（例如 127.0.0.1）。这会导致封禁 (ban) 和白名单 (whitelist) 功能失效。<br><strong>！</strong> 开启 proxy_protocol 后，Nginx 会在转发数据时额外附加一个头部信息，包含了玩家的<strong>真实 IP</strong>。你需要在你的 MC 服务器端（例如 Spigot/Paper 的配置文件 spigot.yml 中设置 bungeecord: true）也开启对这个协议的支持，才能正确获取玩家 IP。</p><p><strong>重载 Nginx 并测试</strong></p><pre><code>- 回到你的 Nginx 服务器终端。
+
+- 首先，测试配置文件语法是否有误：
+
+    ```bash
+    $ sudo nginx -t
+    # 如果一切正常，你会看到：
+    # nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+    # nginx: configuration file /etc/nginx/nginx.conf test is successful
+    ```
+
+- 如果语法正确，平滑地重载 Nginx 使配置生效：
+
+    
+    ```bash
+    $ sudo systemctl reload nginx
+    ```
+</code></pre><p>如果连接失败，请优先检查<strong>服务器的防火墙（安全组）<strong>是否已经</strong>放行了 TCP 25565 端口</strong>的入站流量。这是最常见的错误原因。</p><hr><h2 id=额外使用例>额外使用例</h2><h4 id=懒人方案>懒人方案</h4><p>正文演示的方法是非常标准的 Nginx 配置最佳实践</p><p>但如果你只需要反代一两个服务器 从效率的角度大可不必使用层级目录配置</p><p>直接在主配置文件 <code>nginx.conf</code> 里加入以下内容就可以了</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-nginx data-lang=nginx><span class=line><span class=cl><span class=k>stream</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kn>server</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=kn>listen</span> <span class=p>{</span><span class=kn>Port}</span> <span class=s>[udp]</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=kn>proxy_pass</span> <span class=p>{</span><span class=kn>IP:Port}</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=最简实现>最简实现</h3><p>如果你甚至懒得装 Nginx 还可以用如下方法</p><h4 id=linux-iptables>Linux: iptables</h4><ul><li><strong>这是什么</strong>：Linux 内核自带的防火墙和网络地址转换 (NAT) 工具。</li><li><strong>如何实现</strong>：通过设置 PREROUTING 和 POSTROUTING 链的 NAT 规则，可以实现端口转发，达到反向代理的效果。</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>	<span class=c1># 假设后端 MC 服务器的 IP 是 1.1.1.1</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1># 1. 开启内核 IP 转发</span>
+</span></span><span class=line><span class=cl>    $ sudo sysctl -w net.ipv4.ip_forward<span class=o>=</span><span class=m>1</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1># 2. 设置 DNAT 规则 (将所有访问本机 25565 端口的流量，目标地址改为 MC 服务器)</span>
+</span></span><span class=line><span class=cl>    $ sudo iptables -t nat -A PREROUTING -p tcp --dport <span class=m>25565</span> -j DNAT --to-destination 1.1.1.1:25565
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1># 3. 设置 SNAT/MASQUERADE 规则 (将来自后端 MC 服务器的返回流量，源地址伪装成本机)</span>
+</span></span><span class=line><span class=cl>    $ sudo iptables -t nat -A POSTROUTING -p tcp -d 1.1.1.1 --dport <span class=m>25565</span> -j MASQUERADE
+</span></span></code></pre></td></tr></table></div></div><h4 id=windows-netsh>Windows: netsh</h4><ul><li>**这是什么：Windows 系统内置的端口代理/转发命令行工具。</li><li>**如何实现：在 Windows 服务器上，一行命令即可设置。</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-powershell data-lang=powershell><span class=line><span class=cl><span class=c># 以管理员身份运行 PowerShell 或 CMD</span>
+</span></span><span class=line><span class=cl><span class=c># 将所有访问本机 IPv4 25565 端口的 TCP 流量，转发到目标服务器</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>netsh</span> <span class=n>interface</span> <span class=n>portproxy</span> <span class=n>add</span> <span class=n>v4tov4</span> <span class=n>listenport</span><span class=p>=</span><span class=mf>25565</span> <span class=n>listenaddress</span><span class=p>=</span><span class=mf>0.0</span><span class=p>.</span><span class=py>0</span><span class=p>.</span><span class=py>0</span> <span class=n>connectport</span><span class=p>=</span><span class=mf>25565</span> <span class=n>connectaddress</span><span class=p>=</span><span class=mf>1.1</span><span class=p>.</span><span class=py>1</span><span class=p>.</span><span class=py>1</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=加速-hypixel-动态域名解析示例>加速 Hypixel (动态域名解析示例)</h3><p>是的，你还可以用一条<strong>直连线路更优的专线</strong>来反向代理 <strong>Hypixel 等服务器</strong>， 规避普通家庭宽带国际出口的拥堵，实现类似游戏加速器的效果。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl># 定义 Hypixel 的上游
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>upstream hypixel_backend {
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    # 当后端是域名时，必须使用 resolver 指令！
+</span></span><span class=line><span class=cl>    # Nginx 默认只在启动时解析一次域名，如果域名 IP 变了，Nginx 不会知道。
+</span></span><span class=line><span class=cl>    # resolver 指令告诉 Nginx 使用指定的 DNS 服务器，并周期性地重新解析域名。
+</span></span><span class=line><span class=cl>    # 这里的 8.8.8.8 是 Google DNS，valid=300s 表示每 300 秒（5分钟）刷新一次。
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    resolver 8.8.8.8 valid=300s;
+</span></span><span class=line><span class=cl>    server mc.hypixel.net:25565;
+</span></span><span class=line><span class=cl>}
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>server {
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    # 监听你的 VPS 的 25565 端口
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    listen 25565;
+</span></span><span class=line><span class=cl>    proxy_pass hypixel_backend;
+</span></span><span class=line><span class=cl>}
+</span></span></code></pre></td></tr></table></div></div><p><strong>！</strong> <strong>注意</strong>：这种方法<strong>仅供个人或小范围朋友使用</strong>。公开提供此类服务可能违反 Hypixel 的用户协议，这只是一个利用技术提升个人游戏体验的有趣实践。</p><h3 id=推荐雨云云应用>推荐：雨云云应用</h3><p>对于这种需求 使用一台完整的VPS/ECS主机实际产生了不小的资源及成本浪费</p><p>在此强烈推荐使用的方案：<strong>雨云云应用</strong></p><p>这是一种以单个容器为最小单位的弹性极高的云服务</p><p>使用云应用 我们可以节省相比ECS十倍甚至九倍的成本</p><p>雨云提供的社区应用商店功能还很大程度上简化了传统安装部署的人力和时间消费</p><p><img src="https://pic.lovelyrua.asia:81/api/assets/5335f4ce-f8f5-4e25-a4cb-6f654999e91d/original?key=IYz7LMuntz9bMrdmgVMKTyHJMWIK4DUzkkOSjAErkiA3UL_hxjcg2zhSCabSWWEuF1Y" loading=lazy alt="[Pasted image 20250926143228.png]"></p><p>接下来我会逐步演示如何通过雨云云应用部署 L4 反向代理服务</p><p><img src="https://pic.lovelyrua.asia:81/api/assets/a15d515d-bee3-4658-9b4e-62159d9fda35/original?key=IYz7LMuntz9bMrdmgVMKTyHJMWIK4DUzkkOSjAErkiA3UL_hxjcg2zhSCabSWWEuF1Y" loading=lazy alt="[Pasted image 20250926143439.png]"></p><p>首先在应用商店界面找到需要安装的应用 这里可以使用 Nginx Proxy Manager</p><p><img src="https://pic.lovelyrua.asia:81/api/assets/04868b2c-052c-4abe-9398-7b5d93adfdce/original?key=IYz7LMuntz9bMrdmgVMKTyHJMWIK4DUzkkOSjAErkiA3UL_hxjcg2zhSCabSWWEuF1Y" loading=lazy alt="[Pasted image 20250926143559.png]">
+<img src="https://pic.lovelyrua.asia:81/api/assets/03a4eb2f-5983-4ef7-aa0e-35df67d6b770/original?key=IYz7LMuntz9bMrdmgVMKTyHJMWIK4DUzkkOSjAErkiA3UL_hxjcg2zhSCabSWWEuF1Y" loading=lazy alt="[Pasted image 20250926143614.png]"></p><p>这里的端口填写不用担心 稍后都可以进行修改</p><p>点击安装应用之后就可以看到 Nginx Proxy Manager 已经出现在应用管理界面里</p><p>几秒内应用就会自动完成部署并启动</p><p><img src="https://pic.lovelyrua.asia:81/api/assets/b2bdbc52-002c-4662-930a-bb64898247ed/original?key=IYz7LMuntz9bMrdmgVMKTyHJMWIK4DUzkkOSjAErkiA3UL_hxjcg2zhSCabSWWEuF1Y" loading=lazy alt="[Pasted image 20250926143643.png]"></p><p>安装完成后 我们需要调整容器应用对外暴露的端口</p><p>在 <code>我的项目 - 应用管理 - 应用 - 服务</code> 页面可以对应用进行端口的配置</p><p><img src="https://pic.lovelyrua.asia:81/api/assets/bf6d5996-c707-4f50-a65a-35f68b2385db/original?key=IYz7LMuntz9bMrdmgVMKTyHJMWIK4DUzkkOSjAErkiA3UL_hxjcg2zhSCabSWWEuF1Y" loading=lazy alt="[Pasted image 20250926143807.png]"></p><p>Nginx Proxy Manager 默认会暴露 WebUI 控制台的端口和 HTTP & HTTPS 的端口</p><p>由于这里我们是进行 MC 服务器的反代 可以直接将用不到的 80 和 443 端口 修改成自己需要的端口（这一步骤可按照个人喜好自行配置）</p><p>端口映射输入框中前一个框代表容器本身监听的内部端口 后一个框表示实际暴露到外部访问 IP 的端口</p><p>如这里设置 25565:8500 就意味着稍后我们需要将反向代理监听在 :25565 并使用端口8500 访问雨云提供的 IP 就可以连接到我们的服务器</p><p><img src="https://pic.lovelyrua.asia:81/api/assets/d340be74-0862-49fb-acd5-d8b94500ba17/original?key=IYz7LMuntz9bMrdmgVMKTyHJMWIK4DUzkkOSjAErkiA3UL_hxjcg2zhSCabSWWEuF1Y" loading=lazy alt="[Pasted image 20250926143933.png]"></p><p>(容器内部我们让 Nginx 监听 25565 端口，然后雨云平台将这个内部端口映射到公网 IP 的 8500 端口上)</p><p>接下来访问 Nginx Proxy Manager 的 WebUI 控制台来进行反向代理的实际配置</p><p>默认的公网地址是从集群共享 IP 中随机分配的</p><p>如有独立公网 IP 的需求 可以在<code>我的项目 - 设置 - IP 地址管理</code>添加独立 IP 地址(会产生相应费用)</p><p><img src="https://pic.lovelyrua.asia:81/api/assets/49d4b406-dc22-4b43-afaf-0c4d107bd059/original?key=IYz7LMuntz9bMrdmgVMKTyHJMWIK4DUzkkOSjAErkiA3UL_hxjcg2zhSCabSWWEuF1Y" loading=lazy alt="[Pasted image 20250926150719.png]"></p><p>后台的地址是在服务界面看到的公网 IP 地址加控制台服务的外部端口</p><p>比如在这里就是 <code>http://110.42.111.57:41998</code></p><p><img src="https://pic.lovelyrua.asia:81/api/assets/343aee91-ea9d-472b-ba47-012c4e518b77/original?key=IYz7LMuntz9bMrdmgVMKTyHJMWIK4DUzkkOSjAErkiA3UL_hxjcg2zhSCabSWWEuF1Y" loading=lazy alt="[Pasted image 20250926151255.png]"></p><p>默认账户密码是</p><p><a class=link href=mailto:admin@example.com>admin@example.com</a></p><p>changeme</p><p>第一次登录之后先跟随指引修改管理员账户密码</p><p>要创建四层代理 我们需要到 Streams 配置页面 点击右上角的 Add Stream</p><p><img src="https://pic.lovelyrua.asia:81/api/assets/eb01e70a-c339-4c76-ac6b-319212920bba/original?key=IYz7LMuntz9bMrdmgVMKTyHJMWIK4DUzkkOSjAErkiA3UL_hxjcg2zhSCabSWWEuF1Y" loading=lazy alt="[Pasted image 20250926151740.png]">
+<img src="https://pic.lovelyrua.asia:81/api/assets/89105190-758c-4c65-9e41-c386fdf77fb3/original?key=IYz7LMuntz9bMrdmgVMKTyHJMWIK4DUzkkOSjAErkiA3UL_hxjcg2zhSCabSWWEuF1Y" loading=lazy alt="[Pasted image 20250926151810.png]">
+<img src="https://pic.lovelyrua.asia:81/api/assets/4e617f1b-199f-4207-926c-f37184f2a467/original?key=IYz7LMuntz9bMrdmgVMKTyHJMWIK4DUzkkOSjAErkiA3UL_hxjcg2zhSCabSWWEuF1Y" loading=lazy alt="[Pasted image 20250926151846.png]"></p><p>这里的 Incoming Port 需要填写对应我们刚刚在雨云防火墙设置的 <strong>内部端口</strong></p><p>刚才的演示中我们填写了 25565 故此处需要填 25565</p><p>Forward Host&amp;Port 填写的是被代理的服务的主机名或 IP 地址</p><p>比如被代理的是 <code>mc.lovelyrua.asia:25566</code> 这里就填写 <code>mc.lovelyrua.asia</code> 和 <code>25566</code></p><p>如果如上步骤无误 保存之后访问<code>110.42.111.57:8500</code>就可以访问到经过代理后的服务了</p><p>如果要代理多个服务器 通过一样的步骤开放端口并添加代理配置即可</p><p>看完本文内容应该也已经对雨云云应用的使用有了一定了解</p><p>最后分享一下自己使用一段时间的费用</p><p>我个人轻度使用下来 每星期成本仅五元 且共享网络的弹性带宽空间上限也更大</p><p>按量计费的流量每百GB也只要5元左右</p><p><img src="https://pic.lovelyrua.asia:81/api/assets/4d51d745-86b8-4c35-9861-167cfffaddd8/original?key=IYz7LMuntz9bMrdmgVMKTyHJMWIK4DUzkkOSjAErkiA3UL_hxjcg2zhSCabSWWEuF1Y" loading=lazy alt="[Pasted image 20250926155848.png]">
+<img src="https://pic.lovelyrua.asia:81/api/assets/0aa28780-1c57-4ba3-ae65-737e0904cc85/original?key=IYz7LMuntz9bMrdmgVMKTyHJMWIK4DUzkkOSjAErkiA3UL_hxjcg2zhSCabSWWEuF1Y" loading=lazy alt="[Pasted image 20250926160825.png]"></p><h5 id=补充雨云机房反代前后延迟>补充：雨云机房反代前后延迟</h5><p><img src="https://pic.lovelyrua.asia:81/api/assets/7d78ac9c-556f-48f6-982b-44e0822239d4/original?key=IYz7LMuntz9bMrdmgVMKTyHJMWIK4DUzkkOSjAErkiA3UL_hxjcg2zhSCabSWWEuF1Y" loading=lazy alt=[a1d52736-c142-40bd-8053-5176d526dce3.png]>
+<img src="https://pic.lovelyrua.asia:81/api/assets/418f26e7-fb4d-4519-b0d0-a6e1b5dde3fc/original?key=IYz7LMuntz9bMrdmgVMKTyHJMWIK4DUzkkOSjAErkiA3UL_hxjcg2zhSCabSWWEuF1Y" loading=lazy alt=[2aeca52f-24ae-4283-9d56-5dc2818a3d89.png]></p><p>虽然直观数据差别不大 但是对于本身网络环境不佳的用户来说三线优化线路会带来质的飞跃</p></section><footer class=article-footer><section class=article-tags><a href=/tags/nginx/>Nginx</a>
+<a href=/tags/proxy/>Proxy</a>
+<a href=/tags/minecraft/>Minecraft</a></section><section class=article-copyright><svg class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg>
+<span>Licensed under CC BY-NC-SA 4.0</span></section></footer></article><aside class=related-content--wrapper><h2 class=section-title>相关文章</h2><div class=related-content><div class="flex article-list--tile"><article><a href=/p/git-%E5%B0%8F%E7%AF%86%E4%B9%8B-%E5%AD%98%E6%9F%A5%E5%A4%87-control-changes-better/><div class=article-details><h2 class=article-title>Git 小篆之 存查备 - Control Changes Better</h2></div></a></article><article><a href=/p/%E4%BF%9D%E5%A7%86%E7%BA%A7%E6%8C%87%E5%8D%97-hexo--github-pages-%E6%90%AD%E5%BB%BA%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2/><div class=article-details><h2 class=article-title>保姆级指南 Hexo + GitHub Pages 搭建静态博客</h2></div></a></article></div></div></aside><script src=//unpkg.com/@waline/client@v2/dist/waline.js></script><link href=//unpkg.com/@waline/client@v2/dist/waline.css rel=stylesheet><div id=waline class=waline-container></div><style>.waline-container{background-color:var(--card-background);border-radius:var(--card-border-radius);box-shadow:var(--shadow-l1);padding:var(--card-padding);--waline-font-size:var(--article-font-size)}.waline-container .wl-count{color:var(--card-text-color-main)}</style><script>Waline.init({avatar:"",dark:'html[data-scheme="dark"]',el:"#waline",emoji:["https://myth.cx/walinejs/emojis/tieba"],lang:"",locale:{admin:"Admin",placeholder:""},placeholder:"",reaction:!0,requiredMeta:["nick","email","url"],serverURL:"https://waline-backend-self.vercel.app",visitor:""})</script><footer class=site-footer><section class=copyright>&copy;
+2019 -
+2025 LovelyRua's Blog</section><section class=powerby>使用 <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> 构建<br>主题 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.31.0>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 设计</section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z+KMkF24hUW8WePSA9HM=" crossorigin=anonymous></script><script type=text/javascript src=/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js defer></script><script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>

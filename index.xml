@@ -1,0 +1,795 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>LovelyRua's Blog</title><link>https://www.lovelyrua.asia/</link><description>Recent content on LovelyRua's Blog</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Mon, 01 Sep 2025 20:48:16 +0800</lastBuildDate><atom:link href="https://www.lovelyrua.asia/index.xml" rel="self" type="application/rss+xml"/><item><title>计网指北：使用 Nginx L4 反向代理 Minecraft 加速玩家访问</title><link>https://www.lovelyrua.asia/p/%E8%AE%A1%E7%BD%91%E6%8C%87%E5%8C%97%E4%BD%BF%E7%94%A8-nginx-l4-%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86-minecraft-%E5%8A%A0%E9%80%9F%E7%8E%A9%E5%AE%B6%E8%AE%BF%E9%97%AE/</link><pubDate>Mon, 01 Sep 2025 20:48:16 +0800</pubDate><guid>https://www.lovelyrua.asia/p/%E8%AE%A1%E7%BD%91%E6%8C%87%E5%8C%97%E4%BD%BF%E7%94%A8-nginx-l4-%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86-minecraft-%E5%8A%A0%E9%80%9F%E7%8E%A9%E5%AE%B6%E8%AE%BF%E9%97%AE/</guid><description>&lt;h3 id="前言"&gt;前言
+&lt;/h3&gt;&lt;p&gt;本文主要受众为使用家庭宽带/机房托管等单线路网络的服主&lt;/p&gt;
+&lt;p&gt;在为全国各省市使用不同运营商的玩家提供服务时&lt;/p&gt;
+&lt;p&gt;遇到某些地区玩家反馈网络连接高延迟/丢包等问题的&lt;/p&gt;
+&lt;p&gt;本文的内容简要：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Nginx Stream 模块反向代理的核心配置方法&lt;/li&gt;
+&lt;li&gt;一些补充玩法&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;文末我会推荐一种 相比传统 VPS/ECS 弹性极高 极大程度节约轻业务成本的解决方案&lt;/p&gt;
+&lt;p&gt;✨&amp;gt;_0 准备工作&lt;/p&gt;
+&lt;p&gt;在开始之前，请确保你已具备以下条件：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;一台正在运行的 Minecraft 服务器&lt;/strong&gt;: 并且你知道它的 &lt;strong&gt;IP 地址&lt;/strong&gt; 和 &lt;strong&gt;游戏端口&lt;/strong&gt;（默认为 25565）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;一台拥有公网 IP 且线路优良的服务器 (VPS/ECS)&lt;/strong&gt;: 这台服务器将用来安装和运行 Nginx。&lt;/li&gt;
+&lt;li&gt;(可选) &lt;strong&gt;一个你自己的域名&lt;/strong&gt;: 并已将其 DNS 解析管理权交由 Cloudflare 或其他 DNS 服务商。&lt;/li&gt;
+&lt;li&gt;(可选) &lt;strong&gt;基础的 Linux 命令行操作能力&lt;/strong&gt;: 我们将通过 SSH 连接到服务器进行配置。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="安装-nginx"&gt;安装 Nginx
+&lt;/h2&gt;&lt;p&gt;本步骤旨在确保你的服务器上安装了支持 TCP 代理的 Nginx。&lt;/p&gt;
+&lt;p&gt;首先，通过 SSH 登录到你的 Nginx 服务器。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 更新你的包管理器缓存&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;$ sudo apt update &lt;span class="c1"&gt;# 适用于 Debian/Ubuntu&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;$ sudo yum update &lt;span class="c1"&gt;# 适用于 CentOS/RHEL&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 安装 Nginx。大多数现代发行版的官方源都包含了 stream 模块。&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;$ sudo apt install nginx -y
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;$ sudo yum install nginx -y
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 验证 Nginx 是否安装成功并查看版本信息&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;$ nginx -v
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 你应该会看到类似 `nginx version: nginx/1.18.0` 的输出&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;strong&gt;！&lt;/strong&gt; Nginx 的 TCP/UDP 代理功能依赖于 &lt;strong&gt;&lt;code&gt;ngx_stream_module&lt;/code&gt;&lt;/strong&gt; 模块。幸运的是，几乎所有主流 Linux 发行版官方仓库中的 Nginx 包都&lt;strong&gt;默认编译&lt;/strong&gt;了这个模块。如果你的 Nginx 版本非常古老或来源特殊，你可能需要手动编译。可以通过 nginx -V (大写V) 命令查看编译参数，确认是否包含 &lt;code&gt;--with-stream&lt;/code&gt;。&lt;/p&gt;
+&lt;h2 id="nginx-核心配置"&gt;Nginx 核心配置
+&lt;/h2&gt;&lt;p&gt;与我们熟知的用于网站的 &lt;code&gt;http&lt;/code&gt; 块不同，代理OSI模型四层的 TCP/UDP 流量（比如 Minecraft 的游戏数据）需要使用 &lt;code&gt;stream&lt;/code&gt; 块。&lt;/p&gt;
+&lt;p&gt;编辑 Nginx 的主配置文件 nginx.conf：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 使用你喜欢的文本编辑器打开主配置文件&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;$ sudo nano /etc/nginx/nginx.conf
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;在文件的&lt;strong&gt;最外层&lt;/strong&gt;（与 &lt;code&gt;http&lt;/code&gt; 块平级，&lt;strong&gt;不要&lt;/strong&gt;放在 &lt;code&gt;http&lt;/code&gt; 块内部！）添加以下内容：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-nginx" data-lang="nginx"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# ================= Stream (TCP/UDP Proxy) Settings =================
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;stream&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# 引用一个外部的配置文件目录，让配置更整洁
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;&lt;/span&gt; &lt;span class="c1"&gt;# 这样我们就可以在 /etc/nginx/streams-available/ 目录中为每个服务创建独立的配置文件
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;&lt;/span&gt; &lt;span class="kn"&gt;include&lt;/span&gt; &lt;span class="s"&gt;/etc/nginx/streams-enabled/*&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;strong&gt;！&lt;/strong&gt; 将 &lt;code&gt;stream&lt;/code&gt; 配置独立出来是一种非常好的工程实践。这让你的主配置文件 &lt;code&gt;nginx.conf&lt;/code&gt; 保持干净，并且便于管理多个不同的 TCP/UDP 代理服务。&lt;/p&gt;
+&lt;p&gt;创建用于存放 stream 配置的目录：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 创建可用配置目录和启用配置目录&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;$ sudo mkdir -p /etc/nginx/streams-available
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;$ sudo mkdir -p /etc/nginx/streams-enabled
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h2 id="为你的-minecraft-服务器创建反向代理配置"&gt;为你的 Minecraft 服务器创建反向代理配置
+&lt;/h2&gt;&lt;p&gt;现在，我们将为你的 MC 服务器创建一个专属的配置文件。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 在 &amp;#39;streams-available&amp;#39; 目录下创建一个新的配置文件&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;$ sudo nano /etc/nginx/streams-available/minecraft.conf
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;在打开的空文件中，粘贴以下内容，并&lt;strong&gt;根据注释修改为你自己的信息&lt;/strong&gt;：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;span class="lnt"&gt;13
+&lt;/span&gt;&lt;span class="lnt"&gt;14
+&lt;/span&gt;&lt;span class="lnt"&gt;15
+&lt;/span&gt;&lt;span class="lnt"&gt;16
+&lt;/span&gt;&lt;span class="lnt"&gt;17
+&lt;/span&gt;&lt;span class="lnt"&gt;18
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-nginx" data-lang="nginx"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 定义一个上游服务器组，名字叫 &amp;#39;mc_backend&amp;#39;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;&lt;/span&gt;&lt;span class="k"&gt;upstream&lt;/span&gt; &lt;span class="s"&gt;mc_backend&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# 你的 Minecraft 服务器的真实内网地址和端口
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;&lt;/span&gt; &lt;span class="c1"&gt;# 如果是IP地址，可以直接填写。如果是域名，强烈建议参考下文“加速Hypixel”中的 resolver 配置
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;&lt;/span&gt; &lt;span class="kn"&gt;server&lt;/span&gt; &lt;span class="s"&gt;your_minecraft_server_ip:25565&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 定义一个服务器监听块
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;&lt;/span&gt;&lt;span class="k"&gt;server&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# 让 Nginx 监听公网的 25565 端口，准备接收玩家的连接
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;&lt;/span&gt; &lt;span class="kn"&gt;listen&lt;/span&gt; &lt;span class="mi"&gt;25565&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# 将所有接收到的流量，原封不动地转发给我们刚刚定义的 &amp;#39;mc_backend&amp;#39; 上游服务器组
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;&lt;/span&gt; &lt;span class="kn"&gt;proxy_pass&lt;/span&gt; &lt;span class="s"&gt;mc_backend&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# (可选) 开启 proxy_protocol，用于向后端传递玩家的真实 IP 地址 ➊
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;&lt;/span&gt; &lt;span class="c1"&gt;# proxy_protocol on;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;保存并退出文件 (Ctrl+X, Y, Enter)。&lt;/p&gt;
+&lt;p&gt;现在，我们需要&lt;strong&gt;启用&lt;/strong&gt;这个配置：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 创建一个从 &amp;#39;available&amp;#39; 到 &amp;#39;enabled&amp;#39; 的软链接&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 这就像在 Windows 桌面上创建一个快捷方式&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;$ sudo ln -s /etc/nginx/streams-available/minecraft.conf /etc/nginx/streams-enabled/
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;➊ proxy_protocol 是什么？&lt;br&gt;
+&lt;strong&gt;！&lt;/strong&gt; 当你使用反向代理时，你的 Minecraft 服务器看到的&lt;strong&gt;所有玩家的 IP 地址&lt;/strong&gt;都会变成 Nginx 服务器的地址（例如 127.0.0.1）。这会导致封禁 (ban) 和白名单 (whitelist) 功能失效。&lt;br&gt;
+&lt;strong&gt;！&lt;/strong&gt; 开启 proxy_protocol 后，Nginx 会在转发数据时额外附加一个头部信息，包含了玩家的&lt;strong&gt;真实 IP&lt;/strong&gt;。你需要在你的 MC 服务器端（例如 Spigot/Paper 的配置文件 spigot.yml 中设置 bungeecord: true）也开启对这个协议的支持，才能正确获取玩家 IP。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;重载 Nginx 并测试&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;- 回到你的 Nginx 服务器终端。
+- 首先，测试配置文件语法是否有误：
+```bash
+$ sudo nginx -t
+# 如果一切正常，你会看到：
+# nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+# nginx: configuration file /etc/nginx/nginx.conf test is successful
+```
+- 如果语法正确，平滑地重载 Nginx 使配置生效：
+```bash
+$ sudo systemctl reload nginx
+```
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;如果连接失败，请优先检查&lt;strong&gt;服务器的防火墙（安全组）&lt;strong&gt;是否已经&lt;/strong&gt;放行了 TCP 25565 端口&lt;/strong&gt;的入站流量。这是最常见的错误原因。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="额外使用例"&gt;额外使用例
+&lt;/h2&gt;&lt;h4 id="懒人方案"&gt;懒人方案
+&lt;/h4&gt;&lt;p&gt;正文演示的方法是非常标准的 Nginx 配置最佳实践&lt;/p&gt;
+&lt;p&gt;但如果你只需要反代一两个服务器 从效率的角度大可不必使用层级目录配置&lt;/p&gt;
+&lt;p&gt;直接在主配置文件 &lt;code&gt;nginx.conf&lt;/code&gt; 里加入以下内容就可以了&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;span class="lnt"&gt;8
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-nginx" data-lang="nginx"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;stream&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kn"&gt;server&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kn"&gt;listen&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="kn"&gt;Port}&lt;/span&gt; &lt;span class="s"&gt;[udp]&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kn"&gt;proxy_pass&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="kn"&gt;IP:Port}&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="最简实现"&gt;最简实现
+&lt;/h3&gt;&lt;p&gt;如果你甚至懒得装 Nginx 还可以用如下方法&lt;/p&gt;
+&lt;h4 id="linux-iptables"&gt;Linux: iptables
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;这是什么&lt;/strong&gt;：Linux 内核自带的防火墙和网络地址转换 (NAT) 工具。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;如何实现&lt;/strong&gt;：通过设置 PREROUTING 和 POSTROUTING 链的 NAT 规则，可以实现端口转发，达到反向代理的效果。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# 假设后端 MC 服务器的 IP 是 1.1.1.1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# 1. 开启内核 IP 转发&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; $ sudo sysctl -w net.ipv4.ip_forward&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# 2. 设置 DNAT 规则 (将所有访问本机 25565 端口的流量，目标地址改为 MC 服务器)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; $ sudo iptables -t nat -A PREROUTING -p tcp --dport &lt;span class="m"&gt;25565&lt;/span&gt; -j DNAT --to-destination 1.1.1.1:25565
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# 3. 设置 SNAT/MASQUERADE 规则 (将来自后端 MC 服务器的返回流量，源地址伪装成本机)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; $ sudo iptables -t nat -A POSTROUTING -p tcp -d 1.1.1.1 --dport &lt;span class="m"&gt;25565&lt;/span&gt; -j MASQUERADE
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h4 id="windows-netsh"&gt;Windows: netsh
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;**这是什么：Windows 系统内置的端口代理/转发命令行工具。&lt;/li&gt;
+&lt;li&gt;**如何实现：在 Windows 服务器上，一行命令即可设置。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c"&gt;# 以管理员身份运行 PowerShell 或 CMD&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c"&gt;# 将所有访问本机 IPv4 25565 端口的 TCP 流量，转发到目标服务器&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;netsh&lt;/span&gt; &lt;span class="n"&gt;interface&lt;/span&gt; &lt;span class="n"&gt;portproxy&lt;/span&gt; &lt;span class="n"&gt;add&lt;/span&gt; &lt;span class="n"&gt;v4tov4&lt;/span&gt; &lt;span class="n"&gt;listenport&lt;/span&gt;&lt;span class="p"&gt;=&lt;/span&gt;&lt;span class="mf"&gt;25565&lt;/span&gt; &lt;span class="n"&gt;listenaddress&lt;/span&gt;&lt;span class="p"&gt;=&lt;/span&gt;&lt;span class="mf"&gt;0.0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;0&lt;/span&gt; &lt;span class="n"&gt;connectport&lt;/span&gt;&lt;span class="p"&gt;=&lt;/span&gt;&lt;span class="mf"&gt;25565&lt;/span&gt; &lt;span class="n"&gt;connectaddress&lt;/span&gt;&lt;span class="p"&gt;=&lt;/span&gt;&lt;span class="mf"&gt;1.1&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;1&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="加速-hypixel-动态域名解析示例"&gt;加速 Hypixel (动态域名解析示例)
+&lt;/h3&gt;&lt;p&gt;是的，你还可以用一条&lt;strong&gt;直连线路更优的专线&lt;/strong&gt;来反向代理 &lt;strong&gt;Hypixel 等服务器&lt;/strong&gt;， 规避普通家庭宽带国际出口的拥堵，实现类似游戏加速器的效果。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;span class="lnt"&gt;13
+&lt;/span&gt;&lt;span class="lnt"&gt;14
+&lt;/span&gt;&lt;span class="lnt"&gt;15
+&lt;/span&gt;&lt;span class="lnt"&gt;16
+&lt;/span&gt;&lt;span class="lnt"&gt;17
+&lt;/span&gt;&lt;span class="lnt"&gt;18
+&lt;/span&gt;&lt;span class="lnt"&gt;19
+&lt;/span&gt;&lt;span class="lnt"&gt;20
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;# 定义 Hypixel 的上游
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;upstream hypixel_backend {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; # 当后端是域名时，必须使用 resolver 指令！
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; # Nginx 默认只在启动时解析一次域名，如果域名 IP 变了，Nginx 不会知道。
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; # resolver 指令告诉 Nginx 使用指定的 DNS 服务器，并周期性地重新解析域名。
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; # 这里的 8.8.8.8 是 Google DNS，valid=300s 表示每 300 秒（5分钟）刷新一次。
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; resolver 8.8.8.8 valid=300s;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; server mc.hypixel.net:25565;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;server {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; # 监听你的 VPS 的 25565 端口
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; listen 25565;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; proxy_pass hypixel_backend;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;strong&gt;！&lt;/strong&gt; &lt;strong&gt;注意&lt;/strong&gt;：这种方法&lt;strong&gt;仅供个人或小范围朋友使用&lt;/strong&gt;。公开提供此类服务可能违反 Hypixel 的用户协议，这只是一个利用技术提升个人游戏体验的有趣实践。&lt;/p&gt;
+&lt;h3 id="推荐雨云云应用"&gt;推荐：雨云云应用
+&lt;/h3&gt;&lt;p&gt;对于这种需求 使用一台完整的VPS/ECS主机实际产生了不小的资源及成本浪费&lt;/p&gt;
+&lt;p&gt;在此强烈推荐使用的方案：&lt;strong&gt;雨云云应用&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;这是一种以单个容器为最小单位的弹性极高的云服务&lt;/p&gt;
+&lt;p&gt;使用云应用 我们可以节省相比ECS十倍甚至九倍的成本&lt;/p&gt;
+&lt;p&gt;雨云提供的社区应用商店功能还很大程度上简化了传统安装部署的人力和时间消费&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://pic.lovelyrua.asia:81/api/assets/5335f4ce-f8f5-4e25-a4cb-6f654999e91d/original?key=IYz7LMuntz9bMrdmgVMKTyHJMWIK4DUzkkOSjAErkiA3UL_hxjcg2zhSCabSWWEuF1Y"
+loading="lazy"
+alt="[Pasted image 20250926143228.png]"
+&gt;&lt;/p&gt;
+&lt;p&gt;接下来我会逐步演示如何通过雨云云应用部署 L4 反向代理服务&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://pic.lovelyrua.asia:81/api/assets/a15d515d-bee3-4658-9b4e-62159d9fda35/original?key=IYz7LMuntz9bMrdmgVMKTyHJMWIK4DUzkkOSjAErkiA3UL_hxjcg2zhSCabSWWEuF1Y"
+loading="lazy"
+alt="[Pasted image 20250926143439.png]"
+&gt;&lt;/p&gt;
+&lt;p&gt;首先在应用商店界面找到需要安装的应用 这里可以使用 Nginx Proxy Manager&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://pic.lovelyrua.asia:81/api/assets/04868b2c-052c-4abe-9398-7b5d93adfdce/original?key=IYz7LMuntz9bMrdmgVMKTyHJMWIK4DUzkkOSjAErkiA3UL_hxjcg2zhSCabSWWEuF1Y"
+loading="lazy"
+alt="[Pasted image 20250926143559.png]"
+&gt;
+&lt;img src="https://pic.lovelyrua.asia:81/api/assets/03a4eb2f-5983-4ef7-aa0e-35df67d6b770/original?key=IYz7LMuntz9bMrdmgVMKTyHJMWIK4DUzkkOSjAErkiA3UL_hxjcg2zhSCabSWWEuF1Y"
+loading="lazy"
+alt="[Pasted image 20250926143614.png]"
+&gt;&lt;/p&gt;
+&lt;p&gt;这里的端口填写不用担心 稍后都可以进行修改&lt;/p&gt;
+&lt;p&gt;点击安装应用之后就可以看到 Nginx Proxy Manager 已经出现在应用管理界面里&lt;/p&gt;
+&lt;p&gt;几秒内应用就会自动完成部署并启动&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://pic.lovelyrua.asia:81/api/assets/b2bdbc52-002c-4662-930a-bb64898247ed/original?key=IYz7LMuntz9bMrdmgVMKTyHJMWIK4DUzkkOSjAErkiA3UL_hxjcg2zhSCabSWWEuF1Y"
+loading="lazy"
+alt="[Pasted image 20250926143643.png]"
+&gt;&lt;/p&gt;
+&lt;p&gt;安装完成后 我们需要调整容器应用对外暴露的端口&lt;/p&gt;
+&lt;p&gt;在 &lt;code&gt;我的项目 - 应用管理 - 应用 - 服务&lt;/code&gt; 页面可以对应用进行端口的配置&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://pic.lovelyrua.asia:81/api/assets/bf6d5996-c707-4f50-a65a-35f68b2385db/original?key=IYz7LMuntz9bMrdmgVMKTyHJMWIK4DUzkkOSjAErkiA3UL_hxjcg2zhSCabSWWEuF1Y"
+loading="lazy"
+alt="[Pasted image 20250926143807.png]"
+&gt;&lt;/p&gt;
+&lt;p&gt;Nginx Proxy Manager 默认会暴露 WebUI 控制台的端口和 HTTP &amp;amp; HTTPS 的端口&lt;/p&gt;
+&lt;p&gt;由于这里我们是进行 MC 服务器的反代 可以直接将用不到的 80 和 443 端口 修改成自己需要的端口（这一步骤可按照个人喜好自行配置）&lt;/p&gt;
+&lt;p&gt;端口映射输入框中前一个框代表容器本身监听的内部端口 后一个框表示实际暴露到外部访问 IP 的端口&lt;/p&gt;
+&lt;p&gt;如这里设置 25565:8500 就意味着稍后我们需要将反向代理监听在 :25565 并使用端口8500 访问雨云提供的 IP 就可以连接到我们的服务器&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://pic.lovelyrua.asia:81/api/assets/d340be74-0862-49fb-acd5-d8b94500ba17/original?key=IYz7LMuntz9bMrdmgVMKTyHJMWIK4DUzkkOSjAErkiA3UL_hxjcg2zhSCabSWWEuF1Y"
+loading="lazy"
+alt="[Pasted image 20250926143933.png]"
+&gt;&lt;/p&gt;
+&lt;p&gt;(容器内部我们让 Nginx 监听 25565 端口，然后雨云平台将这个内部端口映射到公网 IP 的 8500 端口上)&lt;/p&gt;
+&lt;p&gt;接下来访问 Nginx Proxy Manager 的 WebUI 控制台来进行反向代理的实际配置&lt;/p&gt;
+&lt;p&gt;默认的公网地址是从集群共享 IP 中随机分配的&lt;/p&gt;
+&lt;p&gt;如有独立公网 IP 的需求 可以在&lt;code&gt;我的项目 - 设置 - IP 地址管理&lt;/code&gt;添加独立 IP 地址(会产生相应费用)&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://pic.lovelyrua.asia:81/api/assets/49d4b406-dc22-4b43-afaf-0c4d107bd059/original?key=IYz7LMuntz9bMrdmgVMKTyHJMWIK4DUzkkOSjAErkiA3UL_hxjcg2zhSCabSWWEuF1Y"
+loading="lazy"
+alt="[Pasted image 20250926150719.png]"
+&gt;&lt;/p&gt;
+&lt;p&gt;后台的地址是在服务界面看到的公网 IP 地址加控制台服务的外部端口&lt;/p&gt;
+&lt;p&gt;比如在这里就是 &lt;code&gt;http://110.42.111.57:41998&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://pic.lovelyrua.asia:81/api/assets/343aee91-ea9d-472b-ba47-012c4e518b77/original?key=IYz7LMuntz9bMrdmgVMKTyHJMWIK4DUzkkOSjAErkiA3UL_hxjcg2zhSCabSWWEuF1Y"
+loading="lazy"
+alt="[Pasted image 20250926151255.png]"
+&gt;&lt;/p&gt;
+&lt;p&gt;默认账户密码是&lt;/p&gt;
+&lt;p&gt;&lt;a class="link" href="mailto:admin@example.com" &gt;admin@example.com&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;changeme&lt;/p&gt;
+&lt;p&gt;第一次登录之后先跟随指引修改管理员账户密码&lt;/p&gt;
+&lt;p&gt;要创建四层代理 我们需要到 Streams 配置页面 点击右上角的 Add Stream&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://pic.lovelyrua.asia:81/api/assets/eb01e70a-c339-4c76-ac6b-319212920bba/original?key=IYz7LMuntz9bMrdmgVMKTyHJMWIK4DUzkkOSjAErkiA3UL_hxjcg2zhSCabSWWEuF1Y"
+loading="lazy"
+alt="[Pasted image 20250926151740.png]"
+&gt;
+&lt;img src="https://pic.lovelyrua.asia:81/api/assets/89105190-758c-4c65-9e41-c386fdf77fb3/original?key=IYz7LMuntz9bMrdmgVMKTyHJMWIK4DUzkkOSjAErkiA3UL_hxjcg2zhSCabSWWEuF1Y"
+loading="lazy"
+alt="[Pasted image 20250926151810.png]"
+&gt;
+&lt;img src="https://pic.lovelyrua.asia:81/api/assets/4e617f1b-199f-4207-926c-f37184f2a467/original?key=IYz7LMuntz9bMrdmgVMKTyHJMWIK4DUzkkOSjAErkiA3UL_hxjcg2zhSCabSWWEuF1Y"
+loading="lazy"
+alt="[Pasted image 20250926151846.png]"
+&gt;&lt;/p&gt;
+&lt;p&gt;这里的 Incoming Port 需要填写对应我们刚刚在雨云防火墙设置的 &lt;strong&gt;内部端口&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;刚才的演示中我们填写了 25565 故此处需要填 25565&lt;/p&gt;
+&lt;p&gt;Forward Host&amp;amp;Port 填写的是被代理的服务的主机名或 IP 地址&lt;/p&gt;
+&lt;p&gt;比如被代理的是 &lt;code&gt;mc.lovelyrua.asia:25566&lt;/code&gt; 这里就填写 &lt;code&gt;mc.lovelyrua.asia&lt;/code&gt; 和 &lt;code&gt;25566&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;如果如上步骤无误 保存之后访问&lt;code&gt;110.42.111.57:8500&lt;/code&gt;就可以访问到经过代理后的服务了&lt;/p&gt;
+&lt;p&gt;如果要代理多个服务器 通过一样的步骤开放端口并添加代理配置即可&lt;/p&gt;
+&lt;p&gt;看完本文内容应该也已经对雨云云应用的使用有了一定了解&lt;/p&gt;
+&lt;p&gt;最后分享一下自己使用一段时间的费用&lt;/p&gt;
+&lt;p&gt;我个人轻度使用下来 每星期成本仅五元 且共享网络的弹性带宽空间上限也更大&lt;/p&gt;
+&lt;p&gt;按量计费的流量每百GB也只要5元左右&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://pic.lovelyrua.asia:81/api/assets/4d51d745-86b8-4c35-9861-167cfffaddd8/original?key=IYz7LMuntz9bMrdmgVMKTyHJMWIK4DUzkkOSjAErkiA3UL_hxjcg2zhSCabSWWEuF1Y"
+loading="lazy"
+alt="[Pasted image 20250926155848.png]"
+&gt;
+&lt;img src="https://pic.lovelyrua.asia:81/api/assets/0aa28780-1c57-4ba3-ae65-737e0904cc85/original?key=IYz7LMuntz9bMrdmgVMKTyHJMWIK4DUzkkOSjAErkiA3UL_hxjcg2zhSCabSWWEuF1Y"
+loading="lazy"
+alt="[Pasted image 20250926160825.png]"
+&gt;&lt;/p&gt;
+&lt;h5 id="补充雨云机房反代前后延迟"&gt;补充：雨云机房反代前后延迟
+&lt;/h5&gt;&lt;p&gt;&lt;img src="https://pic.lovelyrua.asia:81/api/assets/7d78ac9c-556f-48f6-982b-44e0822239d4/original?key=IYz7LMuntz9bMrdmgVMKTyHJMWIK4DUzkkOSjAErkiA3UL_hxjcg2zhSCabSWWEuF1Y"
+loading="lazy"
+alt="[a1d52736-c142-40bd-8053-5176d526dce3.png]"
+&gt;
+&lt;img src="https://pic.lovelyrua.asia:81/api/assets/418f26e7-fb4d-4519-b0d0-a6e1b5dde3fc/original?key=IYz7LMuntz9bMrdmgVMKTyHJMWIK4DUzkkOSjAErkiA3UL_hxjcg2zhSCabSWWEuF1Y"
+loading="lazy"
+alt="[2aeca52f-24ae-4283-9d56-5dc2818a3d89.png]"
+&gt;&lt;/p&gt;
+&lt;p&gt;虽然直观数据差别不大 但是对于本身网络环境不佳的用户来说三线优化线路会带来质的飞跃&lt;/p&gt;</description></item><item><title>Git 小篆之 存查备 - Control Changes Better</title><link>https://www.lovelyrua.asia/p/git-%E5%B0%8F%E7%AF%86%E4%B9%8B-%E5%AD%98%E6%9F%A5%E5%A4%87-control-changes-better/</link><pubDate>Tue, 06 May 2025 09:32:23 +0800</pubDate><guid>https://www.lovelyrua.asia/p/git-%E5%B0%8F%E7%AF%86%E4%B9%8B-%E5%AD%98%E6%9F%A5%E5%A4%87-control-changes-better/</guid><description>&lt;h4 id="状态与撤销"&gt;&lt;strong&gt;状态与撤销&lt;/strong&gt;
+&lt;/h4&gt;&lt;p&gt;&lt;code&gt;git status&lt;/code&gt; // 让我看看怎么个事&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;git restore &amp;lt;file&amp;gt;&lt;/code&gt; // 按下回车就和你的文件撒哟娜拉了&lt;/p&gt;
+&lt;p&gt;*&lt;code&gt;git checkout -- &amp;lt;file&amp;gt;&lt;/code&gt; // 撒哟娜拉 in 2000s&lt;/p&gt;
+&lt;h4 id="暂存区操作"&gt;&lt;strong&gt;暂存区操作&lt;/strong&gt;
+&lt;/h4&gt;&lt;p&gt;&lt;code&gt;git add &amp;lt;file&amp;gt;&lt;/code&gt; // 温柔的把写完的胡话扔到篮子里&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;git restore --staged &amp;lt;file&amp;gt;&lt;/code&gt; // 撤销暂存区修改 add→不add&lt;/p&gt;
+&lt;p&gt;*&lt;code&gt;git reset HEAD &amp;lt;file&amp;gt;&lt;/code&gt; // 旧撤销暂存区修改 不 restore&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;git rm --cached &amp;lt;file&amp;gt;&lt;/code&gt; // 暂存区丢弃 保留工作区文件 add 了忘加 .gitignore 的文件用&lt;/p&gt;
+&lt;h4 id="提交与历史"&gt;&lt;strong&gt;提交与历史&lt;/strong&gt;
+&lt;/h4&gt;&lt;p&gt;&lt;code&gt;git commit -m &amp;lt;info&amp;gt;&lt;/code&gt; // 把胡话 push 就没脸见同事了&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;git log&lt;/code&gt; // 查有没有提交胡话&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;git reset --soft HEAD^&lt;/code&gt; // 还好没 push 消灭证据把胡话改了&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;git reset --hard HEAD~1&lt;/code&gt; // 时光机&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;git reflog&lt;/code&gt; // 哎我操胡话和代码全滚了&lt;/p&gt;
+&lt;h4 id="分支与合并"&gt;&lt;strong&gt;分支与合并&lt;/strong&gt;
+&lt;/h4&gt;&lt;p&gt;&lt;code&gt;git switch &amp;lt;branch&amp;gt;&lt;/code&gt; // Nintendo&lt;/p&gt;
+&lt;p&gt;*&lt;code&gt;git checkout &amp;lt;branch&amp;gt;&lt;/code&gt; // HELLO WORLD&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;git branch -m &amp;lt;old&amp;gt; &amp;lt;new&amp;gt;&lt;/code&gt; // 农奴翻身做主人&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;git merge --no-ff -m &amp;lt;commit&amp;gt; &amp;lt;branch&amp;gt;&lt;/code&gt; // 合并胡话到当前分支&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;git merge --squash &amp;lt;branch&amp;gt;&lt;/code&gt; // 打包合并&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;git cherry-pick &amp;lt;commit&amp;gt;&lt;/code&gt; // 重放提交到当前分支&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;git rebase &amp;lt;branch&amp;gt;&lt;/code&gt; // 将当前分支的起点移到分支的最新处&lt;/p&gt;
+&lt;h4 id="清理"&gt;&lt;strong&gt;清理&lt;/strong&gt;
+&lt;/h4&gt;&lt;p&gt;&lt;code&gt;git clean -fd&lt;/code&gt; // node_modules backhole.gif&lt;/p&gt;
+&lt;hr&gt;
+&lt;h4 id="重磅消息为了解决和文件撒哟娜拉的困扰-我们引入了胡话烘干桶"&gt;&lt;strong&gt;重磅消息：为了解决和文件撒哟娜拉的困扰 我们引入了胡话烘干桶！&lt;/strong&gt;
+&lt;/h4&gt;&lt;p&gt;&lt;code&gt;git stash&lt;/code&gt; // 写一半胡话去玩任天堂&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;git stash list&lt;/code&gt; // 列出烘干胡话&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;git stash apply stash@{0}&lt;/code&gt; // 把胡话干夹在胡话里&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;git stash pop stash@{0}&lt;/code&gt; // 吃掉胡话干&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;git stash drop stash@{0}&lt;/code&gt; // 扔掉过期胡话干&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;git restore --source=stash@{0} -- &amp;lt;file&amp;gt;&lt;/code&gt; // 胡话干占领地球&lt;/p&gt;
+&lt;p&gt;*&lt;code&gt;git checkout stash@{0} -- &amp;lt;file&amp;gt;&lt;/code&gt; // 旧胡话干占领地球&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;&lt;em&gt;* tagged is gitting old&lt;/em&gt;&lt;/p&gt;</description></item><item><title>保姆级指南 Hexo + GitHub Pages 搭建静态博客</title><link>https://www.lovelyrua.asia/p/%E4%BF%9D%E5%A7%86%E7%BA%A7%E6%8C%87%E5%8D%97-hexo--github-pages-%E6%90%AD%E5%BB%BA%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2/</link><pubDate>Wed, 09 Apr 2025 22:22:22 +0800</pubDate><guid>https://www.lovelyrua.asia/p/%E4%BF%9D%E5%A7%86%E7%BA%A7%E6%8C%87%E5%8D%97-hexo--github-pages-%E6%90%AD%E5%BB%BA%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2/</guid><description>&lt;blockquote&gt;
+&lt;p&gt;》》 将心比心，换位思考；务实求索，无限进步 《《&lt;/p&gt;&lt;/blockquote&gt;
+&lt;h3 id="前言"&gt;&lt;code&gt;##&lt;/code&gt;前言&lt;code&gt;##&lt;/code&gt;
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;本文将基于实操使用 Hexo 静态博客框架, 并借助 GitHub Pages 和 Cloudflare CDN 服务, 搭建一个无需租用服务器, 无需支付任何费用即可访问的高性能个人博客站点. 本文旨在帮助读者了解以下内容:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://baike.baidu.com/item/%E9%9D%99%E6%80%81%E7%BD%91%E7%AB%99/2776875" target="_blank" rel="noopener"
+&gt;静态网站&lt;/a&gt;的基本原理&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://pages.github.com/" target="_blank" rel="noopener"
+&gt;GitHub Pages&lt;/a&gt; 的使用&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://zh.wikipedia.org/zh-cn/%E5%85%A7%E5%AE%B9%E5%82%B3%E9%81%9E%E7%B6%B2%E8%B7%AF" target="_blank" rel="noopener"
+&gt;CDN&lt;/a&gt; 加速的优势&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://zh.wikipedia.org/wiki/Node.js" target="_blank" rel="noopener"
+&gt;Node.js&lt;/a&gt; 基础操作&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id="_0-准备工作"&gt;✨&amp;gt;_0 准备工作
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;在开始之前, 请确保您的计算机已安装以下环境：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Node.js 环境&lt;/strong&gt; (&lt;a class="link" href="https://nodejs.org/" target="_blank" rel="noopener"
+&gt;官方下载地址&lt;/a&gt;) : Hexo 基于 Node.js 运行, 您需要安装 Node.js.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Git&lt;/strong&gt; (&lt;a class="link" href="https://git-scm.com/downloads" target="_blank" rel="noopener"
+&gt;官方下载地址&lt;/a&gt;) : 用于将博客部署到 GitHub.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;GitHub 账号&lt;/strong&gt; (&lt;a class="link" href="https://github.com/join" target="_blank" rel="noopener"
+&gt;注册地址&lt;/a&gt;) : 用于存储博客部署后的静态文件.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;可选 :&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;自己的 &lt;strong&gt;域名&lt;/strong&gt; 和 &lt;strong&gt;Cloudflare 账号&lt;/strong&gt;, 用于后续配置 Cloudflare CDN 及个性化域名.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id="创建-github-pages-仓库"&gt;创建 Github Pages 仓库
+&lt;/h4&gt;&lt;p&gt;登录你的 Github 账号并访问:
+&lt;a class="link" href="https://github.com/new" target="_blank" rel="noopener"
+&gt;https://github.com/new&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;在 &lt;strong&gt;Repository name&lt;/strong&gt; 一框填入: &lt;strong&gt;{你的用户名}.github.io&lt;/strong&gt; . 如 &lt;strong&gt;&lt;code&gt;lovelyrua.github.io&lt;/code&gt;&lt;/strong&gt;
+点击 右下角绿色按钮 &lt;strong&gt;&lt;code&gt;Create Repository&lt;/code&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;接下来便可跟随本文步骤指引搭建你的博客&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="安装-hexo"&gt;安装 Hexo
+&lt;/h2&gt;&lt;blockquote&gt;
+&lt;p&gt;本步骤参考 (&lt;a class="link" href="https://hexo.io/zh-cn/docs/setup" target="_blank" rel="noopener"
+&gt;Hexo官方文档 - 建站&lt;/a&gt;)&lt;/p&gt;&lt;/blockquote&gt;
+&lt;p&gt;选择一个合适目录储存项目, 这里创建一个 &lt;code&gt;hexo-blog&lt;/code&gt; 文件夹为例:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;span class="lnt"&gt;13
+&lt;/span&gt;&lt;span class="lnt"&gt;14
+&lt;/span&gt;&lt;span class="lnt"&gt;15
+&lt;/span&gt;&lt;span class="lnt"&gt;16
+&lt;/span&gt;&lt;span class="lnt"&gt;17
+&lt;/span&gt;&lt;span class="lnt"&gt;18
+&lt;/span&gt;&lt;span class="lnt"&gt;19
+&lt;/span&gt;&lt;span class="lnt"&gt;20
+&lt;/span&gt;&lt;span class="lnt"&gt;21
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# 创建并进入项目目录; `&amp;amp;&amp;amp;` 表示前一个命令成功执行后执行后一个命令&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; $ mkdir hexo-blog &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="nb"&gt;cd&lt;/span&gt; hexo-blog
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# 在当前目录下使用 nodejs 提供的包管理工具 `npm` 来安装 hexo 命令行工具 (hexo-cli).&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# 如果想要在任何目录下都能直接使用 `hexo` 命令, 可以使用 `npm install hexo-cli -g` 进行全局安装 ➊&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; $ npm install hexo-cli
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# 初始化 hexo 项目 &amp;#39;blog&amp;#39;, hexo 会在当前目录下创建文件夹并从 github 拉取模板.&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# `npx` 是 npm 自带的包执行工具, 它会查找本地 &amp;#39;node_modules/.bin&amp;#39; 中的命令&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# 如果上一步骤进行了全局安装, 这里就可以直接执行 `hexo init blog`&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; $ npx hexo init blog &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="nb"&gt;cd&lt;/span&gt; blog
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# 安装项目依赖. 此命令会根据目录下的 &amp;#39;package.json&amp;#39; 文件中 &amp;#34;dependencies&amp;#34; 字块安装所需依赖&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; $ npm install
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# 启动 hexo 测试服务端&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; $ npx hexo server
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# `server` 也可直接缩写成 `s`&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# 以上操作若过程无误 控制台会输出:&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# `INFO Hexo is running at http://localhost:4000/ .`&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;此时在浏览器访问 http://localhost:4000/ 即可看到 hexo 的初始主题页面.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;strong&gt;如果启动或后续步骤出现类似&lt;/strong&gt; &lt;code&gt;Error: Cannot find module 'xxx'&lt;/code&gt; 的报错, 说明依赖安装不完整
+用 &lt;code&gt;npm install {报错提示缺少的依赖}&lt;/code&gt; 命令&lt;strong&gt;补充安装依赖即可&lt;/strong&gt;;
+若还是无法解决 可以尝试删除 node_modules 文件夹和 package-lock.json 文件后重新运行 &lt;code&gt;npm install&lt;/code&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;➊ 全局安装:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;! 当使用 &lt;code&gt;-g&lt;/code&gt; 参数全局安装一个包时, npm 会将可执行文件链接到系统的 PATH 环境变量所包含的目录中 (如 Node.js 安装目录), 这样系统就能在任何位置识别 hexo 命令.
+! 如果全局安装后命令仍不可用, 可能需要重启终端或检查系统 PATH 环境变量配置.&lt;/p&gt;&lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;h2 id="创建第一篇文章"&gt;创建第一篇文章
+&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;作为一个静态博客框架, Hexo 不像 WordPress, QQ空间 或 新浪微博 那样提供在线编辑器让你随时随地编辑发布
+它的工作流程更接近于开发者编写代码: &lt;code&gt;在本地创建文件&lt;/code&gt; - &lt;code&gt;编辑内容&lt;/code&gt; - &lt;code&gt;然后通过命令生成最终的网页文件并部署&lt;/code&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;本步骤参考 (&lt;a class="link" href="https://hexo.io/zh-cn/docs/writing" target="_blank" rel="noopener"
+&gt;Hexo官方文档 - 写作&lt;/a&gt;)&lt;/p&gt;&lt;/blockquote&gt;
+&lt;h4 id="使用命令创建新文章"&gt;使用命令创建新文章:
+&lt;/h4&gt;&lt;p&gt;确保终端位于 Hexo 项目的根目录 (即 &lt;code&gt;blog&lt;/code&gt; 文件夹内). 然后执行以下命令:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; $ npx hexo new post &lt;span class="s2"&gt;&amp;#34;我的第一篇文章&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# `new` 是创建命令, &amp;#39;post&amp;#39; 是文章的布局 (layout), &amp;#34;我的第一篇文章&amp;#34; 是文章标题&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# 如果标题包含空格, 最好用引号括起来&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# 控制台会输出类似信息:&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# INFO Created: ~/your/path/to/hexo-blog/blog/source/_posts/我的第一篇文章.md&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;blockquote&gt;
+&lt;p&gt;! 这个命令会在 source/_posts/ 目录下创建一个名为 &amp;ldquo;我的第一篇文章.md&amp;rdquo; 的 Markdown 文件.
+! &lt;code&gt;post&lt;/code&gt; 是 Hexo 默认的文章布局, 你也可以创建其他布局 (如 &lt;code&gt;draft&lt;/code&gt; 草稿, &lt;code&gt;page&lt;/code&gt; 独立页面等).&lt;/p&gt;&lt;/blockquote&gt;
+&lt;h4 id="编辑文章内容"&gt;编辑文章内容:
+&lt;/h4&gt;&lt;p&gt;使用你喜欢的文本编辑器 (如 &lt;code&gt;VS Code&lt;/code&gt;, &lt;code&gt;Sublime Text&lt;/code&gt;, &lt;code&gt;Obsidian&lt;/code&gt; 等) 打开刚刚创建的 .md 文件
+你会看到文件顶部有一段由 &lt;code&gt;---&lt;/code&gt; 包裹的内容, 这叫做 &lt;em&gt;Front-matter&lt;/em&gt;, 用于定义这篇文章的元数据:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;span class="lnt"&gt;13
+&lt;/span&gt;&lt;span class="lnt"&gt;14
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-md" data-lang="md"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;---
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;layout: post # 文章布局, 自动根据命令生成
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;title: 我的第一篇文章 # 文章标题, 自动根据命令生成
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;date: 2025-04-09 20:15:00 # 文章创建时间, 自动生成
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;tags: [hello, markdown] # 文章标签, 可以自行添加
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;---
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="gh"&gt;# 这里是正文的开始
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="gh"&gt;&lt;/span&gt;欢迎来到我的新博客!
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;这是我的第一篇文章，使用 &lt;span class="gs"&gt;**Markdown**&lt;/span&gt; 语法编写。
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;*&lt;/span&gt; 列表项1
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;*&lt;/span&gt; 列表项2
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;你可以在 &amp;mdash; 下方开始使用 &lt;a class="link" href="https://zh.wikipedia.org/wiki/Markdown" target="_blank" rel="noopener"
+&gt;Markdown&lt;/a&gt; 语法编写你的文章正文
+可以修改 title, 添加 tags (多个标签用逗号分隔或使用 YAML 列表格式). date 通常保持自动生成的时间即可.&lt;/p&gt;
+&lt;h4 id="本地预览"&gt;本地预览:
+&lt;/h4&gt;&lt;p&gt;编辑并保存好文章后回到终端 如果之前的 hexo server 还在运行, 可以先按 Ctrl+C 停止. 然后重新启动服务器进行预览：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;span class="lnt"&gt;8
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 清理之前构建的文件 (可选, 但修改配置或主题后需要执行)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;npx hexo clean
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 生成静态文件 (可选, server 命令通常会自动处理)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;npx hexo generate
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 启动本地服务器&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;npx hexo server
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;刷新浏览器中的 http://localhost:4000/, 你应该能在首页看到你新创建的文章 &amp;ldquo;我的第一篇文章&amp;rdquo; 的摘要或标题, 点击即可进入阅读.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;strong&gt;本节涉及的命令及其缩写:&lt;/strong&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;! npm i == npm install
+! hexo n == hexo new
+! hexo g == hexo generate
+! hexo s == hexo server
+! hexo d == hexo deploy
+! hexo clean (无缩写)&lt;/p&gt;&lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;h2 id="将-hexo-部署到-github"&gt;将 Hexo 部署到 GitHub
+&lt;/h2&gt;&lt;p&gt;现在你已经在本地创建并预览了你的第一篇文章. 下一步就是将博客发布到互联网上, 让其他人也能访问.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;静态博客的优势在于, 生成的网站文件无需复杂的服务器端处理;
+只要将这些文件托管在任何可公开访问的 Web 服务器上, 站点就能运行.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;GitHub Pages 提供了一个免费的静态网站托管服务, 非常适合部署 Hexo 生成的静态博客.
+Hexo 提供了一键部署功能, 可以方便地将生成的静态文件推送到指定的 Git 仓库.
+在此将演示 Hexo 提供的一键部署功能&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;本步骤参考 (&lt;a class="link" href="https://hexo.io/docs/one-command-deployment" target="_blank" rel="noopener"
+&gt;Hexo官方文档 - 一键部署&lt;/a&gt;)&lt;/p&gt;&lt;/blockquote&gt;
+&lt;h4 id="安装-git-部署插件"&gt;安装 Git 部署插件:
+&lt;/h4&gt;&lt;p&gt;要使用一键部署, 首先需要根据自己要部署到的平台安装对应的 deployer 插件
+安装针对 GitHub (或其他 Git 仓库) 的部署插件 &lt;code&gt;hexo-deployer-git&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; $ npm install hexo-deployer-git
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h4 id="配置-_configyml"&gt;配置 _config.yml:
+&lt;/h4&gt;&lt;p&gt;在部署前需要编辑 Hexo 项目的设置
+在 &lt;code&gt;_config.yml&lt;/code&gt;内填入必要的信息:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;span class="lnt"&gt;8
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-mysql" data-lang="mysql"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 找到文件末尾的 `deploy` 配置项
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;deploy&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;type&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;git&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;repo&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;https&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;//&lt;/span&gt;&lt;span class="n"&gt;github&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;com&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="err"&gt;用户名&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="err"&gt;用户名&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;github&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;io&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;git&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# 修改仓库地址
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# ！！极其重要：替换成你自己的仓库地址！！
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# 例如: https://github.com/LovelyRua/lovelyrua.github.io.git
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;branch&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;main&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# GitHub Pages 仓库默认分支名
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# message: &amp;#34;Site updated: {{ now(&amp;#39;YYYY-MM-DD HH:mm:ss&amp;#39;) }}&amp;#34; # 可选, 自定义 commit 信息
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;blockquote&gt;
+&lt;p&gt;! type: 一键部署方式的类型, 这里必须是 git
+!
+! repo: 务必替换成你自己的 GitHub Pages 仓库地址. 这个仓库通常命名为 &lt;code&gt;{你的GitHub用户名}.github.io&lt;/code&gt;. 可以使用 HTTPS 或 SSH 格式的地址.
+!
+! branch: 指定要将静态文件推送到哪个分支. 对于 &lt;code&gt;用户名.github.io&lt;/code&gt; 这种仓库, 通常是 &lt;code&gt;main&lt;/code&gt; 或 &lt;code&gt;master&lt;/code&gt; 分支作为 GitHub Pages 的源. 具体依赖于你的仓库设置.&lt;/p&gt;&lt;/blockquote&gt;
+&lt;p&gt;保存文件后 执行部署命令&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; $ npx hexo deploy
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; # 这个命令会先执行 `hexo generate` (生成静态文件到 public 目录)
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; # 然后将 public 目录的内容推送到你配置的 repo 和 branch。
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;strong&gt;首次部署可能遇到的情况:&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Git 身份未配置&lt;/strong&gt;: 如果你之前没有在本机配置过 Git 的用户名和邮箱, 可能会看到类似以下的提示:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;span class="lnt"&gt;13
+&lt;/span&gt;&lt;span class="lnt"&gt;14
+&lt;/span&gt;&lt;span class="lnt"&gt;15
+&lt;/span&gt;&lt;span class="lnt"&gt;16
+&lt;/span&gt;&lt;span class="lnt"&gt;17
+&lt;/span&gt;&lt;span class="lnt"&gt;18
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-ps" data-lang="ps"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nf"&gt;PS&lt;/span&gt; &lt;span class="nf"&gt;X:\your\path\hexo-blog\blog&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt; &lt;span class="nf"&gt;npx&lt;/span&gt; &lt;span class="nf"&gt;hexo&lt;/span&gt; &lt;span class="nf"&gt;deploy&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nf"&gt;INFO&lt;/span&gt; &lt;span class="nf"&gt;Validating&lt;/span&gt; &lt;span class="nf"&gt;config&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nf"&gt;INFO&lt;/span&gt; &lt;span class="nf"&gt;Deploying:&lt;/span&gt; &lt;span class="nf"&gt;git&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nf"&gt;INFO&lt;/span&gt; &lt;span class="nf"&gt;Setting&lt;/span&gt; &lt;span class="nf"&gt;up&lt;/span&gt; &lt;span class="nf"&gt;Git&lt;/span&gt; &lt;span class="nf"&gt;deployment...&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nf"&gt;Initialized&lt;/span&gt; &lt;span class="nf"&gt;empty&lt;/span&gt; &lt;span class="nf"&gt;Git&lt;/span&gt; &lt;span class="nf"&gt;repository&lt;/span&gt; &lt;span class="nf"&gt;in&lt;/span&gt; &lt;span class="nf"&gt;X:&lt;/span&gt;&lt;span class="nv"&gt;/your/path/hexo-blog/blog/.deploy_git/.git&lt;/span&gt;&lt;span class="err"&gt;/&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nf"&gt;Author&lt;/span&gt; &lt;span class="nf"&gt;identity&lt;/span&gt; &lt;span class="nf"&gt;unknown&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nf"&gt;***&lt;/span&gt; &lt;span class="nf"&gt;Please&lt;/span&gt; &lt;span class="nf"&gt;tell&lt;/span&gt; &lt;span class="nf"&gt;me&lt;/span&gt; &lt;span class="nf"&gt;who&lt;/span&gt; &lt;span class="nf"&gt;you&lt;/span&gt; &lt;span class="nf"&gt;are.&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nf"&gt;Run&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nf"&gt;git&lt;/span&gt; &lt;span class="nf"&gt;config&lt;/span&gt; &lt;span class="nf"&gt;--global&lt;/span&gt; &lt;span class="nf"&gt;user.email&lt;/span&gt; &lt;span class="nf"&gt;&amp;#34;you@example.com&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nf"&gt;git&lt;/span&gt; &lt;span class="nf"&gt;config&lt;/span&gt; &lt;span class="nf"&gt;--global&lt;/span&gt; &lt;span class="nf"&gt;user.name&lt;/span&gt; &lt;span class="nf"&gt;&amp;#34;Your&lt;/span&gt; &lt;span class="nf"&gt;Name&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nf"&gt;to&lt;/span&gt; &lt;span class="nf"&gt;set&lt;/span&gt; &lt;span class="nf"&gt;your&lt;/span&gt; &lt;span class="nf"&gt;account&amp;#39;s&lt;/span&gt; &lt;span class="nf"&gt;default&lt;/span&gt; &lt;span class="nf"&gt;identity.&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nf"&gt;Omit&lt;/span&gt; &lt;span class="nf"&gt;--global&lt;/span&gt; &lt;span class="nf"&gt;to&lt;/span&gt; &lt;span class="nf"&gt;set&lt;/span&gt; &lt;span class="nf"&gt;the&lt;/span&gt; &lt;span class="nf"&gt;identity&lt;/span&gt; &lt;span class="nf"&gt;only&lt;/span&gt; &lt;span class="nf"&gt;in&lt;/span&gt; &lt;span class="nf"&gt;this&lt;/span&gt; &lt;span class="nf"&gt;repository.&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nf"&gt;...&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;这是因为 Git 必须提供提交时必要的身份信息
+&lt;strong&gt;如上情况只需按照提示 通过这两条命令设置 Git 的默认身份信息:&lt;/strong&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; $ git config --global user.email &amp;#34;{你的邮箱}&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; $ git config --global user.name &amp;#34;{你的名字}&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;设置完成后再重新执行 &lt;code&gt;npx hexo deploy&lt;/code&gt;
+验证部署结果:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; INFO Deploy done: git
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;strong&gt;当终端输出如上日志即说明部署成功了&lt;/strong&gt;
+访问你的 Github Pages 仓库, 即可看到编译出的网页静态文件.
+&lt;em&gt;&lt;strong&gt;稍等片刻 GitHub Pages 需要一点时间来更新&lt;/strong&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;h3 id="-恭喜你"&gt;🎉 恭喜你!
+&lt;/h3&gt;&lt;p&gt;至此步骤在浏览器打开 &lt;code&gt;https://你的用户名.github.io/&lt;/code&gt;
+就可以访问你刚刚部署到 Github Pages 的博客了&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;strong&gt;如需编写新文章 只需重复从 &lt;strong&gt;步骤1.2&lt;/strong&gt; 开始的操作&lt;/strong&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="通过-cloudflare-cdn-加速国内访问"&gt;通过 Cloudflare CDN 加速国内访问
+&lt;/h2&gt;&lt;p&gt;&lt;em&gt;TODO&amp;hellip;&lt;/em&gt;&lt;/p&gt;</description></item><item><title>Archives</title><link>https://www.lovelyrua.asia/archives/</link><pubDate>Sun, 06 Mar 2022 00:00:00 +0000</pubDate><guid>https://www.lovelyrua.asia/archives/</guid><description/></item><item><title>IT-Techs</title><link>https://www.lovelyrua.asia/categories/it-techs/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://www.lovelyrua.asia/categories/it-techs/</guid><description/></item><item><title>Links</title><link>https://www.lovelyrua.asia/links/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://www.lovelyrua.asia/links/</guid><description/></item><item><title>Search</title><link>https://www.lovelyrua.asia/search/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://www.lovelyrua.asia/search/</guid><description/></item></channel></rss>
