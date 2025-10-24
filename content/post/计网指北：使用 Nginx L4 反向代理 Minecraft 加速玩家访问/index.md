@@ -346,7 +346,7 @@ Forward Host&Port 填写的是被代理的服务的主机名或 IP 地址
 ![[Pasted image 20250926155848.png]](https://pic.lovelyrua.asia:81/api/assets/4d51d745-86b8-4c35-9861-167cfffaddd8/original?key=IYz7LMuntz9bMrdmgVMKTyHJMWIK4DUzkkOSjAErkiA3UL_hxjcg2zhSCabSWWEuF1Y)
 ![[Pasted image 20250926160825.png]](https://pic.lovelyrua.asia:81/api/assets/0aa28780-1c57-4ba3-ae65-737e0904cc85/original?key=IYz7LMuntz9bMrdmgVMKTyHJMWIK4DUzkkOSjAErkiA3UL_hxjcg2zhSCabSWWEuF1Y)
 
-![雨云](https://www.rainyun.com/rua_)
+[雨云](https://www.rainyun.com/rua_)
 
 ##### 补充：雨云机房反代前后延迟
 
