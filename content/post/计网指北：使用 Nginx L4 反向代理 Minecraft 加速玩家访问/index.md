@@ -254,7 +254,7 @@ server {
 
 这是一种以单个容器为最小单位的弹性极高的云服务
 
-使用云应用 我们可以节省相比ECS十倍甚至九倍的成本
+使用云应用 我们可以节省相比ECS几倍的成本
 
 雨云提供的社区应用商店功能还很大程度上简化了传统安装部署的人力和时间消费
 
@@ -339,12 +339,14 @@ Forward Host&Port 填写的是被代理的服务的主机名或 IP 地址
 
 最后分享一下自己使用一段时间的费用
 
-我个人轻度使用下来 每星期成本仅五元 且共享网络的弹性带宽空间上限也更大
+我个人轻度使用下来 每星期成本仅七元 且共享网络的弹性带宽空间上限也更大
 
 按量计费的流量每百GB也只要5元左右
 
 ![[Pasted image 20250926155848.png]](https://pic.lovelyrua.asia:81/api/assets/4d51d745-86b8-4c35-9861-167cfffaddd8/original?key=IYz7LMuntz9bMrdmgVMKTyHJMWIK4DUzkkOSjAErkiA3UL_hxjcg2zhSCabSWWEuF1Y)
 ![[Pasted image 20250926160825.png]](https://pic.lovelyrua.asia:81/api/assets/0aa28780-1c57-4ba3-ae65-737e0904cc85/original?key=IYz7LMuntz9bMrdmgVMKTyHJMWIK4DUzkkOSjAErkiA3UL_hxjcg2zhSCabSWWEuF1Y)
+
+![雨云](https://www.rainyun.com/rua_)
 
 ##### 补充：雨云机房反代前后延迟
 
