@@ -12,7 +12,7 @@ links:
     image: https://www.lijianping.vip/wp-content/uploads/2025/08/%E4%B8%8B%E8%BD%BD.jpg
 
   - title: 休闲云盘
-    description: 现在上国内cdn了
+    description: 勉强能用
     website: https://pan.lovelyrua.asia/
     image: https://www.lijianping.vip/wp-content/uploads/2025/09/leisurenetdisk_256.png
 
