@@ -1,6 +1,6 @@
 ---
 title: Nginx 反代 S3 报 SignatureDoesNotMatch 错误
-description: Nginx 反代 S3 报 SignatureDoesNotMatch 错误
+description: 反代 MiniO 等 S3 服务时的签名相关问题
 date: 2026-03-28 10:32:22+0800
 # image: cover.jpg
 categories:
