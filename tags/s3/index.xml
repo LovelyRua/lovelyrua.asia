@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>S3 on LovelyRua's Blog</title><link>https://www.lovelyrua.asia/tags/s3/</link><description>Recent content in S3 on LovelyRua's Blog</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Sat, 28 Mar 2026 10:32:22 +0800</lastBuildDate><atom:link href="https://www.lovelyrua.asia/tags/s3/index.xml" rel="self" type="application/rss+xml"/><item><title>Nginx 反代 S3 报 SignatureDoesNotMatch 错误</title><link>https://www.lovelyrua.asia/p/nginx-%E5%8F%8D%E4%BB%A3-s3-%E6%8A%A5-signaturedoesnotmatch-%E9%94%99%E8%AF%AF/</link><pubDate>Sat, 28 Mar 2026 10:32:22 +0800</pubDate><guid>https://www.lovelyrua.asia/p/nginx-%E5%8F%8D%E4%BB%A3-s3-%E6%8A%A5-signaturedoesnotmatch-%E9%94%99%E8%AF%AF/</guid><description>&lt;h2 id="现象"&gt;现象
+&lt;/h2&gt;&lt;p&gt;访问通过 Nginx 反代的 MinIO 时, 出现以下报错:&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;SignatureDoesNotMatch: The request signature we calculated does not match the signature you provided.&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;直接通过内网 IP 访问没问题, 过 Nginx 不行; 切换到旧的 V2 签名协议能通, V4 不行&lt;/p&gt;
+&lt;h2 id="原因"&gt;原因
+&lt;/h2&gt;&lt;p&gt;在 Nginx 配置中使用了: &lt;code&gt;proxy_set_header Host $host;&lt;/code&gt;&lt;/p&gt;
+&lt;h2 id="解析"&gt;解析
+&lt;/h2&gt;&lt;p&gt;S3 的 V4 签名协议 对请求头极其敏感. 它在计算哈希时, 会将 Host 字段作为一个关键参数&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;$host&lt;/code&gt;: Nginx 的这个变量不包含端口号（如果是非标准端口）&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;$http_host&lt;/code&gt;: 这个变量会完整保留客户端请求中的 域名:端口&lt;/p&gt;
+&lt;p&gt;如果 S3 服务运行在非 80/443 端口（例如 9000）, 客户端生成的签名里包含端口, 在 Nginx 转发时被丢弃, 服务器端校验时就会认为请求被篡改, 直接拒绝访问&lt;/p&gt;
+&lt;h2 id="解决方案"&gt;解决方案
+&lt;/h2&gt;&lt;p&gt;修改 Nginx 配置文件中的 Host&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-Nginx" data-lang="Nginx"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 使用 $http_host 保留原始端口信息
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;proxy_set_header&lt;/span&gt; &lt;span class="s"&gt;Host&lt;/span&gt; &lt;span class="nv"&gt;$http_host&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 建议同时关闭缓冲，提升大文件备份稳定性
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;proxy_request_buffering&lt;/span&gt; &lt;span class="no"&gt;off&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;proxy_buffering&lt;/span&gt; &lt;span class="no"&gt;off&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="补充"&gt;补充
+&lt;/h3&gt;&lt;p&gt;如果你是在反代 MiniO Console 后发现无法在 WebUI 操作桶内文件 请尝试检查这个问题&lt;/p&gt;</description></item></channel></rss>
