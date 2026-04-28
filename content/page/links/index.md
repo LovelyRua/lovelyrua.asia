@@ -1,6 +1,11 @@
 ---
 title: Links
 links:
+  - title: 个人主页
+    description: 我的个人展示页
+    website: https://lovelyrua.asia
+    image: https://www.lovelyrua.asia/img/avatar_hu_253c6d420e4fc379.png
+
   - title: 放课后茶会
     description: K-ON 主题的音乐/技术资源综合论坛
     website: https://forums.lovelyrua.asia
