@@ -263,4 +263,184 @@ Hexo 提供了一键部署功能, 可以方便地将生成的静态文件推送�
 
 ## 通过 Cloudflare CDN 加速国内访问
 
-_TODO..._
+>! **先说结论：Cloudflare 免费版不等于中国大陆 CDN。**
+>! 免费版会使用 Cloudflare 全球网络，能提供代理、缓存和 HTTPS 等功能，但访客不一定会连接到中国大陆节点。
+>! 不同地区、运营商和时段的线路表现也可能不同，配置后应以实际测试为准。
+>! Cloudflare 官方的中国网络是 Enterprise 方案的额外付费服务，并且要求域名完成 ICP 备案。
+
+如果你已经有自己的域名，可以把域名接入 Cloudflare，再由 Cloudflare 反向代理到 GitHub Pages。
+访问路径会变为：
+
+`访客 -> Cloudflare -> 你的用户名.github.io`
+
+以下使用 `example.com` 作为示例域名，实际配置时请替换成你自己的域名。
+
+### 将域名接入 Cloudflare
+
+注册并登录 [Cloudflare](https://dash.cloudflare.com/)，点击 **Add a domain**，输入你的根域名，例如 `example.com`。
+
+选择 Free 套餐后，Cloudflare 会分配两条 Nameserver 地址。前往购买域名的平台，将域名原有的 Nameserver 替换成 Cloudflare 提供的地址。
+
+Nameserver 修改后不会立即生效。等待 Cloudflare 控制台中的域名状态变为 **Active**，再继续配置。
+
+### 配置自定义域名
+
+先在 Hexo 项目的 `source` 目录创建一个名为 `CNAME` 的文件，文件中只填写要使用的完整域名：
+
+```text
+www.example.com
+```
+
+`source/CNAME` 会在 Hexo 构建时被复制到 `public` 目录，这样每次执行 `hexo deploy` 时都不会丢失 GitHub Pages 的域名配置。
+
+然后重新部署一次：
+
+```bash
+  $ npx hexo clean
+  $ npx hexo deploy
+```
+
+打开 GitHub Pages 仓库，进入 **Settings -> Pages**，在 **Custom domain** 中填写同一个域名，例如 `www.example.com`，然后点击 **Save**。
+
+>! 建议先在 GitHub 中保存自定义域名，再配置公开的 DNS 解析，以免域名被其他 GitHub Pages 仓库抢先绑定。
+
+### 添加 DNS 记录
+
+回到 Cloudflare 控制台，进入 **DNS -> Records**，为 `www` 添加一条记录：
+
+| Type | Name | Target | Proxy status |
+| --- | --- | --- | --- |
+| CNAME | `www` | `你的用户名.github.io` | DNS only |
+
+例如 GitHub 用户名为 `lovelyrua`，Target 就填写 `lovelyrua.github.io`。
+不要在 Target 后面附加仓库名、`https://` 或路径。
+
+如果还希望通过根域名 `example.com` 访问博客，可以再添加以下四条 A 记录：
+
+| Type | Name | IPv4 address | Proxy status |
+| --- | --- | --- | --- |
+| A | `@` | `185.199.108.153` | DNS only |
+| A | `@` | `185.199.109.153` | DNS only |
+| A | `@` | `185.199.110.153` | DNS only |
+| A | `@` | `185.199.111.153` | DNS only |
+
+这里先保持灰色云朵，即 **DNS only**。等待 GitHub Pages 检测 DNS 配置并签发 HTTPS 证书后，再开启 Cloudflare 代理，可以减少证书验证失败或配置排查困难的情况。
+
+DNS 记录可能需要一段时间才能完全生效。回到 GitHub 的 **Settings -> Pages**，确认域名检查通过，并勾选 **Enforce HTTPS**。
+
+### 开启 Cloudflare 代理和 HTTPS
+
+GitHub Pages 已经可以通过自定义域名正常使用 HTTPS 后，返回 Cloudflare 的 DNS 页面，将博客域名对应记录的 **Proxy status** 改为 **Proxied**，也就是橙色云朵。
+
+然后进入 **SSL/TLS -> Overview**：
+
+* 推荐选择 **Full (strict)**，Cloudflare 到 GitHub Pages 的连接也会验证 HTTPS 证书。
+* 不要选择 **Flexible**，否则可能出现重定向循环，且 Cloudflare 到源站之间不会得到完整的 HTTPS 保护。
+
+再进入 **SSL/TLS -> Edge Certificates**，开启 **Always Use HTTPS**，将 HTTP 请求统一跳转到 HTTPS。
+
+### 缓存设置
+
+启用橙色云朵后，Cloudflare 默认会缓存图片、CSS、JavaScript 和字体等静态资源，通常不需要额外配置。
+HTML 页面默认不会被缓存，这对刚开始使用的博客反而更省心：文章部署后不容易因为旧缓存而看不到更新。
+
+如果后续确实要缓存 HTML，可以在 **Caching -> Cache Rules** 中单独创建规则。但这样做以后，每次发布文章都要考虑缓存刷新，因此不建议一开始就使用 “Cache Everything”。
+
+### CDN 优选（可选）
+
+Cloudflare 默认使用 Anycast：同一个 IP 会在多个数据中心广播，再由网络路由决定访客连接到哪里。
+所谓“CDN 优选”，就是在当前网络中测试 Cloudflare 的多个 Anycast IP，再让域名解析到延迟、丢包和下载速度表现较好的 IP。
+
+>! CDN 优选不是 Cloudflare 官方提供的功能，也不能把免费版变成中国大陆 CDN。
+>! 它只是在某些运营商线路上绕过不理想的自动选路，结果具有地区性和时效性。
+>! 一个在电信宽带上表现良好的 IP，在移动网络或其他省份可能更慢。
+
+#### 测试优选 IP
+
+可以使用开源工具 [CloudflareSpeedTest](https://github.com/XIU2/CloudflareSpeedTest) 测试当前网络到 Cloudflare IP 的延迟、丢包和下载速度。
+从项目的 Releases 页面下载与你的系统对应的版本，解压后运行：
+
+```ps
+  PS X:\your\path\cfst> .\cfst.exe
+```
+
+工具会先筛选延迟和丢包，再对候选 IP 进行下载测速，最终结果保存在 `result.csv`。
+不要只看最低延迟，应优先选择 **无丢包、下载速度稳定** 的结果。
+
+测速时还要注意：
+
+* 关闭代理软件，否则测到的可能是代理服务器到 Cloudflare 的线路。
+* 尽量在博客主要读者使用的网络上测试，而不是只在服务器上测试。
+* 分别在白天和晚高峰测试几次，不要根据一次结果就修改解析。
+* 测速会产生大量连接，请勿长时间、高并发地反复扫描。
+
+#### 先在本机验证
+
+不要立即修改正式域名。可以先用 `curl --resolve` 临时指定连接 IP：
+
+```bash
+  $ curl -I --resolve www.example.com:443:优选IP https://www.example.com/
+```
+
+例如：
+
+```bash
+  $ curl -I --resolve www.example.com:443:104.16.0.1 https://www.example.com/
+```
+
+这里的 IP 仅用于演示，不代表它适合你的线路。命令中的域名仍然是 `www.example.com`，
+因此 HTTPS 的 SNI 和 HTTP Host 不会被改成 IP。响应正常后，再用浏览器或多次下载测试确认效果。
+
+#### 将域名解析到优选 IP
+
+确认优选 IP 可用后，可以在 Cloudflare 的 **DNS -> Records** 中将博客域名改为 A 记录：
+
+| Type | Name | IPv4 address | Proxy status |
+| --- | --- | --- | --- |
+| A | `www` | `测试得到的优选 IP` | DNS only |
+
+这里必须使用 **DNS only（灰色云朵）**。如果重新打开 **Proxied（橙色云朵）**，
+Cloudflare 会再次返回自动分配的 Anycast IP，手动指定的优选 IP 也就失去作用。
+
+修改后可以查询解析结果：
+
+```bash
+  $ nslookup www.example.com
+```
+
+返回地址应当是刚刚填写的优选 IP。随后检查网站 HTTPS、页面、图片和静态资源是否都能正常加载。
+
+这种配置虽然显示为灰色云朵，但请求仍会到达 Cloudflare 的网络，再由请求中的域名转发到 GitHub Pages。
+不过它不属于 Cloudflare 官方承诺的标准接入方式，可能遇到证书、IP 调整、路由变化或 Cloudflare 策略变更。
+如果出现 SSL 错误、`1000`/`1001` 错误或网站无法访问，应立即恢复前文的标准配置：
+
+| Type | Name | Target | Proxy status |
+| --- | --- | --- | --- |
+| CNAME | `www` | `你的用户名.github.io` | Proxied |
+
+#### 使用第三方优选域名
+
+网上也有维护“优选域名”的公共服务，使用时通常把 `www` 的 CNAME 指向对方提供的域名，并保持 **DNS only**。
+这类服务会替你更换解析 IP，配置更省事，但域名解析结果由第三方控制；服务停止、被污染或改错记录时，你的网站也会受影响。
+
+因此不建议在没有审计服务来源的情况下，把主域名直接交给公共优选域名。
+如果一定要使用，最好先用单独的测试子域名，例如 `cf-test.example.com`，观察一段时间后再决定是否切换。
+
+对个人博客来说，优选配置还需要定期维护。建议保留原始 CNAME 配置，并每隔一段时间从不同运营商重新测试；
+当优选线路的实际提升不明显时，使用 Cloudflare 标准橙云代理通常更加稳定。
+
+### 验证是否生效
+
+打开博客并确认以下项目：
+
+* 浏览器地址栏使用的是你的自定义域名，并且 HTTPS 证书正常。
+* GitHub Pages 的 **Custom domain** 和 Hexo 的 `source/CNAME` 内容一致。
+* Cloudflare DNS 页面中的博客记录已经变为橙色云朵。
+* 浏览器开发者工具的 Network 面板中，请求响应头出现 `server: cloudflare`；静态资源还可能出现 `cf-cache-status: HIT`。
+
+第一次访问某个资源时，`cf-cache-status` 可能为 `MISS`，表示 Cloudflare 尚未缓存；再次访问后才可能变成 `HIT`。
+
+如果开启代理后出现 `526` 错误，先把 DNS 记录改回 **DNS only**，确认 GitHub Pages 已成功签发自定义域名证书，再重新开启代理。
+如果网站出现反复跳转，检查 Cloudflare SSL/TLS 模式是否误设成了 **Flexible**。
+
+至此 Cloudflare 已接入完成。它能隐藏 GitHub Pages 的直接访问地址、提供静态资源缓存和统一的 HTTPS 配置，但对于中国大陆访问速度是否有提升，仍应使用不同运营商网络实际测试，不能只看 Cloudflare 控制台中的状态判断。
