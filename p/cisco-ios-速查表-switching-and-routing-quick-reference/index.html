@@ -1,0 +1,596 @@
+<!doctype html><html lang=en-us dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content="面向 CCNA 与日常实验环境的 Cisco IOS 配置与排障命令速查表"><title>Cisco IOS 速查表 - Switching and Routing Quick Reference</title><link rel=canonical href=https://www.lovelyrua.asia/p/cisco-ios-%E9%80%9F%E6%9F%A5%E8%A1%A8-switching-and-routing-quick-reference/><link rel=stylesheet href=/scss/style.min.833d6eed45de56f48306bf57268d5b8cdfc8a60e8e7bdc99810464fcd033f7c6.css><meta property='og:title' content="Cisco IOS 速查表 - Switching and Routing Quick Reference"><meta property='og:description' content="面向 CCNA 与日常实验环境的 Cisco IOS 配置与排障命令速查表"><meta property='og:url' content='https://www.lovelyrua.asia/p/cisco-ios-%E9%80%9F%E6%9F%A5%E8%A1%A8-switching-and-routing-quick-reference/'><meta property='og:site_name' content="LovelyRua's Blog"><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:tag' content='Cisco'><meta property='article:tag' content='CCNA'><meta property='article:tag' content='Network'><meta property='article:tag' content='CheatSheet'><meta property='article:published_time' content='2026-06-28T13:55:00+08:00'><meta property='article:modified_time' content='2026-06-28T13:55:00+08:00'><meta name=twitter:title content="Cisco IOS 速查表 - Switching and Routing Quick Reference"><meta name=twitter:description content="面向 CCNA 与日常实验环境的 Cisco IOS 配置与排障命令速查表"><link rel="shortcut icon" href=/favicon.png></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar_hu_253c6d420e4fc379.png width=300 height=300 class=site-logo loading=lazy alt=Avatar>
+</a><span class=emoji>🗿</span></figure><div class=site-meta><h1 class=site-name><a href=/>LovelyRua's Blog</a></h1><h2 class=site-description>不可解な私たちはきっと同じ、もう何も怖くはないさ。</h2></div></header><ol class=menu-social><li><a href=https://space.bilibili.com/419743801 target=_blank title=Bilibili rel=me><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-bilibili"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 10a4 4 0 014-4h10a4 4 0 014 4v6a4 4 0 01-4 4H7a4 4 0 01-4-4v-6z"/><path d="M8 3l2 3"/><path d="M16 3l-2 3"/><path d="M9 13v-2"/><path d="M15 11v2"/></svg></a></li><li><a href=https://discord.gg/ZK5x72Rfzq target=_blank title=Discord rel=me><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-discord"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 12a1 1 0 102 0 1 1 0 00-2 0"/><path d="M14 12a1 1 0 102 0 1 1 0 00-2 0"/><path d="M15.5 17c0 1 1.5 3 2 3 1.5.0 2.833-1.667 3.5-3 .667-1.667.5-5.833-1.5-11.5-1.457-1.015-3-1.34-4.5-1.5l-.972 1.923a11.913 11.913.0 00-4.053.0L9 4c-1.5.16-3.043.485-4.5 1.5-2 5.667-2.167 9.833-1.5 11.5.667 1.333 2 3 3.5 3 .5.0 2-2 2-3"/><path d="M7 16.5c3.5 1 6.5 1 10 0"/></svg></a></li><li><a href=mailto:lovelyrua@lovelyrua.asia target=_blank title=Email rel=me><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-mail"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 7a2 2 0 012-2h14a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/><path d="M3 7l9 6 9-6"/></svg></a></li><li><a href=https://t.me/LovelyRua target=_blank title=Telegram rel=me><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-telegram"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M15 10l-4 4 6 6 4-16-18 7 4 2 2 6 3-4"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>Home</span></a></li><li><a href=/archives/><svg class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+<span>Archives</span></a></li><li><a href=/search/><svg class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg>
+<span>Search</span></a></li><li><a href=/links/><svg class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M10 14a3.5 3.5.0 005 0l4-4a3.5 3.5.0 00-5-5l-.5.5"/><path d="M14 10a3.5 3.5.0 00-5 0l-4 4a3.5 3.5.0 005 5l.5-.5"/></svg>
+<span>Links</span></a></li><li class=menu-bottom-section><ol class=menu><li id=dark-mode-toggle><svg class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<svg class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<span>暗色模式</span></li></ol></li></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">目录</h2><div class=widget--toc><nav id=TableOfContents><ol><li><ol><li><ol><li><a href=#基础模式与编辑><strong>基础模式与编辑</strong></a></li><li><a href=#安全管理基线><strong>安全管理基线</strong></a></li><li><a href=#日志与时间戳><strong>日志与时间戳</strong></a></li><li><a href=#snmp-基础><strong>SNMP 基础</strong></a></li><li><a href=#ios-升级流程><strong>IOS 升级流程</strong></a></li><li><a href=#接入交换机基础配置><strong>接入交换机基础配置</strong></a></li><li><a href=#stp生成树基础><strong>STP：生成树基础</strong></a></li><li><a href=#etherchannel><strong>EtherChannel</strong></a></li><li><a href=#端口安全><strong>端口安全</strong></a></li><li><a href=#dhcp-snooping-与-arp-inspection><strong>DHCP Snooping 与 ARP Inspection</strong></a></li><li><a href=#三层交换机><strong>三层交换机</strong></a></li><li><a href=#路由器接口与静态路由><strong>路由器接口与静态路由</strong></a></li><li><a href=#ospf-与动态路由><strong>OSPF 与动态路由</strong></a></li><li><a href=#fhrp默认网关冗余><strong>FHRP：默认网关冗余</strong></a></li><li><a href=#ipv6-基础><strong>IPv6 基础</strong></a></li><li><a href=#acl><strong>ACL</strong></a></li><li><a href=#cdp--lldp><strong>CDP / LLDP</strong></a></li><li><a href=#ntp--dns><strong>NTP / DNS</strong></a></li><li><a href=#dhcp-server--relay--client><strong>DHCP Server / Relay / Client</strong></a></li><li><a href=#nat--pat><strong>NAT / PAT</strong></a></li><li><a href=#qos-基础><strong>QoS 基础</strong></a></li><li><a href=#gre-tunnel><strong>GRE Tunnel</strong></a></li><li><a href=#vrf><strong>VRF</strong></a></li><li><a href=#常用排障命令索引><strong>常用排障命令索引</strong></a></li></ol></li></ol></li></ol></nav></div></section></aside><main class="main full-width"><article class=main-article><header class=article-header><div class=article-details><header class=article-category><a href=/categories/it-techs/>IT-Techs</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/p/cisco-ios-%E9%80%9F%E6%9F%A5%E8%A1%A8-switching-and-routing-quick-reference/>Cisco IOS 速查表 - Switching and Routing Quick Reference</a></h2><h3 class=article-subtitle>面向 CCNA 与日常实验环境的 Cisco IOS 配置与排障命令速查表</h3></div><footer class=article-time><div><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<time class=article-time--published datetime=2026-06-28T13:55:00+08:00>Jun 28, 2026</time></div><div><svg class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>阅读时长: 5 分钟</time></div></footer></div></header><section class=article-content><p>这是一份偏 CCNA 语境的 Cisco IOS 速查表，覆盖基础管理、二层交换、三层交换、路由器、常见网络服务与排障检查命令。<br>约定：尖括号 <code>&lt;...></code> 表示需要替换的变量；命令以典型 IOS 语法为主，不同平台或版本可能略有差异。</p><hr><h4 id=基础模式与编辑><strong>基础模式与编辑</strong></h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>enable
+</span></span><span class=line><span class=cl>configure terminal
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-text data-lang=text><span class=line><span class=cl>Ctrl+A      移动到行首
+</span></span><span class=line><span class=cl>Ctrl+E      移动到行尾
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>show running-config | include &lt;string&gt;
+</span></span><span class=line><span class=cl>default interface &lt;interface-id&gt;
+</span></span><span class=line><span class=cl>do write
+</span></span></code></pre></td></tr></table></div></div><p><code>do</code> 可在配置模式下执行 EXEC 命令，例如 <code>do show ip interface brief</code>。</p><hr><h4 id=安全管理基线><strong>安全管理基线</strong></h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>hostname R1
+</span></span><span class=line><span class=cl>enable secret &lt;password&gt;
+</span></span><span class=line><span class=cl>service password-encryption
+</span></span><span class=line><span class=cl>ip domain-name CCNA.local
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>username &lt;username&gt; privilege 15 secret &lt;password&gt;
+</span></span><span class=line><span class=cl>ip ssh version 2
+</span></span><span class=line><span class=cl>crypto key generate rsa modulus 2048
+</span></span></code></pre></td></tr></table></div></div><p>限制远程管理来源：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>access-list 1 permit host &lt;management-ip&gt;
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>line vty 0 15
+</span></span><span class=line><span class=cl> login local
+</span></span><span class=line><span class=cl> exec-timeout 5 0
+</span></span><span class=line><span class=cl> transport input ssh
+</span></span><span class=line><span class=cl> access-class 1 in
+</span></span></code></pre></td></tr></table></div></div><p>Console 口基础保护：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>line console 0
+</span></span><span class=line><span class=cl> password &lt;password&gt;
+</span></span><span class=line><span class=cl> login
+</span></span><span class=line><span class=cl> exec-timeout 5 0
+</span></span><span class=line><span class=cl> logging synchronous
+</span></span></code></pre></td></tr></table></div></div><p>检查：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>show ssh
+</span></span><span class=line><span class=cl>show running-config | include username|enable|transport|access-class
+</span></span></code></pre></td></tr></table></div></div><hr><h4 id=日志与时间戳><strong>日志与时间戳</strong></h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>logging console &lt;severity&gt;
+</span></span><span class=line><span class=cl>logging monitor &lt;severity&gt;
+</span></span><span class=line><span class=cl>logging buffered &lt;size&gt; &lt;severity&gt;
+</span></span><span class=line><span class=cl>logging host &lt;syslog-server-ip&gt;
+</span></span><span class=line><span class=cl>logging trap &lt;severity&gt;
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>service timestamps log datetime
+</span></span><span class=line><span class=cl>service sequence-numbers
+</span></span><span class=line><span class=cl>terminal monitor
+</span></span><span class=line><span class=cl>logging synchronous
+</span></span></code></pre></td></tr></table></div></div><p>说明：</p><ul><li><code>logging buffered</code>：保存在本机内存中；</li><li><code>logging host</code> + <code>logging trap</code>：发送到远程 Syslog；</li><li><code>terminal monitor</code>：远程终端实时查看日志；</li><li><code>logging synchronous</code>：避免日志打断正在输入的命令行。</li></ul><hr><h4 id=snmp-基础><strong>SNMP 基础</strong></h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>snmp-server contact &lt;contact&gt;
+</span></span><span class=line><span class=cl>snmp-server location &lt;location&gt;
+</span></span><span class=line><span class=cl>snmp-server community &lt;community&gt; ro
+</span></span><span class=line><span class=cl>snmp-server host &lt;ip-address&gt; version 2c &lt;community&gt;
+</span></span><span class=line><span class=cl>snmp-server enable traps
+</span></span></code></pre></td></tr></table></div></div><p>生产环境建议使用 SNMPv3；实验与 CCNA 语境中常见 <code>v2c + community</code>。</p><hr><h4 id=ios-升级流程><strong>IOS 升级流程</strong></h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>ip ftp username &lt;username&gt;
+</span></span><span class=line><span class=cl>ip ftp password &lt;password&gt;
+</span></span><span class=line><span class=cl>copy ftp: flash:
+</span></span></code></pre></td></tr></table></div></div><p>指定启动镜像：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-gdscript3 data-lang=gdscript3><span class=line><span class=cl><span class=n>boot</span> <span class=n>system</span> <span class=n>flash</span><span class=p>:</span><span class=o>&lt;</span><span class=n>ios</span><span class=o>-</span><span class=n>image</span><span class=o>.</span><span class=n>bin</span><span class=o>&gt;</span>
+</span></span><span class=line><span class=cl><span class=n>write</span>
+</span></span><span class=line><span class=cl><span class=n>reload</span>
+</span></span></code></pre></td></tr></table></div></div><p>确认与清理：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>show version
+</span></span><span class=line><span class=cl>show file systems
+</span></span><span class=line><span class=cl>show flash
+</span></span><span class=line><span class=cl>delete flash:&lt;old-ios-image.bin&gt;
+</span></span></code></pre></td></tr></table></div></div><hr><h4 id=接入交换机基础配置><strong>接入交换机基础配置</strong></h4><p>创建 VLAN：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>vlan 10
+</span></span><span class=line><span class=cl> name ENGINEERING
+</span></span><span class=line><span class=cl>vlan 11
+</span></span><span class=line><span class=cl> name VOICE
+</span></span></code></pre></td></tr></table></div></div><p>配置接入口：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>interface range f0/1-12
+</span></span><span class=line><span class=cl> description -- Engineering Department Ports --
+</span></span><span class=line><span class=cl> switchport mode access
+</span></span><span class=line><span class=cl> switchport access vlan 10
+</span></span><span class=line><span class=cl> switchport voice vlan 11
+</span></span></code></pre></td></tr></table></div></div><p>禁用未使用端口：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>interface range f0/25-48
+</span></span><span class=line><span class=cl> description -- Not in Use - Disabled --
+</span></span><span class=line><span class=cl> shutdown
+</span></span></code></pre></td></tr></table></div></div><p>配置上联 Trunk：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>interface g0/1
+</span></span><span class=line><span class=cl> description -- Trunk to Upstream Device --
+</span></span><span class=line><span class=cl> switchport mode trunk
+</span></span><span class=line><span class=cl> switchport nonegotiate
+</span></span><span class=line><span class=cl> switchport trunk allowed vlan 10,20,30
+</span></span><span class=line><span class=cl> switchport trunk native vlan 1001
+</span></span></code></pre></td></tr></table></div></div><p>交换机管理地址：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>interface vlan 1
+</span></span><span class=line><span class=cl> ip address 192.168.123.253 255.255.255.0
+</span></span><span class=line><span class=cl> no shutdown
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>ip default-gateway 192.168.123.1
+</span></span></code></pre></td></tr></table></div></div><p>检查：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>show ip interface brief
+</span></span><span class=line><span class=cl>show interfaces status
+</span></span><span class=line><span class=cl>show vlan brief
+</span></span><span class=line><span class=cl>show interfaces trunk
+</span></span><span class=line><span class=cl>show interfaces &lt;interface-id&gt; switchport
+</span></span></code></pre></td></tr></table></div></div><hr><h4 id=stp生成树基础><strong>STP：生成树基础</strong></h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>spanning-tree mode rapid-pvst
+</span></span><span class=line><span class=cl>spanning-tree portfast default
+</span></span><span class=line><span class=cl>spanning-tree portfast bpduguard default
+</span></span></code></pre></td></tr></table></div></div><p>指定根桥：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>spanning-tree vlan &lt;vlan-id&gt; root primary
+</span></span><span class=line><span class=cl>spanning-tree vlan &lt;vlan-id&gt; root secondary
+</span></span></code></pre></td></tr></table></div></div><p>或手动指定优先级：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>spanning-tree vlan &lt;vlan-id&gt; priority &lt;priority&gt;
+</span></span></code></pre></td></tr></table></div></div><p>检查：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>show spanning-tree
+</span></span><span class=line><span class=cl>show spanning-tree vlan &lt;vlan-id&gt;
+</span></span><span class=line><span class=cl>show errdisable recovery
+</span></span></code></pre></td></tr></table></div></div><hr><h4 id=etherchannel><strong>EtherChannel</strong></h4><p>配置 LACP：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-gdscript3 data-lang=gdscript3><span class=line><span class=cl><span class=n>port</span><span class=o>-</span><span class=n>channel</span> <span class=nb>load</span><span class=o>-</span><span class=n>balance</span> <span class=n>src</span><span class=o>-</span><span class=n>dst</span><span class=o>-</span><span class=n>ip</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>interface</span> <span class=nb>range</span> <span class=n>f0</span><span class=o>/</span><span class=mi>1</span><span class=o>-</span><span class=mi>4</span>
+</span></span><span class=line><span class=cl> <span class=n>channel</span><span class=o>-</span><span class=n>group</span> <span class=mi>1</span> <span class=n>mode</span> <span class=n>active</span>
+</span></span></code></pre></td></tr></table></div></div><p>配置聚合接口：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>interface port-channel 1
+</span></span><span class=line><span class=cl> description -- Uplink EtherChannel --
+</span></span><span class=line><span class=cl> switchport mode trunk
+</span></span><span class=line><span class=cl> switchport trunk allowed vlan 10,20,30
+</span></span></code></pre></td></tr></table></div></div><p>检查：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>show etherchannel summary
+</span></span><span class=line><span class=cl>show etherchannel port-channel
+</span></span><span class=line><span class=cl>show interfaces port-channel 1
+</span></span></code></pre></td></tr></table></div></div><hr><h4 id=端口安全><strong>端口安全</strong></h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>interface f0/1
+</span></span><span class=line><span class=cl> switchport mode access
+</span></span><span class=line><span class=cl> switchport port-security
+</span></span><span class=line><span class=cl> switchport port-security maximum &lt;number&gt;
+</span></span><span class=line><span class=cl> switchport port-security mac-address sticky
+</span></span><span class=line><span class=cl> switchport port-security violation &lt;shutdown|restrict|protect&gt;
+</span></span></code></pre></td></tr></table></div></div><p>老化策略：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>switchport port-security aging time &lt;minutes&gt;
+</span></span><span class=line><span class=cl>switchport port-security aging type &lt;absolute|inactivity&gt;
+</span></span></code></pre></td></tr></table></div></div><p>Errdisable 自动恢复：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>errdisable recovery cause psecure-violation
+</span></span><span class=line><span class=cl>errdisable recovery interval &lt;seconds&gt;
+</span></span></code></pre></td></tr></table></div></div><p>检查：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>show port-security
+</span></span><span class=line><span class=cl>show port-security interface &lt;interface-id&gt;
+</span></span><span class=line><span class=cl>show mac address-table secure
+</span></span><span class=line><span class=cl>show errdisable recovery
+</span></span></code></pre></td></tr></table></div></div><hr><h4 id=dhcp-snooping-与-arp-inspection><strong>DHCP Snooping 与 ARP Inspection</strong></h4><p>启用 DHCP Snooping：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>ip dhcp snooping
+</span></span><span class=line><span class=cl>ip dhcp snooping vlan &lt;vlan-id&gt;
+</span></span><span class=line><span class=cl>no ip dhcp snooping information option
+</span></span></code></pre></td></tr></table></div></div><p>信任上联端口：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>interface g0/1
+</span></span><span class=line><span class=cl> ip dhcp snooping trust
+</span></span></code></pre></td></tr></table></div></div><p>限制接入口速率：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>interface f0/1
+</span></span><span class=line><span class=cl> ip dhcp snooping limit rate &lt;packets-per-second&gt;
+</span></span></code></pre></td></tr></table></div></div><p>启用 Dynamic ARP Inspection：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>ip arp inspection vlan &lt;vlan-id&gt;
+</span></span><span class=line><span class=cl>ip arp inspection validate src-mac dst-mac ip
+</span></span></code></pre></td></tr></table></div></div><p>信任上联：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>interface g0/1
+</span></span><span class=line><span class=cl> ip arp inspection trust
+</span></span></code></pre></td></tr></table></div></div><p>静态 ARP ACL：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>arp access-list &lt;name&gt;
+</span></span><span class=line><span class=cl> permit ip host &lt;ip-address&gt; mac host &lt;mac-address&gt;
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>ip arp inspection filter &lt;name&gt; vlan &lt;vlan-id&gt;
+</span></span></code></pre></td></tr></table></div></div><p>检查：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>show ip dhcp snooping
+</span></span><span class=line><span class=cl>show ip dhcp snooping binding
+</span></span><span class=line><span class=cl>show ip arp inspection
+</span></span><span class=line><span class=cl>show ip arp inspection interfaces
+</span></span></code></pre></td></tr></table></div></div><hr><h4 id=三层交换机><strong>三层交换机</strong></h4><p>三层上联口：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>interface g0/1
+</span></span><span class=line><span class=cl> description -- L3 Link to Upstream --
+</span></span><span class=line><span class=cl> no switchport
+</span></span><span class=line><span class=cl> ip address 10.0.0.253 255.255.255.252
+</span></span><span class=line><span class=cl> no shutdown
+</span></span></code></pre></td></tr></table></div></div><p>SVI 网关：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>vlan 10
+</span></span><span class=line><span class=cl> name ENGINEERING
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>interface vlan 10
+</span></span><span class=line><span class=cl> description -- Gateway for Engineering VLAN --
+</span></span><span class=line><span class=cl> ip address 10.0.0.62 255.255.255.192
+</span></span><span class=line><span class=cl> no shutdown
+</span></span></code></pre></td></tr></table></div></div><p>开启三层转发与默认路由：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>ip routing
+</span></span><span class=line><span class=cl>ip route 0.0.0.0 0.0.0.0 10.0.0.254
+</span></span></code></pre></td></tr></table></div></div><p>检查：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>show ip interface brief
+</span></span><span class=line><span class=cl>show vlan brief
+</span></span><span class=line><span class=cl>show interfaces trunk
+</span></span><span class=line><span class=cl>show ip route
+</span></span></code></pre></td></tr></table></div></div><hr><h4 id=路由器接口与静态路由><strong>路由器接口与静态路由</strong></h4><p>接口地址：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>interface g0/1
+</span></span><span class=line><span class=cl> ip address &lt;ip-address&gt; &lt;subnet-mask&gt;
+</span></span><span class=line><span class=cl> no shutdown
+</span></span></code></pre></td></tr></table></div></div><p>默认路由：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>ip route 0.0.0.0 0.0.0.0 &lt;next-hop-ip&gt;
+</span></span></code></pre></td></tr></table></div></div><p>主机路由：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>ip route 1.1.1.1 255.255.255.255 &lt;next-hop-ip&gt;
+</span></span></code></pre></td></tr></table></div></div><p>Router-on-a-stick：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>interface g0/0.10
+</span></span><span class=line><span class=cl> encapsulation dot1q 10
+</span></span><span class=line><span class=cl> ip address 192.168.10.1 255.255.255.0
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>interface g0/0.99
+</span></span><span class=line><span class=cl> encapsulation dot1q 99 native
+</span></span><span class=line><span class=cl> ip address 192.168.99.1 255.255.255.0
+</span></span></code></pre></td></tr></table></div></div><hr><h4 id=ospf-与动态路由><strong>OSPF 与动态路由</strong></h4><p>进程配置：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>router ospf 1
+</span></span><span class=line><span class=cl> passive-interface &lt;interface-id&gt;
+</span></span><span class=line><span class=cl> network &lt;network-address&gt; &lt;wildcard-mask&gt; area 0
+</span></span><span class=line><span class=cl> auto-cost reference-bandwidth 100000
+</span></span></code></pre></td></tr></table></div></div><p>接口配置：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>interface g0/0
+</span></span><span class=line><span class=cl> ip ospf 1 area 0
+</span></span></code></pre></td></tr></table></div></div><p>检查：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>show ip protocols
+</span></span><span class=line><span class=cl>show ip ospf neighbor
+</span></span><span class=line><span class=cl>show ip ospf interface brief
+</span></span><span class=line><span class=cl>show ip route ospf
+</span></span></code></pre></td></tr></table></div></div><hr><h4 id=fhrp默认网关冗余><strong>FHRP：默认网关冗余</strong></h4><p>HSRP 示例：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>interface g0/0
+</span></span><span class=line><span class=cl> standby 1 ip &lt;virtual-ip&gt;
+</span></span><span class=line><span class=cl> standby 1 priority 150
+</span></span><span class=line><span class=cl> standby 1 preempt
+</span></span></code></pre></td></tr></table></div></div><p>检查：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>show standby
+</span></span><span class=line><span class=cl>show standby brief
+</span></span></code></pre></td></tr></table></div></div><hr><h4 id=ipv6-基础><strong>IPv6 基础</strong></h4><p>开启 IPv6 转发：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>ipv6 unicast-routing
+</span></span></code></pre></td></tr></table></div></div><p>检查：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>show ipv6 interface brief
+</span></span><span class=line><span class=cl>show ipv6 route
+</span></span></code></pre></td></tr></table></div></div><hr><h4 id=acl><strong>ACL</strong></h4><p>标准 ACL：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>access-list 1 permit &lt;source-ip&gt; &lt;wildcard-mask&gt;
+</span></span><span class=line><span class=cl>access-list 1 deny any
+</span></span></code></pre></td></tr></table></div></div><p>命名 ACL：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>ip access-list standard &lt;name&gt;
+</span></span><span class=line><span class=cl> permit &lt;source-ip&gt; &lt;wildcard-mask&gt;
+</span></span><span class=line><span class=cl> deny any
+</span></span></code></pre></td></tr></table></div></div><p>扩展 ACL：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>ip access-list extended &lt;name&gt;
+</span></span><span class=line><span class=cl> permit tcp &lt;source&gt; &lt;source-wildcard&gt; &lt;destination&gt; &lt;destination-wildcard&gt; eq 443
+</span></span><span class=line><span class=cl> deny ip any any
+</span></span></code></pre></td></tr></table></div></div><p>应用到接口：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>interface g0/1
+</span></span><span class=line><span class=cl> ip access-group &lt;number|name&gt; &lt;in|out&gt;
+</span></span></code></pre></td></tr></table></div></div><p>检查：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>show access-lists
+</span></span><span class=line><span class=cl>show ip interface &lt;interface-id&gt;
+</span></span></code></pre></td></tr></table></div></div><hr><h4 id=cdp--lldp><strong>CDP / LLDP</strong></h4><p>全局启用：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>cdp run
+</span></span><span class=line><span class=cl>lldp run
+</span></span></code></pre></td></tr></table></div></div><p>接口启用 LLDP：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>interface range g0/0-1
+</span></span><span class=line><span class=cl> lldp transmit
+</span></span><span class=line><span class=cl> lldp receive
+</span></span></code></pre></td></tr></table></div></div><p>检查：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>show cdp neighbors detail
+</span></span><span class=line><span class=cl>show lldp neighbors detail
+</span></span></code></pre></td></tr></table></div></div><hr><h4 id=ntp--dns><strong>NTP / DNS</strong></h4><p>NTP：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>ntp server &lt;ntp-server&gt; key &lt;key-number&gt;
+</span></span><span class=line><span class=cl>ntp peer &lt;ip-address&gt;
+</span></span><span class=line><span class=cl>ntp update-calendar
+</span></span><span class=line><span class=cl>ntp source &lt;interface-id&gt;
+</span></span></code></pre></td></tr></table></div></div><p>NTP 认证：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>ntp authentication-key &lt;key-number&gt; md5 &lt;key&gt;
+</span></span><span class=line><span class=cl>ntp trusted-key &lt;key-number&gt;
+</span></span></code></pre></td></tr></table></div></div><p>时区：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>clock timezone CST 8
+</span></span><span class=line><span class=cl>clock summer-time CDT recurring
+</span></span></code></pre></td></tr></table></div></div><p>DNS：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>ip domain-lookup
+</span></span><span class=line><span class=cl>ip name-server &lt;server1&gt; &lt;server2&gt;
+</span></span><span class=line><span class=cl>ip host &lt;hostname&gt; &lt;ip-address&gt;
+</span></span></code></pre></td></tr></table></div></div><p>检查：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>show ntp status
+</span></span><span class=line><span class=cl>show ntp associations
+</span></span><span class=line><span class=cl>show hosts
+</span></span></code></pre></td></tr></table></div></div><hr><h4 id=dhcp-server--relay--client><strong>DHCP Server / Relay / Client</strong></h4><p>排除地址：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>ip dhcp excluded-address 192.168.1.1 192.168.1.100
+</span></span></code></pre></td></tr></table></div></div><p>地址池：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>ip dhcp pool &lt;pool-name&gt;
+</span></span><span class=line><span class=cl> network 192.168.1.0 255.255.255.0
+</span></span><span class=line><span class=cl> dns-server 8.8.8.8
+</span></span><span class=line><span class=cl> domain-name lovelyrua.asia
+</span></span><span class=line><span class=cl> default-router 192.168.1.1
+</span></span><span class=line><span class=cl> lease &lt;days&gt; &lt;hours&gt; &lt;minutes&gt;
+</span></span></code></pre></td></tr></table></div></div><p>DHCP Relay：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>interface g0/1
+</span></span><span class=line><span class=cl> ip helper-address &lt;dhcp-server-ip&gt;
+</span></span></code></pre></td></tr></table></div></div><p>DHCP Client：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>interface f0/1
+</span></span><span class=line><span class=cl> ip address dhcp
+</span></span></code></pre></td></tr></table></div></div><p>检查：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>show ip dhcp binding
+</span></span><span class=line><span class=cl>show ip dhcp pool
+</span></span><span class=line><span class=cl>show ip dhcp server statistics
+</span></span></code></pre></td></tr></table></div></div><hr><h4 id=nat--pat><strong>NAT / PAT</strong></h4><p>标记 inside / outside：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>interface g0/1
+</span></span><span class=line><span class=cl> ip nat inside
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>interface g0/0
+</span></span><span class=line><span class=cl> ip nat outside
+</span></span></code></pre></td></tr></table></div></div><p>静态 NAT：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>ip nat inside source static 192.168.0.1 100.0.0.1
+</span></span></code></pre></td></tr></table></div></div><p>动态 NAT：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>access-list 1 permit 192.168.0.0 0.0.0.255
+</span></span><span class=line><span class=cl>ip nat pool POOL1 100.0.0.10 100.0.0.20 netmask 255.255.255.0
+</span></span><span class=line><span class=cl>ip nat inside source list 1 pool POOL1
+</span></span></code></pre></td></tr></table></div></div><p>PAT：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-gdscript3 data-lang=gdscript3><span class=line><span class=cl><span class=n>access</span><span class=o>-</span><span class=n>list</span> <span class=mi>1</span> <span class=n>permit</span> <span class=mf>192.168</span><span class=o>.</span><span class=mf>0.0</span> <span class=mf>0.0</span><span class=o>.</span><span class=mf>0.255</span>
+</span></span><span class=line><span class=cl><span class=n>ip</span> <span class=n>nat</span> <span class=n>inside</span> <span class=n>source</span> <span class=n>list</span> <span class=mi>1</span> <span class=n>interface</span> <span class=n>g0</span><span class=o>/</span><span class=mi>0</span> <span class=n>overload</span>
+</span></span></code></pre></td></tr></table></div></div><p>检查：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>show ip nat translations
+</span></span><span class=line><span class=cl>show ip nat statistics
+</span></span></code></pre></td></tr></table></div></div><hr><h4 id=qos-基础><strong>QoS 基础</strong></h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>class-map HTTP_MAP
+</span></span><span class=line><span class=cl> match protocol http
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>policy-map G0/0/0_OUT
+</span></span><span class=line><span class=cl> class HTTP_MAP
+</span></span><span class=line><span class=cl>  set ip dscp af31
+</span></span><span class=line><span class=cl>  priority percent 10
+</span></span><span class=line><span class=cl> class class-default
+</span></span><span class=line><span class=cl>  bandwidth percent 90
+</span></span></code></pre></td></tr></table></div></div><p>应用：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>interface g0/0/0
+</span></span><span class=line><span class=cl> service-policy output G0/0/0_OUT
+</span></span></code></pre></td></tr></table></div></div><hr><h4 id=gre-tunnel><strong>GRE Tunnel</strong></h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>interface tunnel 0
+</span></span><span class=line><span class=cl> ip address &lt;tunnel-ip&gt; &lt;subnet-mask&gt;
+</span></span><span class=line><span class=cl> tunnel source &lt;outside-interface&gt;
+</span></span><span class=line><span class=cl> tunnel destination &lt;remote-public-ip&gt;
+</span></span></code></pre></td></tr></table></div></div><p>检查：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>show interfaces tunnel 0
+</span></span><span class=line><span class=cl>show ip route
+</span></span></code></pre></td></tr></table></div></div><hr><h4 id=vrf><strong>VRF</strong></h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>ip vrf CUSTOMER1
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>interface g0/0
+</span></span><span class=line><span class=cl> ip vrf forwarding CUSTOMER1
+</span></span><span class=line><span class=cl> ip address 192.168.1.1 255.255.255.0
+</span></span></code></pre></td></tr></table></div></div><p>检查：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>show ip vrf
+</span></span><span class=line><span class=cl>show ip route vrf CUSTOMER1
+</span></span></code></pre></td></tr></table></div></div><hr><h4 id=常用排障命令索引><strong>常用排障命令索引</strong></h4><p>接口与 VLAN：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>show ip interface brief
+</span></span><span class=line><span class=cl>show interfaces status
+</span></span><span class=line><span class=cl>show interfaces trunk
+</span></span><span class=line><span class=cl>show vlan brief
+</span></span></code></pre></td></tr></table></div></div><p>二层安全：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>show spanning-tree
+</span></span><span class=line><span class=cl>show etherchannel summary
+</span></span><span class=line><span class=cl>show port-security
+</span></span><span class=line><span class=cl>show ip dhcp snooping binding
+</span></span><span class=line><span class=cl>show ip arp inspection
+</span></span></code></pre></td></tr></table></div></div><p>路由与邻居：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>show ip route
+</span></span><span class=line><span class=cl>show ip protocols
+</span></span><span class=line><span class=cl>show ip ospf neighbor
+</span></span><span class=line><span class=cl>show standby brief
+</span></span><span class=line><span class=cl>show cdp neighbors detail
+</span></span><span class=line><span class=cl>show lldp neighbors detail
+</span></span></code></pre></td></tr></table></div></div><p>服务：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>show ntp status
+</span></span><span class=line><span class=cl>show hosts
+</span></span><span class=line><span class=cl>show ip dhcp binding
+</span></span><span class=line><span class=cl>show ip nat translations
+</span></span></code></pre></td></tr></table></div></div><p>终端侧快速检查：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-powershell data-lang=powershell><span class=line><span class=cl><span class=n>ipconfig</span> <span class=p>/</span><span class=n>all</span>
+</span></span><span class=line><span class=cl><span class=n>ipconfig</span> <span class=p>/</span><span class=n>displaydns</span>
+</span></span><span class=line><span class=cl><span class=n>ipconfig</span> <span class=p>/</span><span class=n>flushdns</span>
+</span></span><span class=line><span class=cl><span class=n>ping</span> <span class=p>&lt;</span><span class=nb>ip-address</span><span class=p>&gt;</span> <span class=n>-n</span> <span class=mf>1</span>
+</span></span></code></pre></td></tr></table></div></div></section><footer class=article-footer><section class=article-tags><a href=/tags/cisco/>Cisco</a>
+<a href=/tags/ccna/>CCNA</a>
+<a href=/tags/network/>Network</a>
+<a href=/tags/cheatsheet/>CheatSheet</a></section><section class=article-copyright><svg class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg>
+<span>Licensed under CC BY-NC-SA 4.0</span></section></footer></article><aside class=related-content--wrapper><h2 class=section-title>相关文章</h2><div class=related-content><div class="flex article-list--tile"><article><a href=/p/%E6%8E%92%E9%94%99%E6%8C%87%E4%BB%A4%E5%90%88%E9%9B%86-%E5%85%88%E5%88%AB%E9%87%8D%E5%90%AF-%E8%AE%A9%E6%88%91%E7%9C%8B%E7%9C%8B/><div class=article-details><h2 class=article-title>排错指令合集 - 先别重启, 让我看看</h2></div></a></article><article><a href=/p/%E8%AE%A1%E7%BD%91%E6%8C%87%E5%8C%97%E4%BD%BF%E7%94%A8-nginx-l4-%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86-minecraft-%E5%8A%A0%E9%80%9F%E7%8E%A9%E5%AE%B6%E8%AE%BF%E9%97%AE/><div class=article-details><h2 class=article-title>计网指北：使用 Nginx L4 反向代理 Minecraft 加速玩家访问</h2></div></a></article><article><a href=/p/nginx-%E5%8F%8D%E4%BB%A3-s3-%E6%8A%A5-signaturedoesnotmatch-%E9%94%99%E8%AF%AF/><div class=article-details><h2 class=article-title>Nginx 反代 S3 报 SignatureDoesNotMatch 错误</h2></div></a></article><article><a href=/p/git-%E5%B0%8F%E7%AF%86%E4%B9%8B-%E5%AD%98%E6%9F%A5%E5%A4%87-control-changes-better/><div class=article-details><h2 class=article-title>Git 小篆之 存查备 - Control Changes Better</h2></div></a></article><article><a href=/p/%E4%BF%9D%E5%A7%86%E7%BA%A7%E6%8C%87%E5%8D%97-hexo--github-pages-%E6%90%AD%E5%BB%BA%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2/><div class=article-details><h2 class=article-title>保姆级指南 Hexo + GitHub Pages 搭建静态博客</h2></div></a></article></div></div></aside><link href=https://cdnjs.cloudflare.com/ajax/libs/artalk/2.9.1/Artalk.css rel=stylesheet><script src=https://cdnjs.cloudflare.com/ajax/libs/artalk/2.9.1/Artalk.js></script><div id=Comments class="article-comments markdown"></div><script>document.addEventListener("DOMContentLoaded",function(){const t=Artalk.init({el:"#Comments",pageKey:"https://www.lovelyrua.asia/p/cisco-ios-%E9%80%9F%E6%9F%A5%E8%A1%A8-switching-and-routing-quick-reference/",pageTitle:"Cisco IOS 速查表 - Switching and Routing Quick Reference",server:"https://artalk.lovelyrua.asia:81",site:"LovelyRua's Blog"});function e(){const e=document.documentElement.dataset.scheme==="dark";t.setDarkMode(e)}e();const n=new MutationObserver(t=>{t.forEach(t=>{t.attributeName==="data-scheme"&&e()})});n.observe(document.documentElement,{attributes:!0})})</script><footer class=site-footer><section class=copyright>&copy;
+2019 -
+2026 LovelyRua's Blog</section><section class=powerby>使用 <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> 构建<br>主题 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.33.0>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 设计</section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z+KMkF24hUW8WePSA9HM=" crossorigin=anonymous></script><script type=text/javascript src=/ts/main.c922af694cc257bf1ecc41c0dd7b0430f9114ec280ccf67cd2c6ad55f5316c4e.js defer></script><script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>

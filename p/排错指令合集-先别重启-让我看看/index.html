@@ -1,0 +1,689 @@
+<!doctype html><html lang=en-us dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content="面向个人服务器, 博客, 反代, Docker 与网络问题的常用排障命令速查"><title>排错指令合集 - 先别重启, 让我看看</title><link rel=canonical href=https://www.lovelyrua.asia/p/%E6%8E%92%E9%94%99%E6%8C%87%E4%BB%A4%E5%90%88%E9%9B%86-%E5%85%88%E5%88%AB%E9%87%8D%E5%90%AF-%E8%AE%A9%E6%88%91%E7%9C%8B%E7%9C%8B/><link rel=stylesheet href=/scss/style.min.833d6eed45de56f48306bf57268d5b8cdfc8a60e8e7bdc99810464fcd033f7c6.css><meta property='og:title' content="排错指令合集 - 先别重启, 让我看看"><meta property='og:description' content="面向个人服务器, 博客, 反代, Docker 与网络问题的常用排障命令速查"><meta property='og:url' content='https://www.lovelyrua.asia/p/%E6%8E%92%E9%94%99%E6%8C%87%E4%BB%A4%E5%90%88%E9%9B%86-%E5%85%88%E5%88%AB%E9%87%8D%E5%90%AF-%E8%AE%A9%E6%88%91%E7%9C%8B%E7%9C%8B/'><meta property='og:site_name' content="LovelyRua's Blog"><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:tag' content='Troubleshooting'><meta property='article:tag' content='Linux'><meta property='article:tag' content='Network'><meta property='article:tag' content='Docker'><meta property='article:tag' content='Nginx'><meta property='article:published_time' content='2026-06-30T09:40:00+08:00'><meta property='article:modified_time' content='2026-06-30T09:40:00+08:00'><meta name=twitter:title content="排错指令合集 - 先别重启, 让我看看"><meta name=twitter:description content="面向个人服务器, 博客, 反代, Docker 与网络问题的常用排障命令速查"><link rel="shortcut icon" href=/favicon.png></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar_hu_253c6d420e4fc379.png width=300 height=300 class=site-logo loading=lazy alt=Avatar>
+</a><span class=emoji>🗿</span></figure><div class=site-meta><h1 class=site-name><a href=/>LovelyRua's Blog</a></h1><h2 class=site-description>不可解な私たちはきっと同じ、もう何も怖くはないさ。</h2></div></header><ol class=menu-social><li><a href=https://space.bilibili.com/419743801 target=_blank title=Bilibili rel=me><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-bilibili"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 10a4 4 0 014-4h10a4 4 0 014 4v6a4 4 0 01-4 4H7a4 4 0 01-4-4v-6z"/><path d="M8 3l2 3"/><path d="M16 3l-2 3"/><path d="M9 13v-2"/><path d="M15 11v2"/></svg></a></li><li><a href=https://discord.gg/ZK5x72Rfzq target=_blank title=Discord rel=me><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-discord"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 12a1 1 0 102 0 1 1 0 00-2 0"/><path d="M14 12a1 1 0 102 0 1 1 0 00-2 0"/><path d="M15.5 17c0 1 1.5 3 2 3 1.5.0 2.833-1.667 3.5-3 .667-1.667.5-5.833-1.5-11.5-1.457-1.015-3-1.34-4.5-1.5l-.972 1.923a11.913 11.913.0 00-4.053.0L9 4c-1.5.16-3.043.485-4.5 1.5-2 5.667-2.167 9.833-1.5 11.5.667 1.333 2 3 3.5 3 .5.0 2-2 2-3"/><path d="M7 16.5c3.5 1 6.5 1 10 0"/></svg></a></li><li><a href=mailto:lovelyrua@lovelyrua.asia target=_blank title=Email rel=me><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-mail"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 7a2 2 0 012-2h14a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/><path d="M3 7l9 6 9-6"/></svg></a></li><li><a href=https://t.me/LovelyRua target=_blank title=Telegram rel=me><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-telegram"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M15 10l-4 4 6 6 4-16-18 7 4 2 2 6 3-4"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>Home</span></a></li><li><a href=/archives/><svg class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+<span>Archives</span></a></li><li><a href=/search/><svg class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg>
+<span>Search</span></a></li><li><a href=/links/><svg class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M10 14a3.5 3.5.0 005 0l4-4a3.5 3.5.0 00-5-5l-.5.5"/><path d="M14 10a3.5 3.5.0 00-5 0l-4 4a3.5 3.5.0 005 5l.5-.5"/></svg>
+<span>Links</span></a></li><li class=menu-bottom-section><ol class=menu><li id=dark-mode-toggle><svg class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<svg class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<span>暗色模式</span></li></ol></li></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">目录</h2><div class=widget--toc><nav id=TableOfContents><ol><li><a href=#机器概况>机器概况</a></li><li><a href=#服务状态>服务状态</a></li><li><a href=#进程>进程</a></li><li><a href=#端口>端口</a></li><li><a href=#网络>网络</a></li><li><a href=#代理设置>代理设置</a></li><li><a href=#抓包>抓包</a></li><li><a href=#dns>DNS</a></li><li><a href=#http--https>HTTP / HTTPS</a></li><li><a href=#nginx>Nginx</a></li><li><a href=#防火墙>防火墙</a></li><li><a href=#磁盘>磁盘</a></li><li><a href=#内存--cpu--io>内存 / CPU / IO</a></li><li><a href=#docker>Docker</a></li><li><a href=#docker-compose>Docker Compose</a></li><li><a href=#git>Git</a></li><li><a href=#windows-网络>Windows 网络</a></li><li><a href=#windows-端口转发>Windows 端口转发</a></li><li><a href=#常用组合>常用组合</a></li></ol></nav></div></section></aside><main class="main full-width"><article class=main-article><header class=article-header><div class=article-details><header class=article-category><a href=/categories/it-techs/>IT-Techs</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/p/%E6%8E%92%E9%94%99%E6%8C%87%E4%BB%A4%E5%90%88%E9%9B%86-%E5%85%88%E5%88%AB%E9%87%8D%E5%90%AF-%E8%AE%A9%E6%88%91%E7%9C%8B%E7%9C%8B/>排错指令合集 - 先别重启, 让我看看</a></h2><h3 class=article-subtitle>面向个人服务器, 博客, 反代, Docker 与网络问题的常用排障命令速查</h3></div><footer class=article-time><div><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<time class=article-time--published datetime=2026-06-30T09:40:00+08:00>Jun 30, 2026</time></div><div><svg class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>阅读时长: 6 分钟</time></div></footer></div></header><section class=article-content><hr><h2 id=机器概况>机器概况</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>hostname
+</span></span><span class=line><span class=cl>whoami
+</span></span><span class=line><span class=cl><span class=nb>pwd</span>
+</span></span><span class=line><span class=cl>date
+</span></span><span class=line><span class=cl>uptime
+</span></span><span class=line><span class=cl>uname -a
+</span></span><span class=line><span class=cl>cat /etc/os-release
+</span></span><span class=line><span class=cl>nproc
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>free -h
+</span></span><span class=line><span class=cl>df -h
+</span></span><span class=line><span class=cl>df -i
+</span></span><span class=line><span class=cl>top
+</span></span></code></pre></td></tr></table></div></div><hr><h2 id=服务状态>服务状态</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>systemctl status nginx
+</span></span><span class=line><span class=cl>systemctl status docker
+</span></span><span class=line><span class=cl>systemctl list-units --failed
+</span></span><span class=line><span class=cl>systemctl list-unit-files <span class=p>|</span> grep enabled
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>journalctl -u nginx -n <span class=m>100</span> --no-pager
+</span></span><span class=line><span class=cl>journalctl -u nginx -f
+</span></span><span class=line><span class=cl>journalctl -n <span class=m>200</span> --no-pager
+</span></span><span class=line><span class=cl>journalctl -b -n <span class=m>200</span> --no-pager
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>systemctl restart 服务名
+</span></span><span class=line><span class=cl>systemctl reload 服务名
+</span></span><span class=line><span class=cl>systemctl <span class=nb>enable</span> --now 服务名
+</span></span></code></pre></td></tr></table></div></div><hr><h2 id=进程>进程</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>ps aux
+</span></span><span class=line><span class=cl>ps aux <span class=p>|</span> grep nginx
+</span></span><span class=line><span class=cl>pgrep -a nginx
+</span></span><span class=line><span class=cl>pidof nginx
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>ps aux --sort<span class=o>=</span>-%cpu <span class=p>|</span> head
+</span></span><span class=line><span class=cl>ps aux --sort<span class=o>=</span>-%mem <span class=p>|</span> head
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=nb>kill</span> -TERM &lt;pid&gt;
+</span></span><span class=line><span class=cl><span class=nb>kill</span> -KILL &lt;pid&gt;
+</span></span></code></pre></td></tr></table></div></div><hr><h2 id=端口>端口</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>ss -lntp
+</span></span><span class=line><span class=cl>ss -lnup
+</span></span><span class=line><span class=cl>ss -antp
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>sudo lsof -i :80
+</span></span><span class=line><span class=cl>sudo lsof -iTCP:3000 -sTCP:LISTEN
+</span></span><span class=line><span class=cl>sudo fuser -v 80/tcp
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>netstat -lntp
+</span></span><span class=line><span class=cl>netstat -lnup
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-text data-lang=text><span class=line><span class=cl>127.0.0.1:3000   只监听本机
+</span></span><span class=line><span class=cl>0.0.0.0:3000     监听所有 IPv4
+</span></span><span class=line><span class=cl>[::]:3000        监听 IPv6
+</span></span></code></pre></td></tr></table></div></div><hr><h2 id=网络>网络</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>ip addr
+</span></span><span class=line><span class=cl>ip route
+</span></span><span class=line><span class=cl>ip neigh
+</span></span><span class=line><span class=cl>resolvectl status
+</span></span><span class=line><span class=cl>cat /etc/resolv.conf
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>ping 1.1.1.1
+</span></span><span class=line><span class=cl>ping example.com
+</span></span><span class=line><span class=cl>traceroute example.com
+</span></span><span class=line><span class=cl>mtr example.com
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>nc -vz example.com <span class=m>80</span>
+</span></span><span class=line><span class=cl>nc -vz example.com <span class=m>443</span>
+</span></span><span class=line><span class=cl>nc -vz 1.2.3.4 <span class=m>25565</span>
+</span></span><span class=line><span class=cl>telnet example.com <span class=m>443</span>
+</span></span></code></pre></td></tr></table></div></div><hr><h2 id=代理设置>代理设置</h2><p>临时设置当前 Shell 的代理：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=nb>export</span> <span class=nv>http_proxy</span><span class=o>=</span>http://127.0.0.1:7890
+</span></span><span class=line><span class=cl><span class=nb>export</span> <span class=nv>https_proxy</span><span class=o>=</span>http://127.0.0.1:7890
+</span></span><span class=line><span class=cl><span class=nb>export</span> <span class=nv>all_proxy</span><span class=o>=</span>socks5://127.0.0.1:7890
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=nb>export</span> <span class=nv>HTTP_PROXY</span><span class=o>=</span>http://127.0.0.1:7890
+</span></span><span class=line><span class=cl><span class=nb>export</span> <span class=nv>HTTPS_PROXY</span><span class=o>=</span>http://127.0.0.1:7890
+</span></span><span class=line><span class=cl><span class=nb>export</span> <span class=nv>ALL_PROXY</span><span class=o>=</span>socks5://127.0.0.1:7890
+</span></span></code></pre></td></tr></table></div></div><p>取消当前 Shell 的代理：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=nb>unset</span> http_proxy
+</span></span><span class=line><span class=cl><span class=nb>unset</span> https_proxy
+</span></span><span class=line><span class=cl><span class=nb>unset</span> all_proxy
+</span></span><span class=line><span class=cl><span class=nb>unset</span> HTTP_PROXY
+</span></span><span class=line><span class=cl><span class=nb>unset</span> HTTPS_PROXY
+</span></span><span class=line><span class=cl><span class=nb>unset</span> ALL_PROXY
+</span></span></code></pre></td></tr></table></div></div><p>测试代理是否生效：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>curl -I https://example.com
+</span></span><span class=line><span class=cl>curl -x http://127.0.0.1:7890 -I https://example.com
+</span></span></code></pre></td></tr></table></div></div><p>Git 设置代理：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>git config --global http.proxy http://127.0.0.1:7890
+</span></span><span class=line><span class=cl>git config --global https.proxy http://127.0.0.1:7890
+</span></span></code></pre></td></tr></table></div></div><p>Git 取消代理：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>git config --global --unset http.proxy
+</span></span><span class=line><span class=cl>git config --global --unset https.proxy
+</span></span></code></pre></td></tr></table></div></div><p>Docker 服务设置代理，适合拉镜像慢或拉不下来时排查：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>sudo mkdir -p /etc/systemd/system/docker.service.d
+</span></span><span class=line><span class=cl>sudo nano /etc/systemd/system/docker.service.d/proxy.conf
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-ini data-lang=ini><span class=line><span class=cl><span class=k>[Service]</span>
+</span></span><span class=line><span class=cl><span class=na>Environment</span><span class=o>=</span><span class=s>&#34;HTTP_PROXY=http://127.0.0.1:7890&#34;</span>
+</span></span><span class=line><span class=cl><span class=na>Environment</span><span class=o>=</span><span class=s>&#34;HTTPS_PROXY=http://127.0.0.1:7890&#34;</span>
+</span></span><span class=line><span class=cl><span class=na>Environment</span><span class=o>=</span><span class=s>&#34;NO_PROXY=localhost,127.0.0.1,::1&#34;</span>
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>sudo systemctl daemon-reload
+</span></span><span class=line><span class=cl>sudo systemctl restart docker
+</span></span><span class=line><span class=cl>sudo systemctl show --property<span class=o>=</span>Environment docker
+</span></span></code></pre></td></tr></table></div></div><hr><h2 id=抓包>抓包</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>sudo tcpdump -ni any port <span class=m>443</span>
+</span></span><span class=line><span class=cl>sudo tcpdump -ni any host 1.2.3.4
+</span></span><span class=line><span class=cl>sudo tcpdump -ni eth0 port <span class=m>80</span>
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>sudo tcpdump -ni any <span class=s1>&#39;tcp port 443 and tcp[tcpflags] &amp; tcp-syn != 0&#39;</span>
+</span></span><span class=line><span class=cl>sudo tcpdump -ni any <span class=s1>&#39;icmp&#39;</span>
+</span></span><span class=line><span class=cl>sudo tcpdump -ni any <span class=s1>&#39;udp port 53&#39;</span>
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>sudo tcpdump -ni any -w capture.pcap port <span class=m>443</span>
+</span></span></code></pre></td></tr></table></div></div><hr><h2 id=dns>DNS</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>dig example.com
+</span></span><span class=line><span class=cl>dig example.com A
+</span></span><span class=line><span class=cl>dig example.com AAAA
+</span></span><span class=line><span class=cl>dig example.com CNAME
+</span></span><span class=line><span class=cl>dig example.com MX
+</span></span><span class=line><span class=cl>dig example.com TXT
+</span></span><span class=line><span class=cl>dig example.com NS
+</span></span><span class=line><span class=cl>dig example.com SOA
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>dig @1.1.1.1 example.com
+</span></span><span class=line><span class=cl>dig @8.8.8.8 example.com
+</span></span><span class=line><span class=cl>dig @223.5.5.5 example.com
+</span></span><span class=line><span class=cl>dig @ns1.example-dns.com example.com
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>dig +trace example.com
+</span></span><span class=line><span class=cl>dig +short example.com
+</span></span><span class=line><span class=cl>dig +nocmd example.com any +multiline +noall +answer
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cmd data-lang=cmd><span class=line><span class=cl>nslookup example.com
+</span></span><span class=line><span class=cl>ipconfig /displaydns
+</span></span><span class=line><span class=cl>ipconfig /flushdns
+</span></span></code></pre></td></tr></table></div></div><hr><h2 id=http--https>HTTP / HTTPS</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>curl -I https://example.com
+</span></span><span class=line><span class=cl>curl -IL https://example.com
+</span></span><span class=line><span class=cl>curl -v https://example.com
+</span></span><span class=line><span class=cl>curl -vk https://example.com
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>curl -v -H <span class=s1>&#39;Host: example.com&#39;</span> http://1.2.3.4
+</span></span><span class=line><span class=cl>curl -v --resolve example.com:443:1.2.3.4 https://example.com
+</span></span><span class=line><span class=cl>curl -v --connect-to example.com:443:1.2.3.4:443 https://example.com
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>curl -iv https://example.com --connect-to example.com:443:12.34.56.78:443
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-text data-lang=text><span class=line><span class=cl>--connect-to 会保持 URL 和 SNI 还是 example.com,
+</span></span><span class=line><span class=cl>但实际 TCP 连接会打到 12.34.56.78:443。
+</span></span><span class=line><span class=cl>适合排查 DNS、CDN、源站差异。
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>curl -X POST https://example.com/api
+</span></span><span class=line><span class=cl>curl -H <span class=s1>&#39;Content-Type: application/json&#39;</span> -d <span class=s1>&#39;{&#34;hello&#34;:&#34;world&#34;}&#39;</span> https://example.com/api
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>openssl s_client -connect example.com:443 -servername example.com
+</span></span><span class=line><span class=cl>openssl s_client -connect 1.2.3.4:443 -servername example.com -brief
+</span></span><span class=line><span class=cl><span class=nb>echo</span> <span class=p>|</span> openssl s_client -connect example.com:443 -servername example.com 2&gt;/dev/null <span class=p>|</span> openssl x509 -noout -dates
+</span></span><span class=line><span class=cl><span class=nb>echo</span> <span class=p>|</span> openssl s_client -connect example.com:443 -servername example.com 2&gt;/dev/null <span class=p>|</span> openssl x509 -noout -issuer -subject
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-text data-lang=text><span class=line><span class=cl>-connect 1.2.3.4:443       实际连接的 IP 和端口
+</span></span><span class=line><span class=cl>-servername example.com    TLS SNI 使用的域名
+</span></span><span class=line><span class=cl>-brief                     输出简洁结果
+</span></span></code></pre></td></tr></table></div></div><hr><h2 id=nginx>Nginx</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>sudo nginx -t
+</span></span><span class=line><span class=cl>sudo nginx -T
+</span></span><span class=line><span class=cl>sudo systemctl status nginx
+</span></span><span class=line><span class=cl>sudo systemctl reload nginx
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>tail -f /var/log/nginx/access.log
+</span></span><span class=line><span class=cl>tail -f /var/log/nginx/error.log
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>sudo nginx -T <span class=p>|</span> grep -n <span class=s2>&#34;server_name&#34;</span>
+</span></span><span class=line><span class=cl>sudo nginx -T <span class=p>|</span> grep -n <span class=s2>&#34;proxy_pass&#34;</span>
+</span></span><span class=line><span class=cl>sudo nginx -T <span class=p>|</span> grep -n <span class=s2>&#34;client_max_body_size&#34;</span>
+</span></span><span class=line><span class=cl>sudo nginx -T <span class=p>|</span> grep -n <span class=s2>&#34;listen&#34;</span>
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>nginx -T <span class=p>|</span> grep -A <span class=m>5</span> -i <span class=s2>&#34;proxy_pass&#34;</span>
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-text data-lang=text><span class=line><span class=cl>-A 5 表示匹配到 proxy_pass 后，再额外显示后面 5 行。
+</span></span><span class=line><span class=cl>适合快速确认 proxy_set_header、proxy_http_version 等反代配置。
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>nginx -T &gt; /tmp/full_nginx.conf <span class=o>&amp;&amp;</span> less /tmp/full_nginx.conf
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-text data-lang=text><span class=line><span class=cl>nginx -T 会输出主配置和所有 include 进来的配置。
+</span></span><span class=line><span class=cl>导出到 /tmp/full_nginx.conf 后更方便搜索和分页查看。
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>awk <span class=s1>&#39;$9 ~ /^5[0-9][0-9]$/&#39;</span> /var/log/nginx/access.log <span class=p>|</span> tail -n <span class=m>50</span>
+</span></span><span class=line><span class=cl>grep -E <span class=s1>&#39;(connect\(\) failed|no live upstreams)&#39;</span> /var/log/nginx/error.log <span class=p>|</span> tail -n <span class=m>20</span>
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-text data-lang=text><span class=line><span class=cl>access.log 默认第 9 列通常是 HTTP 状态码。
+</span></span><span class=line><span class=cl>/^5[0-9][0-9]$/ 匹配 500 到 599。
+</span></span><span class=line><span class=cl>connect() failed 表示 Nginx 连不上后端 upstream。
+</span></span><span class=line><span class=cl>no live upstreams 表示 upstream 里没有可用后端。
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-nginx data-lang=nginx><span class=line><span class=cl><span class=k>proxy_set_header</span> <span class=s>Host</span> <span class=nv>$host</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=k>proxy_set_header</span> <span class=s>X-Real-IP</span> <span class=nv>$remote_addr</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=k>proxy_set_header</span> <span class=s>X-Forwarded-For</span> <span class=nv>$proxy_add_x_forwarded_for</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=k>proxy_set_header</span> <span class=s>X-Forwarded-Proto</span> <span class=nv>$scheme</span><span class=p>;</span>
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-nginx data-lang=nginx><span class=line><span class=cl><span class=k>proxy_http_version</span> <span class=mi>1</span><span class=s>.1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=k>proxy_set_header</span> <span class=s>Upgrade</span> <span class=nv>$http_upgrade</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=k>proxy_set_header</span> <span class=s>Connection</span> <span class=s>&#34;upgrade&#34;</span><span class=p>;</span>
+</span></span></code></pre></td></tr></table></div></div><hr><h2 id=防火墙>防火墙</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>sudo ufw status verbose
+</span></span><span class=line><span class=cl>sudo ufw allow 80/tcp
+</span></span><span class=line><span class=cl>sudo ufw allow 443/tcp
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>sudo firewall-cmd --list-all
+</span></span><span class=line><span class=cl>sudo firewall-cmd --get-active-zones
+</span></span><span class=line><span class=cl>sudo firewall-cmd --add-port<span class=o>=</span>443/tcp --permanent
+</span></span><span class=line><span class=cl>sudo firewall-cmd --reload
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>sudo iptables -S
+</span></span><span class=line><span class=cl>sudo iptables -L -n -v
+</span></span><span class=line><span class=cl>sudo iptables -t nat -S
+</span></span><span class=line><span class=cl>sudo nft list ruleset
+</span></span></code></pre></td></tr></table></div></div><hr><h2 id=磁盘>磁盘</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>df -h
+</span></span><span class=line><span class=cl>df -i
+</span></span><span class=line><span class=cl>lsblk
+</span></span><span class=line><span class=cl>mount
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>find / -xdev -type f <span class=p>|</span> cut -d <span class=s2>&#34;/&#34;</span> -f <span class=m>2</span> <span class=p>|</span> sort <span class=p>|</span> uniq -c <span class=p>|</span> sort -n
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-text data-lang=text><span class=line><span class=cl>/                         从根目录开始
+</span></span><span class=line><span class=cl>-xdev                     不跨文件系统, 避免扫到挂载盘、proc、sys 等
+</span></span><span class=line><span class=cl>-type f                   只统计普通文件
+</span></span><span class=line><span class=cl>cut -d &#34;/&#34; -f 2           取一级目录名
+</span></span><span class=line><span class=cl>sort | uniq -c | sort -n  统计数量并排序
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>du -sh *
+</span></span><span class=line><span class=cl>du -h --max-depth<span class=o>=</span><span class=m>1</span>
+</span></span><span class=line><span class=cl>find /var -type f -size +500M -print
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>sudo lsof <span class=p>|</span> grep deleted
+</span></span><span class=line><span class=cl>sudo lsof +L1
+</span></span><span class=line><span class=cl>sudo truncate -s <span class=m>0</span> /var/log/big.log
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-text data-lang=text><span class=line><span class=cl>lsof +L1 用来查看已经删除但仍被进程占用的文件。
+</span></span><span class=line><span class=cl>常见场景是日志文件被删了, 但进程还开着文件句柄, 磁盘空间不会释放。
+</span></span></code></pre></td></tr></table></div></div><p>查看大于 10 MB 的已删除占用文件：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>sudo lsof <span class=p>|</span> grep -E <span class=s1>&#39;(deleted|COMMAND)&#39;</span> <span class=p>|</span> awk <span class=s1>&#39;{if($7 &gt; 10485760) print $0}&#39;</span>
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-text data-lang=text><span class=line><span class=cl>$7 通常是文件大小字段, 单位是字节。
+</span></span><span class=line><span class=cl>10485760 = 10 MB。
+</span></span><span class=line><span class=cl>deleted 表示文件已经从目录中删除, 但仍被进程持有。
+</span></span></code></pre></td></tr></table></div></div><p>更清晰地列出大于 10 MB 的 deleted 文件：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>sudo lsof +L1 <span class=p>|</span> awk <span class=s1>&#39;NR==1 || $7 &gt; 10485760&#39;</span>
+</span></span></code></pre></td></tr></table></div></div><p>如果只是想分页查看：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>sudo lsof +L1 <span class=p>|</span> less
+</span></span></code></pre></td></tr></table></div></div><p>清空进程仍持有的文件描述符：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=nb>true</span> &gt; /proc/&lt;PID&gt;/fd/&lt;FD&gt;
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-text data-lang=text><span class=line><span class=cl>&lt;PID&gt; 是占用文件的进程 ID。
+</span></span><span class=line><span class=cl>&lt;FD&gt; 是 lsof 输出里的文件描述符编号。
+</span></span><span class=line><span class=cl>这个操作会把进程打开的那个文件句柄清空。
+</span></span></code></pre></td></tr></table></div></div><p>让进程关闭指定 FD：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>sudo gdb -p &lt;PID&gt; -ex <span class=s1>&#39;p close(4)&#39;</span> -ex <span class=s1>&#39;quit&#39;</span>
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-text data-lang=text><span class=line><span class=cl>close(4) 表示关闭 FD 4, 需要换成实际 FD 编号。
+</span></span><span class=line><span class=cl>这个方法会 attach 到进程, 可能导致进程短暂停顿。
+</span></span><span class=line><span class=cl>生产环境谨慎使用。
+</span></span></code></pre></td></tr></table></div></div><hr><h2 id=内存--cpu--io>内存 / CPU / IO</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>free -h
+</span></span><span class=line><span class=cl>top
+</span></span><span class=line><span class=cl>htop
+</span></span><span class=line><span class=cl>uptime
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>ps aux --sort<span class=o>=</span>-%cpu <span class=p>|</span> head
+</span></span><span class=line><span class=cl>ps aux --sort<span class=o>=</span>-%mem <span class=p>|</span> head
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>vmstat <span class=m>1</span>
+</span></span><span class=line><span class=cl>iostat -xz <span class=m>1</span>
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>dmesg <span class=p>|</span> grep -i oom
+</span></span><span class=line><span class=cl>journalctl -k <span class=p>|</span> grep -i oom
+</span></span></code></pre></td></tr></table></div></div><p>查看当前最容易被 OOM Killer 杀掉的进程：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=nb>printf</span> <span class=s2>&#34;PID\tOOM Score\tCommand\n&#34;</span> <span class=o>&amp;&amp;</span> <span class=nb>printf</span> <span class=s2>&#34;%s\n&#34;</span> /proc/<span class=o>[</span>0-9<span class=o>]</span>* <span class=p>|</span> awk -F/ <span class=s1>&#39;{print $3}&#39;</span> <span class=p>|</span> <span class=k>while</span> <span class=nb>read</span> pid<span class=p>;</span> <span class=k>do</span> <span class=k>if</span> <span class=o>[</span> -f /proc/<span class=nv>$pid</span>/oom_score <span class=o>]</span><span class=p>;</span> <span class=k>then</span> <span class=nb>echo</span> -e <span class=s2>&#34;</span><span class=nv>$pid</span><span class=s2>\t</span><span class=k>$(</span>cat /proc/<span class=nv>$pid</span>/oom_score<span class=k>)</span><span class=s2>\t</span><span class=k>$(</span>cat /proc/<span class=nv>$pid</span>/cmdline <span class=p>|</span> tr <span class=s1>&#39;\0&#39;</span> <span class=s1>&#39; &#39;</span><span class=k>)</span><span class=s2>&#34;</span><span class=p>;</span> <span class=k>fi</span><span class=p>;</span> <span class=k>done</span> <span class=p>|</span> sort -k2 -nr <span class=p>|</span> head -n <span class=m>10</span>
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-text data-lang=text><span class=line><span class=cl>/proc/&lt;PID&gt;/oom_score      当前进程被 OOM Killer 选中的倾向
+</span></span><span class=line><span class=cl>分数越高, 越容易在内存不足时被杀
+</span></span><span class=line><span class=cl>cmdline                    进程启动命令
+</span></span><span class=line><span class=cl>sort -k2 -nr               按 OOM Score 从高到低排序
+</span></span><span class=line><span class=cl>head -n 10                 只看前 10 个
+</span></span></code></pre></td></tr></table></div></div><hr><h2 id=docker>Docker</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>docker ps
+</span></span><span class=line><span class=cl>docker ps -a
+</span></span><span class=line><span class=cl>docker images
+</span></span><span class=line><span class=cl>docker volume ls
+</span></span><span class=line><span class=cl>docker network ls
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>docker logs -f container_name
+</span></span><span class=line><span class=cl>docker logs --tail <span class=m>100</span> container_name
+</span></span><span class=line><span class=cl>docker inspect container_name
+</span></span><span class=line><span class=cl>docker port container_name
+</span></span><span class=line><span class=cl>docker stats
+</span></span><span class=line><span class=cl>docker system df
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>docker <span class=nb>exec</span> -it container_name sh
+</span></span><span class=line><span class=cl>docker <span class=nb>exec</span> -it container_name bash
+</span></span><span class=line><span class=cl>docker restart container_name
+</span></span></code></pre></td></tr></table></div></div><p>查看所有正在运行容器的容器名、容器 IP 和网络 ID：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>docker inspect -f <span class=s1>&#39;{{.Name}} - {{range .NetworkSettings.Networks}}{{.IPAddress}} ({{.NetworkID}}){{end}}&#39;</span> <span class=k>$(</span>docker ps -q<span class=k>)</span>
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-text data-lang=text><span class=line><span class=cl>.Name                         容器名
+</span></span><span class=line><span class=cl>.NetworkSettings.Networks     容器加入的 Docker 网络
+</span></span><span class=line><span class=cl>.IPAddress                    容器在该网络内的 IP
+</span></span><span class=line><span class=cl>.NetworkID                    Docker 网络 ID
+</span></span></code></pre></td></tr></table></div></div><p>进入容器网络命名空间抓包：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=nv>PID</span><span class=o>=</span><span class=k>$(</span>docker inspect -f <span class=s1>&#39;{{.State.Pid}}&#39;</span> &lt;容器名&gt;<span class=k>)</span>
+</span></span><span class=line><span class=cl>sudo nsenter -t <span class=nv>$PID</span> -n tcpdump -ni any port <span class=m>80</span>
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-text data-lang=text><span class=line><span class=cl>docker inspect 取出容器对应的宿主机进程 PID。
+</span></span><span class=line><span class=cl>nsenter -t $PID -n 进入该进程的 network namespace。
+</span></span><span class=line><span class=cl>tcpdump -ni any port 80 在容器网络视角下抓 80 端口流量。
+</span></span></code></pre></td></tr></table></div></div><p>如果 tcpdump 版本支持按容器 ID 抓包：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>sudo tcpdump --container-id &lt;容器名或ID&gt; -ni any
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-text data-lang=text><span class=line><span class=cl>--container-id 不是所有系统的 tcpdump 都支持。
+</span></span><span class=line><span class=cl>如果报 unknown option, 改用 nsenter 方法。
+</span></span></code></pre></td></tr></table></div></div><hr><h2 id=docker-compose>Docker Compose</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>docker compose ps
+</span></span><span class=line><span class=cl>docker compose logs -f
+</span></span><span class=line><span class=cl>docker compose logs --tail <span class=m>100</span> service_name
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>docker compose up -d
+</span></span><span class=line><span class=cl>docker compose pull
+</span></span><span class=line><span class=cl>docker compose restart service_name
+</span></span><span class=line><span class=cl>docker compose down
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>docker compose config
+</span></span><span class=line><span class=cl>docker compose <span class=nb>exec</span> service_name sh
+</span></span><span class=line><span class=cl>docker compose <span class=nb>exec</span> service_name bash
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-text data-lang=text><span class=line><span class=cl>docker compose config 会合并 compose.yaml、override、
+</span></span><span class=line><span class=cl>环境变量替换后的最终配置。
+</span></span><span class=line><span class=cl>适合排查 ports、volumes、environment、networks 是否写错。
+</span></span></code></pre></td></tr></table></div></div><hr><h2 id=git>Git</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>git status --short
+</span></span><span class=line><span class=cl>git status --short --ignored
+</span></span><span class=line><span class=cl>git diff
+</span></span><span class=line><span class=cl>git diff --stat
+</span></span><span class=line><span class=cl>git diff --cached
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>git log --oneline -10
+</span></span><span class=line><span class=cl>git log --graph --oneline --decorate --all
+</span></span><span class=line><span class=cl>git show &lt;commit&gt;
+</span></span><span class=line><span class=cl>git blame path/to/file
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>git reflog
+</span></span><span class=line><span class=cl>git stash push -m <span class=s2>&#34;debug temp&#34;</span>
+</span></span><span class=line><span class=cl>git stash list
+</span></span><span class=line><span class=cl>git stash show -p stash@<span class=o>{</span>0<span class=o>}</span>
+</span></span><span class=line><span class=cl>git stash pop stash@<span class=o>{</span>0<span class=o>}</span>
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>git restore path/to/file
+</span></span><span class=line><span class=cl>git restore --staged path/to/file
+</span></span><span class=line><span class=cl>git clean -nd
+</span></span><span class=line><span class=cl>git clean -fd
+</span></span></code></pre></td></tr></table></div></div><hr><h2 id=windows-网络>Windows 网络</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cmd data-lang=cmd><span class=line><span class=cl>ipconfig /all
+</span></span><span class=line><span class=cl>ipconfig /displaydns
+</span></span><span class=line><span class=cl>ipconfig /flushdns
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cmd data-lang=cmd><span class=line><span class=cl>ping example.com
+</span></span><span class=line><span class=cl>tracert example.com
+</span></span><span class=line><span class=cl>route print
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-powershell data-lang=powershell><span class=line><span class=cl><span class=nb>Test-NetConnection</span> <span class=n>example</span><span class=p>.</span><span class=py>com</span> <span class=n>-Port</span> <span class=mf>443</span>
+</span></span><span class=line><span class=cl><span class=nb>Test-NetConnection</span> <span class=mf>1.2</span><span class=p>.</span><span class=py>3</span><span class=p>.</span><span class=py>4</span> <span class=n>-Port</span> <span class=mf>25565</span>
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cmd data-lang=cmd><span class=line><span class=cl>netstat -ano <span class=p>|</span> findstr :443
+</span></span><span class=line><span class=cl>tasklist <span class=p>|</span> findstr 1234
+</span></span></code></pre></td></tr></table></div></div><hr><h2 id=windows-端口转发>Windows 端口转发</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cmd data-lang=cmd><span class=line><span class=cl>netsh interface portproxy show all
+</span></span><span class=line><span class=cl>netsh interface portproxy add v4tov4 listenaddress=0.0.0.0 listenport=8080 connectaddress=192.168.1.10 connectport=80
+</span></span><span class=line><span class=cl>netsh interface portproxy delete v4tov4 listenaddress=0.0.0.0 listenport=8080
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cmd data-lang=cmd><span class=line><span class=cl>netsh advfirewall firewall add rule name=<span class=s2>&#34;PortProxy 8080&#34;</span> dir=in action=allow protocol=TCP localport=8080
+</span></span><span class=line><span class=cl>netsh advfirewall firewall delete rule name=<span class=s2>&#34;PortProxy 8080&#34;</span>
+</span></span></code></pre></td></tr></table></div></div><hr><h2 id=常用组合>常用组合</h2><p>服务打不开:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>systemctl status 服务名
+</span></span><span class=line><span class=cl>journalctl -u 服务名 -n <span class=m>100</span> --no-pager
+</span></span><span class=line><span class=cl>ss -lntp
+</span></span><span class=line><span class=cl>curl -v http://127.0.0.1:端口
+</span></span></code></pre></td></tr></table></div></div><p>网站打不开:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>dig 域名
+</span></span><span class=line><span class=cl>curl -IL https://域名
+</span></span><span class=line><span class=cl>sudo nginx -t
+</span></span><span class=line><span class=cl>tail -f /var/log/nginx/error.log
+</span></span></code></pre></td></tr></table></div></div><p>端口不通:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>ss -lntp
+</span></span><span class=line><span class=cl>sudo ufw status
+</span></span><span class=line><span class=cl>sudo tcpdump -ni any port 端口
+</span></span><span class=line><span class=cl>nc -vz 主机 端口
+</span></span></code></pre></td></tr></table></div></div><p>服务器变慢:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>uptime
+</span></span><span class=line><span class=cl>top
+</span></span><span class=line><span class=cl>free -h
+</span></span><span class=line><span class=cl>df -h
+</span></span><span class=line><span class=cl>ps aux --sort<span class=o>=</span>-%cpu <span class=p>|</span> head
+</span></span><span class=line><span class=cl>ps aux --sort<span class=o>=</span>-%mem <span class=p>|</span> head
+</span></span></code></pre></td></tr></table></div></div><p>Docker 异常:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>docker compose ps
+</span></span><span class=line><span class=cl>docker compose logs --tail <span class=m>100</span> 服务名
+</span></span><span class=line><span class=cl>docker compose config
+</span></span><span class=line><span class=cl>docker port 容器名
+</span></span><span class=line><span class=cl>docker inspect 容器名
+</span></span></code></pre></td></tr></table></div></div><p>Git 状态奇怪:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>git status --short --ignored
+</span></span><span class=line><span class=cl>git diff --stat
+</span></span><span class=line><span class=cl>git log --oneline -10
+</span></span><span class=line><span class=cl>git reflog
+</span></span></code></pre></td></tr></table></div></div><p>磁盘满但看不出哪里占用:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>df -h
+</span></span><span class=line><span class=cl>du -h --max-depth<span class=o>=</span><span class=m>1</span> /
+</span></span><span class=line><span class=cl>sudo lsof +L1
+</span></span><span class=line><span class=cl>sudo lsof +L1 <span class=p>|</span> awk <span class=s1>&#39;NR==1 || $7 &gt; 10485760&#39;</span>
+</span></span></code></pre></td></tr></table></div></div><p>Nginx 反代异常:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>sudo nginx -t
+</span></span><span class=line><span class=cl>nginx -T <span class=p>|</span> grep -A <span class=m>5</span> -i <span class=s2>&#34;proxy_pass&#34;</span>
+</span></span><span class=line><span class=cl>grep -E <span class=s1>&#39;(connect\(\) failed|no live upstreams)&#39;</span> /var/log/nginx/error.log <span class=p>|</span> tail -n <span class=m>20</span>
+</span></span><span class=line><span class=cl>awk <span class=s1>&#39;$9 ~ /^5[0-9][0-9]$/&#39;</span> /var/log/nginx/access.log <span class=p>|</span> tail -n <span class=m>50</span>
+</span></span></code></pre></td></tr></table></div></div><p>容器网络异常:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>docker ps
+</span></span><span class=line><span class=cl>docker port 容器名
+</span></span><span class=line><span class=cl>docker inspect -f <span class=s1>&#39;{{.Name}} - {{range .NetworkSettings.Networks}}{{.IPAddress}} ({{.NetworkID}}){{end}}&#39;</span> <span class=k>$(</span>docker ps -q<span class=k>)</span>
+</span></span><span class=line><span class=cl><span class=nv>PID</span><span class=o>=</span><span class=k>$(</span>docker inspect -f <span class=s1>&#39;{{.State.Pid}}&#39;</span> &lt;容器名&gt;<span class=k>)</span>
+</span></span><span class=line><span class=cl>sudo nsenter -t <span class=nv>$PID</span> -n tcpdump -ni any port <span class=m>80</span>
+</span></span></code></pre></td></tr></table></div></div><p>疑似 OOM:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>free -h
+</span></span><span class=line><span class=cl>ps aux --sort<span class=o>=</span>-%mem <span class=p>|</span> head
+</span></span><span class=line><span class=cl>dmesg <span class=p>|</span> grep -i oom
+</span></span><span class=line><span class=cl>journalctl -k <span class=p>|</span> grep -i oom
+</span></span><span class=line><span class=cl><span class=nb>printf</span> <span class=s2>&#34;PID\tOOM Score\tCommand\n&#34;</span> <span class=o>&amp;&amp;</span> <span class=nb>printf</span> <span class=s2>&#34;%s\n&#34;</span> /proc/<span class=o>[</span>0-9<span class=o>]</span>* <span class=p>|</span> awk -F/ <span class=s1>&#39;{print $3}&#39;</span> <span class=p>|</span> <span class=k>while</span> <span class=nb>read</span> pid<span class=p>;</span> <span class=k>do</span> <span class=k>if</span> <span class=o>[</span> -f /proc/<span class=nv>$pid</span>/oom_score <span class=o>]</span><span class=p>;</span> <span class=k>then</span> <span class=nb>echo</span> -e <span class=s2>&#34;</span><span class=nv>$pid</span><span class=s2>\t</span><span class=k>$(</span>cat /proc/<span class=nv>$pid</span>/oom_score<span class=k>)</span><span class=s2>\t</span><span class=k>$(</span>cat /proc/<span class=nv>$pid</span>/cmdline <span class=p>|</span> tr <span class=s1>&#39;\0&#39;</span> <span class=s1>&#39; &#39;</span><span class=k>)</span><span class=s2>&#34;</span><span class=p>;</span> <span class=k>fi</span><span class=p>;</span> <span class=k>done</span> <span class=p>|</span> sort -k2 -nr <span class=p>|</span> head -n <span class=m>10</span>
+</span></span></code></pre></td></tr></table></div></div></section><footer class=article-footer><section class=article-tags><a href=/tags/troubleshooting/>Troubleshooting</a>
+<a href=/tags/linux/>Linux</a>
+<a href=/tags/network/>Network</a>
+<a href=/tags/docker/>Docker</a>
+<a href=/tags/nginx/>Nginx</a></section><section class=article-copyright><svg class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg>
+<span>Licensed under CC BY-NC-SA 4.0</span></section></footer></article><aside class=related-content--wrapper><h2 class=section-title>相关文章</h2><div class=related-content><div class="flex article-list--tile"><article><a href=/p/%E8%AE%A1%E7%BD%91%E6%8C%87%E5%8C%97%E4%BD%BF%E7%94%A8-nginx-l4-%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86-minecraft-%E5%8A%A0%E9%80%9F%E7%8E%A9%E5%AE%B6%E8%AE%BF%E9%97%AE/><div class=article-details><h2 class=article-title>计网指北：使用 Nginx L4 反向代理 Minecraft 加速玩家访问</h2></div></a></article><article><a href=/p/cisco-ios-%E9%80%9F%E6%9F%A5%E8%A1%A8-switching-and-routing-quick-reference/><div class=article-details><h2 class=article-title>Cisco IOS 速查表 - Switching and Routing Quick Reference</h2></div></a></article><article><a href=/p/nginx-%E5%8F%8D%E4%BB%A3-s3-%E6%8A%A5-signaturedoesnotmatch-%E9%94%99%E8%AF%AF/><div class=article-details><h2 class=article-title>Nginx 反代 S3 报 SignatureDoesNotMatch 错误</h2></div></a></article><article><a href=/p/git-%E5%B0%8F%E7%AF%86%E4%B9%8B-%E5%AD%98%E6%9F%A5%E5%A4%87-control-changes-better/><div class=article-details><h2 class=article-title>Git 小篆之 存查备 - Control Changes Better</h2></div></a></article><article><a href=/p/%E4%BF%9D%E5%A7%86%E7%BA%A7%E6%8C%87%E5%8D%97-hexo--github-pages-%E6%90%AD%E5%BB%BA%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2/><div class=article-details><h2 class=article-title>保姆级指南 Hexo + GitHub Pages 搭建静态博客</h2></div></a></article></div></div></aside><link href=https://cdnjs.cloudflare.com/ajax/libs/artalk/2.9.1/Artalk.css rel=stylesheet><script src=https://cdnjs.cloudflare.com/ajax/libs/artalk/2.9.1/Artalk.js></script><div id=Comments class="article-comments markdown"></div><script>document.addEventListener("DOMContentLoaded",function(){const t=Artalk.init({el:"#Comments",pageKey:"https://www.lovelyrua.asia/p/%E6%8E%92%E9%94%99%E6%8C%87%E4%BB%A4%E5%90%88%E9%9B%86-%E5%85%88%E5%88%AB%E9%87%8D%E5%90%AF-%E8%AE%A9%E6%88%91%E7%9C%8B%E7%9C%8B/",pageTitle:"排错指令合集 - 先别重启, 让我看看",server:"https://artalk.lovelyrua.asia:81",site:"LovelyRua's Blog"});function e(){const e=document.documentElement.dataset.scheme==="dark";t.setDarkMode(e)}e();const n=new MutationObserver(t=>{t.forEach(t=>{t.attributeName==="data-scheme"&&e()})});n.observe(document.documentElement,{attributes:!0})})</script><footer class=site-footer><section class=copyright>&copy;
+2019 -
+2026 LovelyRua's Blog</section><section class=powerby>使用 <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> 构建<br>主题 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.33.0>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 设计</section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z+KMkF24hUW8WePSA9HM=" crossorigin=anonymous></script><script type=text/javascript src=/ts/main.c922af694cc257bf1ecc41c0dd7b0430f9114ec280ccf67cd2c6ad55f5316c4e.js defer></script><script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>
